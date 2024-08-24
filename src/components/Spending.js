@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Details from "./Details";
 
 const Spending = () => {
-  const detailKeys = ["식비", "생필품", "문화생활", "교통비", "기타 등등"];
+  const detailKeys = [
+    "식비",
+    "생필품",
+    "문화생활",
+    "교통비",
+    "의료비 및 기타 등등",
+  ];
 
   const [allTotal, setAllTotal] = useState(
     new Array(detailKeys.length).fill(0)
