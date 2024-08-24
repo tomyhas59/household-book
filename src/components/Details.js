@@ -101,7 +101,7 @@ const Details = ({ title, localforageKey, onTotalChange, grandTotal }) => {
 
   useEffect(() => {
     onTotalChange(calculateTotal());
-  }, [transactions, onTotalChange]);
+  }, []);
 
   const addTransaction = (e) => {
     e.preventDefault();
