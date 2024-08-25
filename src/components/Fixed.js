@@ -1,29 +1,31 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
 
 const Container = styled.div`
+  grid-area: e;
   position: relative;
   font-family: Arial, sans-serif;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  width: 20%;
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9;
+  background-color: #fafafa;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
-  margin-top: 5px;
-  color: #2c3e50;
+  margin-top: 20px;
+  color: #000;
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 700;
 `;
 
 const List = styled.div`
   overflow-y: auto;
-  max-height: 70%;
+  padding: 10px;
+  max-height: 80%;
 `;
 
 const ListItem = styled.div`
@@ -32,9 +34,9 @@ const ListItem = styled.div`
   align-items: center;
   border-bottom: 1px solid #ddd;
   margin: 5px 0;
-  padding: 8px;
-  background-color: #f1f1f1;
-  border-radius: 6px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
 `;
 
 const ListItemText = styled.p`
@@ -44,9 +46,9 @@ const ListItemText = styled.p`
 `;
 
 const Button = styled.button`
-  width: 24px;
-  height: 24px;
-  background-color: #3498db;
+  width: 25px;
+  height: 25px;
+  background-color: #27ae60;
   border: none;
   border-radius: 50%;
   color: white;
@@ -54,11 +56,12 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
-  transition: background-color 0.2s ease;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
   &:hover {
-    background-color: #2980b9;
+    background-color: #2ecc71;
+    transform: scale(1.05);
   }
 `;
 
@@ -75,77 +78,49 @@ const Input = styled.input`
   font-size: 0.9rem;
 `;
 
-const Total = styled.div`
+const Total = styled.h4`
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: calc(100% - 20px);
-  color: #c0392b;
-  font-size: 1.3rem;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
   > p {
-    margin: 0 auto;
+    margin: 0;
+    color: #c0392b;
+    font-weight: 700;
   }
 `;
 
-const ProgressContainer = styled.div`
-  width: 100%;
-  position: relative;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 20px;
-  margin-bottom: 10px;
-`;
-
-const ProgressBar = styled.div`
-  height: 100%;
-  width: ${(props) => props.percentage}%;
-  background-color: #3498db;
-  transition: width 0.3s ease;
-  > p {
-    color: #fff;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-`;
-
-const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
+const Fixed = ({ setFixed }) => {
+  const title = "고정 지출";
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const descriptionRef = useRef(null);
-  const [per, setPer] = useState(0);
-
-  const calculateTotal = useCallback(() => {
-    return transactions.reduce(
-      (acc, transaction) => acc + transaction.amount,
-      0
-    );
-  }, [transactions]);
-
-  const total = calculateTotal();
 
   useEffect(() => {
-    localforage.getItem(localforageKey).then((savedTransactions) => {
+    localforage.getItem(title).then((savedTransactions) => {
       if (savedTransactions) {
         setTransactions(savedTransactions);
       }
     });
-  }, [localforageKey]);
+  }, [title]);
 
   useEffect(() => {
-    localforage.setItem(localforageKey, transactions);
-  }, [transactions, localforageKey]);
+    localforage.setItem(title, transactions);
+  }, [transactions, title]);
 
   useEffect(() => {
-    const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
-    setPer(newPercentage);
-    onTotalChange(total);
-  }, [total, livingTotal]);
+    const total = transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0
+    );
+    setFixed(total);
+  }, [transactions, setFixed]);
 
   const addTransaction = (e) => {
     e.preventDefault();
@@ -170,6 +145,15 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
     );
     setTransactions(updatedTransactions);
   };
+
+  const calculateTotal = () => {
+    return transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0
+    );
+  };
+
+  const total = calculateTotal();
 
   return (
     <Container>
@@ -199,16 +183,12 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
         />
         <Button type="submit">+</Button>
       </Form>
+
       <Total>
-        <ProgressContainer>
-          <ProgressBar percentage={per}>
-            <p>{per.toFixed(0)}%</p>
-          </ProgressBar>
-        </ProgressContainer>
-        <p>{total.toLocaleString()}</p>
+        <p>합계: {total.toLocaleString()}</p>
       </Total>
     </Container>
   );
 };
 
-export default Details;
+export default Fixed;
