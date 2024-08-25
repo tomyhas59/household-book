@@ -6,7 +6,6 @@ const Container = styled.div`
   position: relative;
   font-family: Arial, sans-serif;
   border: 1px solid #e0e0e0;
-  border-radius: 8px;
   width: 20%;
   display: flex;
   flex-direction: column;
@@ -31,14 +30,12 @@ const ListItem = styled.div`
   grid-template-columns: 1fr 1fr auto;
   align-items: center;
   border-bottom: 1px solid #ddd;
-  margin: 5px 0;
-  padding: 8px;
+  padding: 5px;
   background-color: #f1f1f1;
   border-radius: 6px;
 `;
 
 const ListItemText = styled.p`
-  margin: 0;
   color: #333;
   font-size: 0.9rem;
 `;
@@ -46,20 +43,8 @@ const ListItemText = styled.p`
 const Button = styled.button`
   width: 24px;
   height: 24px;
-  background-color: #3498db;
-  border: none;
-  border-radius: 50%;
-  color: white;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #2980b9;
-  }
 `;
 
 const Form = styled.form`
@@ -178,7 +163,9 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
         {transactions.map((transaction) => (
           <ListItem key={transaction.id}>
             <ListItemText>{transaction.description}</ListItemText>
-            <ListItemText>{transaction.amount.toLocaleString()}</ListItemText>
+            <ListItemText style={{ color: "red" }}>
+              {transaction.amount.toLocaleString()}
+            </ListItemText>
             <Button onClick={() => deleteTransaction(transaction.id)}>x</Button>
           </ListItem>
         ))}

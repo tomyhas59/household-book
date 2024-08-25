@@ -7,7 +7,6 @@ const Container = styled.div`
   position: relative;
   font-family: Arial, sans-serif;
   border: 1px solid #ddd;
-  border-radius: 8px;
   display: flex;
   flex-direction: column;
   background-color: #fafafa;
@@ -46,23 +45,10 @@ const ListItemText = styled.p`
 `;
 
 const Button = styled.button`
-  width: 25px;
-  height: 25px;
-  background-color: #27ae60;
-  border: none;
-  border-radius: 50%;
-  color: white;
+  width: 24px;
+  height: 24px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-
-  &:hover {
-    background-color: #2ecc71;
-    transform: scale(1.05);
-  }
+  font-size: 0.9rem;
 `;
 
 const Form = styled.form`
@@ -162,7 +148,9 @@ const Fixed = ({ setFixed }) => {
         {transactions.map((transaction) => (
           <ListItem key={transaction.id}>
             <ListItemText>{transaction.description}</ListItemText>
-            <ListItemText>{transaction.amount.toLocaleString()}</ListItemText>
+            <ListItemText style={{ color: "red" }}>
+              {transaction.amount.toLocaleString()}
+            </ListItemText>
             <Button onClick={() => deleteTransaction(transaction.id)}>x</Button>
           </ListItem>
         ))}

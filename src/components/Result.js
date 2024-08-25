@@ -6,11 +6,8 @@ const ResultContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f0f0f0;
+  width: 100%;
   padding: 10px;
-  height: 50%;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const ResultSection = styled.div`
@@ -47,7 +44,11 @@ const BudgetDisplay = styled.div`
   font-size: 1.5rem;
   color: #2c3e50;
   margin-bottom: 10px;
-
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+  }
   button {
     margin-left: 10px;
     padding: 5px 10px;
@@ -70,7 +71,7 @@ const BudgetForm = styled.form`
   justify-content: center;
 
   input {
-    width: 100px;
+    width: 90px;
     text-align: right;
     padding: 8px;
     font-size: 1rem;
@@ -79,10 +80,12 @@ const BudgetForm = styled.form`
   }
 
   button {
-    padding: 8px 12px;
+    padding: 5px;
     background-color: #2ecc71;
     color: white;
     border: none;
+    font-size: 12px;
+    margin-left: 1px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -95,6 +98,7 @@ const BudgetForm = styled.form`
 const Result = ({ livingTotal, fixed, income, saving }) => {
   const [budget, setBudget] = useState("");
   const [isBudget, setIsBudget] = useState(false);
+  const [originalBudget, setOriginalBudget] = useState("");
   const budgetRef = useRef(null);
 
   const onChangeBudget = (e) => {
@@ -109,17 +113,23 @@ const Result = ({ livingTotal, fixed, income, saving }) => {
       setIsBudget(true);
     }
   };
+  const handleCancel = () => {
+    setBudget(originalBudget);
+    setIsBudget(true);
+  };
 
   useEffect(() => {
     localforage.getItem("소비 예산").then((savedBudget) => {
       if (savedBudget) {
         setBudget(savedBudget);
+        setOriginalBudget(savedBudget);
         setIsBudget(true);
       }
     });
   }, []);
 
   const handleModify = () => {
+    setOriginalBudget(budget);
     setIsBudget(false);
   };
 
@@ -132,12 +142,11 @@ const Result = ({ livingTotal, fixed, income, saving }) => {
   return (
     <ResultContainer>
       <ResultSection>
-        <p>이달의 소비 예산</p>
+        <p>소비 예산</p>
         <Saving>
           {isBudget ? (
-            <BudgetDisplay>
+            <BudgetDisplay onClick={handleModify}>
               {Number(budget).toLocaleString()}
-              <button onClick={handleModify}>수정</button>
             </BudgetDisplay>
           ) : (
             <BudgetForm onSubmit={handleSubmit}>
@@ -148,12 +157,15 @@ const Result = ({ livingTotal, fixed, income, saving }) => {
                 ref={budgetRef}
               />
               <button type="submit">등록</button>
+              <button type="button" onClick={handleCancel}>
+                취소
+              </button>
             </BudgetForm>
           )}
         </Saving>
       </ResultSection>
       <ResultSection>
-        <p>이달의 생활비 합계</p>
+        <p>생활비 합계</p>
         <Spending>{livingTotal.toLocaleString()}</Spending>
       </ResultSection>
       <ResultSection>

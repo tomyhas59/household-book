@@ -3,13 +3,10 @@ import styled from "styled-components";
 
 const AccountContainer = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
-  background-color: #f0f0f0;
   padding: 5px;
-  border-radius: 10px;
-  height: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const AccountSection = styled.div`
@@ -44,15 +41,15 @@ const Account = ({ income, saving, fixed }) => {
   return (
     <AccountContainer>
       <AccountSection>
-        <p>이달의 수입</p>
+        <p>총 수입</p>
         <Saving>{income.toLocaleString()}</Saving>
       </AccountSection>
       <AccountSection>
-        <p>이달의 저축</p>
+        <p>총 저축</p>
         <Saving>{saving.toLocaleString()}</Saving>
       </AccountSection>
       <AccountSection>
-        <p>이달의 고정 지출</p>
+        <p>총 지출</p>
         <Spending>{fixed.toLocaleString()}</Spending>
       </AccountSection>
     </AccountContainer>

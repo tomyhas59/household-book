@@ -65,7 +65,7 @@ const App = () => {
   return (
     <AppContainer>
       <FlexContainer>
-        <ColumnContainer>
+        <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
           <DateSelector
             selectedYear={year}
             selectedMonth={month}
@@ -116,6 +116,7 @@ const FlexContainer = styled.div`
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const DetailsContainer = styled.div`
