@@ -25,13 +25,13 @@ const ResultSection = styled.div`
     margin-bottom: 8px;
   }
 `;
-const Saving = styled.p`
+const Saving = styled.div`
   font-size: 1.2rem;
   color: #3498db;
   font-weight: bold;
 `;
 
-const Spending = styled.p`
+const Spending = styled.div`
   font-size: 1.2rem;
   color: #c0392b;
   font-weight: bold;

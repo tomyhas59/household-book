@@ -38,7 +38,7 @@ const ListItem = styled.div`
   border-radius: 4px;
 `;
 
-const ListItemText = styled.p`
+const ListItemText = styled.div`
   margin: 0;
   color: #333;
   font-size: 0.9rem;

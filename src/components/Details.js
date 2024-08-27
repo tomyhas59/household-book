@@ -43,7 +43,7 @@ const ListItem = styled.div`
   }
 `;
 
-const ListItemText = styled.p`
+const ListItemText = styled.div`
   color: #333;
   font-size: 0.9rem;
 `;
@@ -214,7 +214,7 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
       </Form>
       <Total>
         <ProgressContainer>
-          <ProgressBar percentage={per}>
+          <ProgressBar $percentage={per}>
             <p>{per.toFixed(0)}%</p>
           </ProgressBar>
         </ProgressContainer>
