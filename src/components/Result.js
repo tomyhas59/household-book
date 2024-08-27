@@ -71,7 +71,7 @@ const BudgetForm = styled.form`
   justify-content: center;
 
   input {
-    width: 90px;
+    width: 100%;
     text-align: right;
     padding: 8px;
     font-size: 1rem;

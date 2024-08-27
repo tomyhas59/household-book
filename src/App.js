@@ -106,6 +106,12 @@ export default App;
 const AppContainer = styled.div`
   display: grid;
   grid-template-columns: 40% 60%;
+  @media (max-width: 480px) {
+    * {
+      font-size: 12px;
+    }
+    display: block;
+  }
 `;
 
 const FlexContainer = styled.div`

@@ -89,6 +89,7 @@ const Saving = ({ setSaving }) => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const descriptionRef = useRef(null);
+  const [hoveredItemId, setHoveredItemId] = useState(null);
 
   useEffect(() => {
     localforage.getItem(title).then((savedTransactions) => {
@@ -148,12 +149,23 @@ const Saving = ({ setSaving }) => {
       <Title>{title}</Title>
       <List>
         {transactions.map((transaction) => (
-          <ListItem key={transaction.id}>
+          <ListItem
+            key={transaction.id}
+            onMouseEnter={() => setHoveredItemId(transaction.id)}
+            onMouseLeave={() => setHoveredItemId(null)}
+          >
             <ListItemText>{transaction.description}</ListItemText>
-            <ListItemText style={{ color: "blue" }}>
+            <ListItemText style={{ color: "red" }}>
               {transaction.amount.toLocaleString()}
             </ListItemText>
-            <Button onClick={() => deleteTransaction(transaction.id)}>x</Button>
+            {hoveredItemId === transaction.id && (
+              <Button
+                onClick={() => deleteTransaction(transaction.id)}
+                style={{ position: "absolute", right: 0 }}
+              >
+                x
+              </Button>
+            )}
           </ListItem>
         ))}
       </List>

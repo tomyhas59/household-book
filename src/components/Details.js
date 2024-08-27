@@ -18,6 +18,9 @@ const Title = styled.h2`
   text-align: center;
   font-size: 1.5rem;
   font-weight: 600;
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 const List = styled.div`
@@ -26,6 +29,7 @@ const List = styled.div`
 `;
 
 const ListItem = styled.div`
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr auto;
   align-items: center;
@@ -33,6 +37,10 @@ const ListItem = styled.div`
   padding: 5px;
   background-color: #f1f1f1;
   border-radius: 6px;
+  @media (max-width: 480px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const ListItemText = styled.p`
@@ -50,6 +58,9 @@ const Button = styled.button`
 const Form = styled.form`
   display: flex;
   align-items: center;
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const Input = styled.input`
@@ -58,6 +69,9 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.9rem;
+  @media (max-width: 480px) {
+    width: 100%;
+  }
 `;
 
 const Total = styled.div`
@@ -104,6 +118,7 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
   const [description, setDescription] = useState("");
   const descriptionRef = useRef(null);
   const [per, setPer] = useState(0);
+  const [hoveredItemId, setHoveredItemId] = useState(null);
 
   const calculateTotal = useCallback(() => {
     return transactions.reduce(
@@ -161,12 +176,23 @@ const Details = ({ title, localforageKey, onTotalChange, livingTotal }) => {
       <Title>{title}</Title>
       <List>
         {transactions.map((transaction) => (
-          <ListItem key={transaction.id}>
+          <ListItem
+            key={transaction.id}
+            onMouseEnter={() => setHoveredItemId(transaction.id)}
+            onMouseLeave={() => setHoveredItemId(null)}
+          >
             <ListItemText>{transaction.description}</ListItemText>
             <ListItemText style={{ color: "red" }}>
               {transaction.amount.toLocaleString()}
             </ListItemText>
-            <Button onClick={() => deleteTransaction(transaction.id)}>x</Button>
+            {hoveredItemId === transaction.id && (
+              <Button
+                onClick={() => deleteTransaction(transaction.id)}
+                style={{ position: "absolute", right: 0 }}
+              >
+                x
+              </Button>
+            )}
           </ListItem>
         ))}
       </List>

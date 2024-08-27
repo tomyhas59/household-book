@@ -40,6 +40,7 @@ const DateSelector = ({
 export default DateSelector;
 
 const DateContainer = styled.div`
+  display: flex;
   background-image: linear-gradient(to right, #ffcccc, #cce6ff);
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -47,6 +48,7 @@ const DateContainer = styled.div`
 `;
 
 const Select = styled.select`
+  display: block;
   appearance: none; //화살표 제거
   background-color: inherit;
   font-size: 2rem;
@@ -55,4 +57,5 @@ const Select = styled.select`
   color: black;
   padding: 5px;
   cursor: pointer;
+  margin: 0 auto;
 `;
