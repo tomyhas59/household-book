@@ -154,7 +154,7 @@ const Income = ({ setIncome }) => {
             onMouseLeave={() => setHoveredItemId(null)}
           >
             <ListItemText>{transaction.description}</ListItemText>
-            <ListItemText style={{ color: "red" }}>
+            <ListItemText style={{ color: "blue" }}>
               {transaction.amount.toLocaleString()}
             </ListItemText>
             {hoveredItemId === transaction.id && (

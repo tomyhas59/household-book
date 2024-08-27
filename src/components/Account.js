@@ -49,7 +49,7 @@ const Account = ({ income, saving, fixed }) => {
         <Saving>{saving.toLocaleString()}</Saving>
       </AccountSection>
       <AccountSection>
-        <p>총 지출</p>
+        <p>총 고정 지출</p>
         <Spending>{fixed.toLocaleString()}</Spending>
       </AccountSection>
     </AccountContainer>
