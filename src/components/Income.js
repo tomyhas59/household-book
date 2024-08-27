@@ -7,6 +7,7 @@ const Container = styled.div`
   font-family: Arial, sans-serif;
   border: 1px solid #ddd;
   display: flex;
+  width: 100%;
   height: 50%;
   flex-direction: column;
   background-color: #f9f9f9;

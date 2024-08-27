@@ -79,12 +79,21 @@ const App = () => {
             fixed={fixed}
             saving={saving}
           />
+          <NoteContainer>
+            <Label>노트</Label>
+            <Form onSubmit={""}>
+              <TextArea />
+              <Button type="submit">등록</Button>
+            </Form>
+          </NoteContainer>
         </ColumnContainer>
         <ColumnContainer>
           <Income setIncome={setIncome} />
           <Saving setSaving={setSaving} />
         </ColumnContainer>
-        <Fixed setFixed={setFixed} />
+        <ColumnContainer>
+          <Fixed setFixed={setFixed} />
+        </ColumnContainer>
       </FlexContainer>
       <DetailsContainer>
         {detailKeys.map((key, index) => (
@@ -115,8 +124,8 @@ const AppContainer = styled.div`
 `;
 
 const FlexContainer = styled.div`
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(33%, 1fr));
   height: 100vh;
 `;
 const ColumnContainer = styled.div`
@@ -128,4 +137,66 @@ const ColumnContainer = styled.div`
 const DetailsContainer = styled.div`
   display: flex;
   height: 100vh;
+`;
+
+const NoteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+`;
+
+const Label = styled.label`
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  resize: vertical;
+  background-color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  &:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    outline: none;
+  }
+`;
+
+const Button = styled.button`
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
 `;
