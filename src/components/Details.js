@@ -284,7 +284,7 @@ const Details = ({
       <Title>{title}</Title>
       <List>
         {transactions.map((transaction) => (
-          <>
+          <React.Fragment key={transaction.id}>
             {editFormById === transaction.id ? (
               <Form
                 key={transaction.id}
@@ -333,7 +333,7 @@ const Details = ({
                 )}
               </ListItem>
             )}
-          </>
+          </React.Fragment>
         ))}
       </List>
       <Form onSubmit={addTransaction}>

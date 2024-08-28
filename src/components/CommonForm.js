@@ -134,12 +134,9 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
       <Title>{title}</Title>
       <List style={{ maxHeight: "70%" }}>
         {transactions.map((transaction) => (
-          <>
+          <React.Fragment key={transaction.id}>
             {editFormById === transaction.id ? (
-              <Form
-                key={transaction.id}
-                onSubmit={(e) => editTransaction(e, transaction.id)}
-              >
+              <Form onSubmit={(e) => editTransaction(e, transaction.id)}>
                 <Input
                   type="text"
                   placeholder="상세"
@@ -188,7 +185,7 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
                 )}
               </ListItem>
             )}
-          </>
+          </React.Fragment>
         ))}
       </List>
       <Form onSubmit={addTransaction}>
