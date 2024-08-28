@@ -16,7 +16,7 @@ export const Title = styled.h2`
   margin-top: 5px;
   color: #2c3e50;
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 600;
   @media (max-width: 480px) {
     font-size: 1rem;
@@ -31,7 +31,7 @@ export const List = styled.div`
 export const ListItem = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1.5fr 1.5fr auto;
   align-items: center;
   border-bottom: 1px solid #ddd;
   padding: 5px;
@@ -50,12 +50,12 @@ export const ListItem = styled.div`
 
 export const ListItemText = styled.div`
   color: #333;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 `;
 
 export const Button = styled.button`
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
   font-size: 0.9rem;
   background-color: #f0f0f0;
@@ -73,13 +73,13 @@ export const Button = styled.button`
 export const TransparentButton = styled.button`
   background-color: transparent;
   border: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
 `;
 
 export const CancelButton = styled.button`
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   cursor: pointer;
   font-size: 0.9rem;
   background-color: #ff5252;
@@ -95,8 +95,10 @@ export const CancelButton = styled.button`
 `;
 
 export const Form = styled.form`
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr auto auto;
   align-items: center;
+  position: relative;
   @media (max-width: 480px) {
     flex-direction: column;
   }
@@ -104,12 +106,15 @@ export const Form = styled.form`
 
 export const Input = styled.input`
   padding: 5px;
-  width: 50%;
+  width: 100%;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   @media (max-width: 480px) {
     width: 100%;
+  }
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 `;
 
@@ -163,12 +168,15 @@ const Details = ({
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const descriptionRef = useRef(null);
   const [per, setPer] = useState(0);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
+  const [editDate, setEditDate] = useState(0);
+  const [date, setDate] = useState("");
+  const dateRef = useRef(null);
+  const listRef = useRef(null);
 
   const calculateTotal = useCallback(() => {
     if (transactions)
@@ -201,6 +209,7 @@ const Details = ({
 
     const newTransaction = {
       id: Date.now(),
+      date,
       amount: parseFloat(amount),
       description,
     };
@@ -217,8 +226,9 @@ const Details = ({
 
     setTransactions([...transactions, newTransaction]);
     setAmount("");
+    setDate("");
     setDescription("");
-    descriptionRef.current.focus();
+    dateRef.current.focus();
   };
 
   const deleteTransactionById = async (detailCategory, id) => {
@@ -262,9 +272,9 @@ const Details = ({
     await localforage.setItem(dateKey, existingData);
     setTransactions(updatedTransactions);
     setAmount("");
+    setDate("");
     setDescription("");
     setEditFormById(null);
-    descriptionRef.current.focus();
   };
 
   const handleModifyForm = async (id) => {
@@ -276,13 +286,26 @@ const Details = ({
     if (transaction) {
       setEditDescription(transaction.description);
       setEditAmount(transaction.amount);
+      setEditDate(transaction.date);
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (listRef.current && !listRef.current.contains(event.target)) {
+        setEditFormById(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <Container>
       <Title>{title}</Title>
-      <List>
+      <List ref={listRef}>
         {transactions.map((transaction) => (
           <React.Fragment key={transaction.id}>
             {editFormById === transaction.id ? (
@@ -290,6 +313,14 @@ const Details = ({
                 key={transaction.id}
                 onSubmit={(e) => editTransaction(e, transaction.id)}
               >
+                <Input
+                  type="number"
+                  placeholder="날짜"
+                  value={editDate}
+                  onChange={(e) => setEditDate(e.target.value)}
+                  min="1"
+                  max="31"
+                />
                 <Input
                   type="text"
                   placeholder="상세"
@@ -318,6 +349,7 @@ const Details = ({
                 onMouseLeave={() => setHoveredItemId(null)}
                 onClick={() => handleModifyForm(transaction.id)}
               >
+                <ListItemText>{transaction.date}</ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: "red" }}>
                   {transaction.amount.toLocaleString()}
@@ -338,7 +370,15 @@ const Details = ({
       </List>
       <Form onSubmit={addTransaction}>
         <Input
-          ref={descriptionRef}
+          ref={dateRef}
+          type="number"
+          placeholder="날짜"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          min="1"
+          max="31"
+        />
+        <Input
           type="text"
           placeholder="상세"
           value={description}

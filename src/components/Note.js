@@ -89,13 +89,11 @@ const NoteContainer = styled.div`
   height: 50vh;
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
   cursor: pointer;
   &:hover {
     background-color: #f0f0f0;
-    border-radius: 8px;
   }
 `;
 

@@ -6,6 +6,7 @@ import { ProgressBar, ProgressContainer } from "./Details";
 const AccountContainer = styled.div`
   display: flex;
   width: 100%;
+  height: 90vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -14,7 +15,10 @@ const AccountContainer = styled.div`
 
 const AccountSection = styled.div`
   width: 100%;
-  height: 100%;
+  height: 15vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   background: white;
   margin-bottom: 5px;
   padding: 5px;
@@ -138,7 +142,7 @@ const Account = ({
   }, [isBudget]);
 
   useEffect(() => {
-    const newSpendingPer = ((livingTotal + fixed) / income) * 100 || 0;
+    const newSpendingPer = income ? ((livingTotal + fixed) / income) * 100 : 0;
     setSpendingPer(newSpendingPer);
   }, [fixed, income, livingTotal]);
 

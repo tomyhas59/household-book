@@ -18,11 +18,14 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const descriptionRef = useRef(null);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
+  const [editDate, setEditDate] = useState(0);
+  const [date, setDate] = useState("");
+  const dateRef = useRef(null);
+  const listRef = useRef(null);
 
   useEffect(() => {
     if (dataBydate && dataBydate[title]) {
@@ -47,6 +50,7 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
 
     const newTransaction = {
       id: Date.now(),
+      date,
       amount: parseFloat(amount),
       description,
     };
@@ -64,8 +68,9 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
 
     setTransactions([...transactions, newTransaction]);
     setAmount("");
+    setDate("");
     setDescription("");
-    descriptionRef.current.focus();
+    dateRef.current.focus();
   };
 
   const deleteTransactionById = async (title, id) => {
@@ -94,6 +99,7 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
     if (transaction) {
       setEditDescription(transaction.description);
       setEditAmount(transaction.amount);
+      setEditDate(transaction.date);
     }
   };
 
@@ -125,18 +131,38 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
     setTransactions(updatedTransactions);
     setAmount("");
     setDescription("");
+    setDate("");
     setEditFormById(null);
-    descriptionRef.current.focus();
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (listRef.current && !listRef.current.contains(event.target)) {
+        setEditFormById(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <Container style={{ height: "50vh" }}>
       <Title>{title}</Title>
-      <List style={{ maxHeight: "70%" }}>
+      <List ref={listRef} style={{ maxHeight: "70%" }}>
         {transactions.map((transaction) => (
           <React.Fragment key={transaction.id}>
             {editFormById === transaction.id ? (
               <Form onSubmit={(e) => editTransaction(e, transaction.id)}>
+                <Input
+                  type="number"
+                  placeholder="날짜"
+                  value={editDate}
+                  onChange={(e) => setEditDate(e.target.value)}
+                  min="1"
+                  max="31"
+                />
                 <Input
                   type="text"
                   placeholder="상세"
@@ -170,6 +196,7 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
                 onMouseLeave={() => setHoveredItemId(null)}
                 onClick={() => handleModifyForm(transaction.id)}
               >
+                <ListItemText>{transaction.date}</ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: color }}>
                   {transaction.amount.toLocaleString()}
@@ -190,7 +217,15 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
       </List>
       <Form onSubmit={addTransaction}>
         <Input
-          ref={descriptionRef}
+          ref={dateRef}
+          type="number"
+          placeholder="날짜"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          min="1"
+          max="31"
+        />
+        <Input
           type="text"
           placeholder="상세"
           value={description}
