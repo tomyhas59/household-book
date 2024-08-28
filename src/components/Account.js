@@ -5,12 +5,15 @@ const AccountContainer = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   padding: 5px;
+  height: 30vh;
 `;
 
 const AccountSection = styled.div`
   width: 100%;
+  height: 100%;
   background: white;
   margin-bottom: 5px;
   padding: 5px;

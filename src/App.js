@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Details from "./components/Details";
 import localforage from "localforage";
 import Income from "./components/Income";
@@ -10,12 +16,12 @@ import Result from "./components/Result";
 import DateSelector from "./components/DateSelector";
 
 const App = () => {
-  const detailKeys = useMemo(
+  const detailCategory = useMemo(
     () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
     []
   );
   const [detailsTotals, setDetailsTotals] = useState(
-    new Array(detailKeys.length).fill(0)
+    new Array(detailCategory.length).fill(0)
   );
   const [income, setIncome] = useState(0);
   const [fixed, setFixed] = useState(0);
@@ -23,54 +29,93 @@ const App = () => {
 
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
+  const [note, setNote] = useState("");
+  const [isNote, setIsNote] = useState(true);
+  const [originalNote, setOriginalNote] = useState("");
+  const noteRef = useRef(null);
+  const [dateKey, setDateKey] = useState("");
+  const [dataBydate, setDataByDate] = useState({});
 
   useEffect(() => {
-    const loadData = async () => {
-      const totals = await Promise.all(
-        detailKeys.map(async (item) => {
-          const obj = await localforage.getItem(item);
-          if (obj) {
-            return obj.reduce((acc, item) => acc + item.amount, 0);
-          }
-          return 0;
-        })
-      );
-      setDetailsTotals(totals);
-    };
-
-    loadData();
-  }, [detailKeys]);
+    setDateKey(`${year}-${month}`);
+  }, [year, month]);
 
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        const obj = await localforage.getItem("수입");
-        const total = obj ? obj.reduce((acc, item) => acc + item.amount, 0) : 0;
-        setIncome(total);
-      } catch (error) {
-        console.error("Failed to load data", error);
-      }
+    const fetchData = async () => {
+      const data = await localforage.getItem(dateKey);
+      setDataByDate(data || {});
     };
-    loadData();
-  }, [income]);
+    if (dateKey) {
+      fetchData();
+    }
+  }, [dateKey]);
 
-  const updateAllTotal = (index, total) => {
-    const newAllTotals = [...detailsTotals];
-    newAllTotals[index] = total;
-    setDetailsTotals(newAllTotals);
+  const onChangeNote = (e) => {
+    setNote(e.target.value);
   };
 
+  const updateAllTotal = useCallback((index, total) => {
+    setDetailsTotals((prevTotals) => {
+      const newAllTotals = [...prevTotals];
+      if (newAllTotals[index] !== total) {
+        newAllTotals[index] = total;
+        return newAllTotals;
+      }
+      return prevTotals;
+    });
+  }, []);
+
   const livingTotal = detailsTotals.reduce((acc, total) => acc + total, 0);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (note === "") return;
+
+    const updatedData = {
+      ...dataBydate,
+      ["note"]: note,
+    };
+
+    localforage.setItem(dateKey, updatedData);
+    setIsNote(true);
+  };
+
+  const handleCancel = () => {
+    setNote(originalNote);
+    setIsNote(true);
+  };
+
+  useEffect(() => {
+    localforage.getItem(dateKey).then((data) => {
+      if (data) {
+        console.log(data);
+        setNote(data["note"]);
+        setOriginalNote(data["note"]);
+        setIsNote(true);
+      }
+    });
+  }, [dateKey]);
+
+  const handleModify = () => {
+    setOriginalNote(note);
+    setIsNote(false);
+  };
+
+  useEffect(() => {
+    if (!isNote && noteRef.current) {
+      noteRef.current.focus();
+    }
+  }, [isNote]);
 
   return (
     <AppContainer>
       <FlexContainer>
         <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
           <DateSelector
-            selectedYear={year}
-            selectedMonth={month}
-            onYearChange={setYear}
-            onMonthChange={setMonth}
+            year={year}
+            month={month}
+            setYear={setYear}
+            setMonth={setMonth}
           />
           <Account income={income} saving={saving} fixed={fixed} />
           <Result
@@ -78,31 +123,58 @@ const App = () => {
             income={income}
             fixed={fixed}
             saving={saving}
+            dateKey={dateKey}
+            dataBydate={dataBydate}
           />
           <NoteContainer>
             <Label>노트</Label>
-            <Form onSubmit={""}>
-              <TextArea />
-              <Button type="submit">등록</Button>
-            </Form>
+            {isNote ? (
+              <NoteDisplay onClick={handleModify}>
+                {note ? note : <div>클릭하여 등록</div>}
+              </NoteDisplay>
+            ) : (
+              <Form onSubmit={handleSubmit}>
+                <TextArea onChange={onChangeNote} value={note} ref={noteRef} />
+                <ButtonContainer>
+                  <Button type="submit">등록</Button>
+                  <Button type="button" onClick={handleCancel}>
+                    취소
+                  </Button>
+                </ButtonContainer>
+              </Form>
+            )}
           </NoteContainer>
         </ColumnContainer>
         <ColumnContainer>
-          <Income setIncome={setIncome} />
-          <Saving setSaving={setSaving} />
+          <Income
+            setIncome={setIncome}
+            dateKey={dateKey}
+            dataBydate={dataBydate}
+          />
+          <Saving
+            setSaving={setSaving}
+            dateKey={dateKey}
+            dataBydate={dataBydate}
+          />
         </ColumnContainer>
         <ColumnContainer>
-          <Fixed setFixed={setFixed} />
+          <Fixed
+            setFixed={setFixed}
+            dateKey={dateKey}
+            dataBydate={dataBydate}
+          />
         </ColumnContainer>
       </FlexContainer>
       <DetailsContainer>
-        {detailKeys.map((key, index) => (
+        {detailCategory.map((key, index) => (
           <Details
             key={index}
             title={key}
-            localforageKey={key}
+            detailCategory={key}
             onTotalChange={(total) => updateAllTotal(index, total)}
             livingTotal={livingTotal}
+            dateKey={dateKey}
+            dataBydate={dataBydate}
           />
         ))}
       </DetailsContainer>
@@ -121,13 +193,14 @@ const AppContainer = styled.div`
     }
     display: block;
   }
+  overflow: hidden;
 `;
 
 const FlexContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(33%, 1fr));
-  height: 100vh;
 `;
+
 const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -143,18 +216,23 @@ const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 20px;
+  height: 30vh;
+  padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
+  cursor: pointer;
+  &:hover {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+  }
 `;
 
 const Label = styled.label`
   font-size: 1.2rem;
   font-weight: bold;
+  text-align: center;
   margin-bottom: 10px;
   color: #333;
 `;
@@ -166,7 +244,7 @@ const Form = styled.form`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 150px;
+  height: 200px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -181,22 +259,36 @@ const TextArea = styled.textarea`
   }
 `;
 
+const ButtonContainer = styled.div`
+  margin-top: 3px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #007bff;
+  padding: 5px;
+  background-color: #2ecc71;
+  color: white;
   border: none;
-  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 1px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-
   &:hover {
-    background-color: #0056b3;
+    background-color: #27ae60;
   }
+`;
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+const NoteDisplay = styled.div`
+  font-size: 1.1rem;
+  color: #2c3e50;
+  min-height: 200px;
+  white-space: pre-wrap;
+
+  > div {
+    text-align: center;
+    font-weight: bold;
   }
 `;

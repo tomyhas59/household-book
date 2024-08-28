@@ -1,56 +1,50 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
 
 const Container = styled.div`
   position: relative;
   font-family: Arial, sans-serif;
-  border: 1px solid #e0e0e0;
-  width: 20%;
+  border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
-  background-color: #f9f9f9;
+  width: 100%;
+  background-color: #fafafa;
+  height: ${(props) => (props.height ? props.height : "50vh")};
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
-  margin-top: 5px;
-  color: #2c3e50;
+  margin-top: 20px;
+  color: #000;
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  @media (max-width: 480px) {
-    font-size: 1rem;
-  }
+  font-size: 1.6rem;
+  font-weight: 700;
 `;
 
 const List = styled.div`
   overflow-y: auto;
-  max-height: 85%;
+  padding: 5px;
+  max-height: 70%;
 `;
 
 const ListItem = styled.div`
-  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr auto;
   align-items: center;
   border-bottom: 1px solid #ddd;
   padding: 5px;
-  border-radius: 6px;
+  background-color: #fff;
+  border-radius: 4px;
   cursor: pointer;
   &:hover {
     background-color: #f0f0f0;
     border-radius: 8px;
   }
-
-  @media (max-width: 480px) {
-    display: flex;
-    flex-direction: column;
-  }
 `;
 
 const ListItemText = styled.div`
   color: #333;
-  font-size: 0.9rem;
 `;
 
 const Button = styled.button`
@@ -63,9 +57,6 @@ const Button = styled.button`
 const Form = styled.form`
   display: flex;
   align-items: center;
-  @media (max-width: 480px) {
-    flex-direction: column;
-  }
 `;
 
 const Input = styled.input`
@@ -74,108 +65,75 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.9rem;
-  @media (max-width: 480px) {
-    width: 100%;
-  }
 `;
 
-const Total = styled.div`
+const Total = styled.h4`
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: calc(100% - 20px);
-  color: #c0392b;
-  font-size: 1.3rem;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
   > p {
-    margin: 0 auto;
+    margin: 0;
+    font-weight: 700;
   }
 `;
 
-const ProgressContainer = styled.div`
-  width: 100%;
-  position: relative;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  height: 20px;
-  margin-bottom: 10px;
-`;
-
-const ProgressBar = styled.div`
-  height: 100%;
-  width: ${(props) => props.$percentage}%;
-  background-color: #3498db;
-  transition: width 0.3s ease;
-  > p {
-    color: #fff;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-`;
-
-const Details = ({
+const CommonForm = ({
   title,
-  detailCategory,
-  onTotalChange,
-  livingTotal,
+  setTotalItem,
+  color,
   dateKey,
   dataBydate,
+  height,
 }) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const descriptionRef = useRef(null);
-  const [per, setPer] = useState(0);
   const [hoveredItemId, setHoveredItemId] = useState(null);
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
 
-  const calculateTotal = useCallback(() => {
-    if (transactions)
-      return transactions.reduce(
-        (acc, transaction) => acc + transaction.amount,
-        0
-      );
-  }, [transactions]);
-
-  const total = calculateTotal();
-
   useEffect(() => {
-    if (dataBydate && dataBydate[detailCategory]) {
-      setTransactions(dataBydate[detailCategory]);
+    if (dataBydate && dataBydate[title]) {
+      setTransactions(dataBydate[title]);
     } else {
       setTransactions([]);
     }
-  }, [dateKey, dataBydate, detailCategory]);
+  }, [dateKey, dataBydate, title]);
 
   useEffect(() => {
-    const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
-    setPer(newPercentage);
-    onTotalChange(total);
-  }, [total, livingTotal, onTotalChange]);
+    const total = transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0
+    );
+    setTotalItem(total);
+  }, [transactions, setTotalItem]);
 
   const addTransaction = async (e) => {
     e.preventDefault();
 
-    if (!description || !amount) return;
+    if (!description || amount <= 0) return;
 
     const newTransaction = {
       id: Date.now(),
       amount: parseFloat(amount),
       description,
     };
+
     //기존 데이터에 추가
     const existingData = (await localforage.getItem(dateKey)) || {};
 
     const updatedTransactions = {
       ...existingData,
-      [detailCategory]: existingData[detailCategory]
-        ? [...existingData[detailCategory], newTransaction]
+      [title]: existingData[title]
+        ? [...existingData[title], newTransaction]
         : [newTransaction],
     };
     await localforage.setItem(dateKey, updatedTransactions);
@@ -186,18 +144,33 @@ const Details = ({
     descriptionRef.current.focus();
   };
 
-  const deleteTransactionById = async (detailCategory, id) => {
+  const deleteTransactionById = async (title, id) => {
     const existingData = (await localforage.getItem(dateKey)) || {};
-
-    const updatedArray = existingData[detailCategory]?.filter(
+    const updatedArray = existingData[title]?.filter(
       (transaction) => transaction.id !== id
     );
-
-    existingData[detailCategory] = updatedArray;
-
+    existingData[title] = updatedArray;
     await localforage.setItem(dateKey, existingData);
-
     setTransactions(updatedArray);
+  };
+
+  const calculateTotal = () => {
+    return transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0
+    );
+  };
+
+  const handleModifyForm = async (id) => {
+    const existingData = (await localforage.getItem(dateKey)) || {};
+    const transaction = existingData[title].find(
+      (transaction) => transaction.id === id
+    );
+    setEditFormById(id);
+    if (transaction) {
+      setEditDescription(transaction.description);
+      setEditAmount(transaction.amount);
+    }
   };
 
   const editTransaction = async (e, id) => {
@@ -232,20 +205,8 @@ const Details = ({
     descriptionRef.current.focus();
   };
 
-  const handleModifyForm = async (id) => {
-    const existingData = (await localforage.getItem(dateKey)) || {};
-    const transaction = existingData[title].find(
-      (transaction) => transaction.id === id
-    );
-    setEditFormById(id);
-    if (transaction) {
-      setEditDescription(transaction.description);
-      setEditAmount(transaction.amount);
-    }
-  };
-
   return (
-    <Container>
+    <Container height={height}>
       <Title>{title}</Title>
       <List>
         {transactions.map((transaction) => (
@@ -289,7 +250,7 @@ const Details = ({
                 onClick={() => handleModifyForm(transaction.id)}
               >
                 <ListItemText>{transaction.description}</ListItemText>
-                <ListItemText style={{ color: "red" }}>
+                <ListItemText style={{ color: color }}>
                   {transaction.amount.toLocaleString()}
                 </ListItemText>
                 {hoveredItemId === transaction.id ? (
@@ -320,20 +281,19 @@ const Details = ({
           type="number"
           placeholder="비용"
           value={amount}
+          min="0"
           onChange={(e) => setAmount(e.target.value)}
         />
         <Button type="submit">+</Button>
       </Form>
+
       <Total>
-        <ProgressContainer>
-          <ProgressBar $percentage={per}>
-            <p>{per.toFixed(0)}%</p>
-          </ProgressBar>
-        </ProgressContainer>
-        <p>{total.toLocaleString()}</p>
+        <p style={{ color: color }}>
+          합계: {calculateTotal().toLocaleString()}
+        </p>
       </Total>
     </Container>
   );
 };
 
-export default Details;
+export default CommonForm;

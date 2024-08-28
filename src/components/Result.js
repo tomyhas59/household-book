@@ -5,13 +5,16 @@ import styled from "styled-components";
 const ResultContainer = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 10px;
+  padding: 5px;
+  height: 30vh;
 `;
 
 const ResultSection = styled.div`
   width: 100%;
+  height: 100%;
   background: white;
   margin-bottom: 5px;
   padding: 5px;
@@ -49,20 +52,6 @@ const BudgetDisplay = styled.div`
     background-color: #f0f0f0;
     border-radius: 8px;
   }
-  button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #2980b9;
-    }
-  }
 `;
 
 const BudgetForm = styled.form`
@@ -95,9 +84,16 @@ const BudgetForm = styled.form`
   }
 `;
 
-const Result = ({ livingTotal, fixed, income, saving }) => {
+const Result = ({
+  livingTotal,
+  fixed,
+  income,
+  saving,
+  dateKey,
+  dataBydate,
+}) => {
   const [budget, setBudget] = useState("");
-  const [isBudget, setIsBudget] = useState(false);
+  const [isBudget, setIsBudget] = useState(true);
   const [originalBudget, setOriginalBudget] = useState("");
   const budgetRef = useRef(null);
 
@@ -109,24 +105,29 @@ const Result = ({ livingTotal, fixed, income, saving }) => {
     e.preventDefault();
     const numericBudget = Number(budget);
     if (!isNaN(numericBudget) && numericBudget > 0) {
-      localforage.setItem("소비 예산", numericBudget);
+      const updatedData = {
+        ...dataBydate,
+        ["budget"]: numericBudget,
+      };
+      localforage.setItem(dateKey, updatedData);
       setIsBudget(true);
     }
   };
+
   const handleCancel = () => {
     setBudget(originalBudget);
     setIsBudget(true);
   };
 
   useEffect(() => {
-    localforage.getItem("소비 예산").then((savedBudget) => {
-      if (savedBudget) {
-        setBudget(savedBudget);
-        setOriginalBudget(savedBudget);
+    localforage.getItem(dateKey).then((data) => {
+      if (data) {
+        setBudget(data["budget"]);
+        setOriginalBudget(data["budget"]);
         setIsBudget(true);
       }
     });
-  }, []);
+  }, [dateKey]);
 
   const handleModify = () => {
     setOriginalBudget(budget);
@@ -146,7 +147,7 @@ const Result = ({ livingTotal, fixed, income, saving }) => {
         <Saving>
           {isBudget ? (
             <BudgetDisplay onClick={handleModify}>
-              {Number(budget).toLocaleString()}
+              {budget ? Number(budget).toLocaleString() : "클릭하여 등록"}
             </BudgetDisplay>
           ) : (
             <BudgetForm onSubmit={handleSubmit}>
