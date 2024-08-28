@@ -1,96 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import localforage from "localforage";
-import styled from "styled-components";
 
-const Container = styled.div`
-  position: relative;
-  font-family: Arial, sans-serif;
-  border: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: #fafafa;
-  height: ${(props) => (props.height ? props.height : "50vh")};
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-`;
+import {
+  Input,
+  Total,
+  Container,
+  Title,
+  List,
+  ListItem,
+  ListItemText,
+  Button,
+  Form,
+  TransparentButton,
+} from "./Details";
 
-const Title = styled.h2`
-  margin-top: 20px;
-  color: #000;
-  text-align: center;
-  font-size: 1.6rem;
-  font-weight: 700;
-`;
-
-const List = styled.div`
-  overflow-y: auto;
-  padding: 5px;
-  max-height: 70%;
-`;
-
-const ListItem = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr auto;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 5px;
-  background-color: #fff;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-  }
-`;
-
-const ListItemText = styled.div`
-  color: #333;
-`;
-
-const Button = styled.button`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  font-size: 0.9rem;
-`;
-
-const Form = styled.form`
-  display: flex;
-  align-items: center;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  width: 50%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-`;
-
-const Total = styled.h4`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #333;
-  font-size: 1.1rem;
-  font-weight: 600;
-  > p {
-    margin: 0;
-    font-weight: 700;
-  }
-`;
-
-const CommonForm = ({
-  title,
-  setTotalItem,
-  color,
-  dateKey,
-  dataBydate,
-  height,
-}) => {
+const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -206,9 +130,9 @@ const CommonForm = ({
   };
 
   return (
-    <Container height={height}>
+    <Container style={{ height: "50vh" }}>
       <Title>{title}</Title>
-      <List>
+      <List style={{ maxHeight: "70%" }}>
         {transactions.map((transaction) => (
           <>
             {editFormById === transaction.id ? (
@@ -260,9 +184,7 @@ const CommonForm = ({
                     x
                   </Button>
                 ) : (
-                  <Button
-                    style={{ border: "none", backgroundColor: "#fff" }}
-                  ></Button>
+                  <TransparentButton></TransparentButton>
                 )}
               </ListItem>
             )}
@@ -288,9 +210,7 @@ const CommonForm = ({
       </Form>
 
       <Total>
-        <p style={{ color: color }}>
-          합계: {calculateTotal().toLocaleString()}
-        </p>
+        <p style={{ color: color }}>{calculateTotal().toLocaleString()}</p>
       </Total>
     </Container>
   );

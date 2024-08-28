@@ -28,17 +28,15 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
 export default DateSelector;
 
 const DateContainer = styled.div`
-  display: flex;
   width: 100%;
-  height: 10vh;
   background-image: linear-gradient(to right, #ffcccc, #cce6ff);
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 15px;
+  padding: 5px;
+  text-align: center;
 `;
 
 const Select = styled.select`
-  display: block;
   appearance: none; //화살표 제거
   background-color: inherit;
   font-size: 2rem;

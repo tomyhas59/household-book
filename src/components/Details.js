@@ -2,33 +2,33 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
 
-const Container = styled.div`
+export const Container = styled.div`
   position: relative;
   font-family: Arial, sans-serif;
   border: 1px solid #e0e0e0;
-  width: 20%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   background-color: #f9f9f9;
 `;
 
-const Title = styled.h2`
+export const Title = styled.h2`
   margin-top: 5px;
   color: #2c3e50;
   text-align: center;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 600;
   @media (max-width: 480px) {
     font-size: 1rem;
   }
 `;
 
-const List = styled.div`
+export const List = styled.div`
   overflow-y: auto;
   max-height: 85%;
 `;
 
-const ListItem = styled.div`
+export const ListItem = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr auto;
@@ -48,19 +48,53 @@ const ListItem = styled.div`
   }
 `;
 
-const ListItemText = styled.div`
+export const ListItemText = styled.div`
   color: #333;
   font-size: 0.9rem;
 `;
 
-const Button = styled.button`
-  width: 24px;
-  height: 24px;
+export const Button = styled.button`
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   font-size: 0.9rem;
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.7);
+  }
 `;
 
-const Form = styled.form`
+export const TransparentButton = styled.button`
+  background-color: transparent;
+  border: none;
+  width: 20px;
+  height: 20px;
+`;
+
+export const CancelButton = styled.button`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  background-color: #ff5252;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #c51162;
+  }
+`;
+
+export const Form = styled.form`
   display: flex;
   align-items: center;
   @media (max-width: 480px) {
@@ -68,8 +102,8 @@ const Form = styled.form`
   }
 `;
 
-const Input = styled.input`
-  padding: 10px;
+export const Input = styled.input`
+  padding: 5px;
   width: 50%;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -79,13 +113,13 @@ const Input = styled.input`
   }
 `;
 
-const Total = styled.div`
+export const Total = styled.div`
   position: absolute;
   bottom: 10px;
   left: 10px;
   width: calc(100% - 20px);
   color: #c0392b;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -94,7 +128,7 @@ const Total = styled.div`
   }
 `;
 
-const ProgressContainer = styled.div`
+export const ProgressContainer = styled.div`
   width: 100%;
   position: relative;
   background-color: #e0e0e0;
@@ -104,16 +138,17 @@ const ProgressContainer = styled.div`
   margin-bottom: 10px;
 `;
 
-const ProgressBar = styled.div`
+export const ProgressBar = styled.div`
   height: 100%;
   width: ${(props) => props.$percentage}%;
   background-color: #3498db;
   transition: width 0.3s ease;
   > p {
-    color: #fff;
+    color: skyblue;
     position: absolute;
     left: 50%;
-    transform: translateX(-50%);
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
   }
 `;
 
@@ -269,17 +304,12 @@ const Details = ({
                   min="0"
                 />
                 <Button type="submit">+</Button>
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    border: "none",
-                    color: "#fff",
-                  }}
+                <CancelButton
                   type="button"
                   onClick={() => setEditFormById(null)}
                 >
                   x
-                </Button>
+                </CancelButton>
               </Form>
             ) : (
               <ListItem
@@ -299,9 +329,7 @@ const Details = ({
                     x
                   </Button>
                 ) : (
-                  <Button
-                    style={{ border: "none", backgroundColor: "#fff" }}
-                  ></Button>
+                  <TransparentButton></TransparentButton>
                 )}
               </ListItem>
             )}

@@ -11,7 +11,6 @@ const Fixed = ({ setFixed, dateKey, dataBydate }) => {
       color="red"
       dateKey={dateKey}
       dataBydate={dataBydate}
-      height="100vh"
     />
   );
 };
