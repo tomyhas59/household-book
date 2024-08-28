@@ -95,11 +95,14 @@ export const CancelButton = styled.button`
 `;
 
 export const Form = styled.form`
-  display: grid;
-  grid-template-columns: 1fr 2fr 2fr auto auto;
+  display: flex;
   align-items: center;
   position: relative;
+  > input:first-child {
+    width: 50%;
+  }
   @media (max-width: 480px) {
+    display: flex;
     flex-direction: column;
   }
 `;
