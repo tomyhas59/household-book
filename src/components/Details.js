@@ -44,13 +44,16 @@ export const ListItem = styled.div`
 
   @media (max-width: 480px) {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
   }
 `;
 
 export const ListItemText = styled.div`
   color: #333;
   font-size: 0.7rem;
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 `;
 
 export const Button = styled.button`
@@ -103,7 +106,7 @@ export const Form = styled.form`
   }
   @media (max-width: 480px) {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
   }
 `;
 
@@ -113,11 +116,11 @@ export const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 0.7rem;
-  @media (max-width: 480px) {
-    width: 100%;
-  }
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
+  }
+  @media (max-width: 480px) {
+    width: 50%;
   }
 `;
 
@@ -352,7 +355,9 @@ const Details = ({
                 onMouseLeave={() => setHoveredItemId(null)}
                 onClick={() => handleModifyForm(transaction.id)}
               >
-                <ListItemText>{transaction.date}</ListItemText>
+                <ListItemText>
+                  {transaction.date && `${transaction.date}일`}
+                </ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: "red" }}>
                   {transaction.amount.toLocaleString()}

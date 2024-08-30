@@ -196,7 +196,9 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
                 onMouseLeave={() => setHoveredItemId(null)}
                 onClick={() => handleModifyForm(transaction.id)}
               >
-                <ListItemText>{transaction.date}</ListItemText>
+                <ListItemText>
+                  {transaction.date && `${transaction.date}일`}
+                </ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: color }}>
                   {transaction.amount.toLocaleString()}
