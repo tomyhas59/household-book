@@ -27,6 +27,11 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Configure Git
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+
       - name: Deploy to GitHub Pages
         run: npm run deploy
         env:
