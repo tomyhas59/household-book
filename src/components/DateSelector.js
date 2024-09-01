@@ -18,7 +18,7 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
         <Select value={month} onChange={(e) => setMonth(e.target.value)}>
           {months.map((month) => (
             <option key={month} value={month}>
-              {month.toString().padStart(2, "0")}월
+              {month.toString().padStart(2, "0")}월입니다
             </option>
           ))}
         </Select>
