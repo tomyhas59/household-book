@@ -1,4 +1,4 @@
-name: household-book workflow
+name: household-book
 
 on:
   push:
