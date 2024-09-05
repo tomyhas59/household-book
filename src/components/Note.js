@@ -31,15 +31,10 @@ const Note = ({ dateKey, dataBydate }) => {
   };
 
   useEffect(() => {
-    localforage.getItem(dateKey).then((data) => {
-      if (data) {
-        console.log(data);
-        setNote(data["note"]);
-        setOriginalNote(data["note"]);
-        setIsNote(true);
-      }
-    });
-  }, [dateKey]);
+    setNote(dataBydate["note"]);
+    setOriginalNote(dataBydate["note"]);
+    setIsNote(true);
+  }, [dataBydate]);
 
   const handleModify = () => {
     setOriginalNote(note);
