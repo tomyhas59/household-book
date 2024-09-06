@@ -5,7 +5,7 @@ import Annual from "./pages/Annual";
 
 const App = () => {
   return (
-    <BrowserRouter basename={process.env.PUBLICK_URL}>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/annual" element={<Annual />} />
