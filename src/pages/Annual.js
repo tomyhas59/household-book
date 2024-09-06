@@ -1,10 +1,30 @@
-import React, { useState } from "react";
+import localforage from "localforage";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Annual = () => {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useState(new Date().getFullYear().toString());
+  const [yearData, setYearData] = useState({});
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await localforage.getItem(year);
+        if (data) {
+          setYearData(data);
+        } else {
+          setYearData({});
+        }
+      } catch (error) {
+        console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
+        setYearData({});
+      }
+    };
+
+    fetchData();
+  }, [year]);
 
   return (
     <div>
@@ -16,6 +36,16 @@ const Annual = () => {
           </option>
         ))}
       </Select>
+
+      {Object.keys(yearData).map((month) => (
+        <div key={month}>
+          <h2>{month}월</h2>
+          <p>
+            수입:
+            {yearData[month]["수입"].reduce((a, c) => a + c.amount, 0)}
+          </p>
+        </div>
+      ))}
     </div>
   );
 };
