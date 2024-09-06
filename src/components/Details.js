@@ -168,8 +168,9 @@ const Details = ({
   detailCategory,
   onTotalChange,
   livingTotal,
-  dateKey,
   dataBydate,
+  year,
+  month,
 }) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
@@ -200,7 +201,7 @@ const Details = ({
     } else {
       setTransactions([]);
     }
-  }, [dateKey, dataBydate, detailCategory]);
+  }, [dataBydate, detailCategory]);
 
   useEffect(() => {
     const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
@@ -220,15 +221,19 @@ const Details = ({
       description,
     };
     //기존 데이터에 추가
-    const existingData = (await localforage.getItem(dateKey)) || {};
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
 
     const updatedTransactions = {
-      ...existingData,
-      [detailCategory]: existingData[detailCategory]
-        ? [...existingData[detailCategory], newTransaction]
+      ...existingMonthData,
+      [detailCategory]: existingMonthData[detailCategory]
+        ? [...existingMonthData[detailCategory], newTransaction]
         : [newTransaction],
     };
-    await localforage.setItem(dateKey, updatedTransactions);
+
+    yearData[month] = updatedTransactions;
+
+    await localforage.setItem(year, yearData);
 
     setTransactions([...transactions, newTransaction]);
     setAmount("");
@@ -238,54 +243,25 @@ const Details = ({
   };
 
   const deleteTransactionById = async (detailCategory, id) => {
-    const existingData = (await localforage.getItem(dateKey)) || {};
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
 
-    const updatedArray = existingData[detailCategory]?.filter(
+    const updatedArray = existingMonthData[detailCategory]?.filter(
       (transaction) => transaction.id !== id
     );
 
-    existingData[detailCategory] = updatedArray;
+    existingMonthData[detailCategory] = updatedArray;
 
-    await localforage.setItem(dateKey, existingData);
+    await localforage.setItem(year, yearData);
 
     setTransactions(updatedArray);
   };
 
-  const editTransaction = async (e, id) => {
-    e.preventDefault();
-
-    if (!editDescription || editAmount <= 0) return;
-
-    const existingData = (await localforage.getItem(dateKey)) || {};
-
-    if (!existingData[title]) {
-      existingData[title] = [];
-    }
-
-    const updatedTransactions = existingData[title].map((transaction) => {
-      if (transaction.id === id) {
-        return {
-          ...transaction,
-          description: editDescription,
-          amount: parseFloat(editAmount),
-        };
-      }
-      return transaction;
-    });
-
-    existingData[title] = updatedTransactions;
-
-    await localforage.setItem(dateKey, existingData);
-    setTransactions(updatedTransactions);
-    setAmount("");
-    setDate("");
-    setDescription("");
-    setEditFormById(null);
-  };
-
   const handleModifyForm = async (id) => {
-    const existingData = (await localforage.getItem(dateKey)) || {};
-    const transaction = existingData[title].find(
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
+
+    const transaction = existingMonthData[title].find(
       (transaction) => transaction.id === id
     );
     setEditFormById(id);
@@ -294,6 +270,39 @@ const Details = ({
       setEditAmount(transaction.amount);
       setEditDate(transaction.date);
     }
+  };
+
+  const editTransaction = async (e, id) => {
+    e.preventDefault();
+
+    if (!editDescription || editAmount <= 0) return;
+
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
+    if (!existingMonthData[title]) {
+      existingMonthData[title] = [];
+    }
+
+    const updatedTransactions = existingMonthData[title].map((transaction) => {
+      if (transaction.id === id) {
+        return {
+          ...transaction,
+          date: editDate,
+          description: editDescription,
+          amount: parseFloat(editAmount),
+        };
+      }
+      return transaction;
+    });
+
+    existingMonthData[title] = updatedTransactions;
+
+    await localforage.setItem(year, yearData);
+    setTransactions(updatedTransactions);
+    setAmount("");
+    setDate("");
+    setDescription("");
+    setEditFormById(null);
   };
 
   useEffect(() => {

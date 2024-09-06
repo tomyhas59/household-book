@@ -14,7 +14,14 @@ import {
   TransparentButton,
 } from "./Details";
 
-const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
+const CommonForm = ({
+  title,
+  setTotalItem,
+  color,
+  dataBydate,
+  year,
+  month,
+}) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
@@ -33,7 +40,7 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
     } else {
       setTransactions([]);
     }
-  }, [dateKey, dataBydate, title]);
+  }, [year, month, dataBydate, title]);
 
   useEffect(() => {
     const total = transactions.reduce(
@@ -56,15 +63,18 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
     };
 
     //기존 데이터에 추가
-    const existingData = (await localforage.getItem(dateKey)) || {};
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
 
     const updatedTransactions = {
-      ...existingData,
-      [title]: existingData[title]
-        ? [...existingData[title], newTransaction]
+      ...existingMonthData,
+      [title]: existingMonthData[title]
+        ? [...existingMonthData[title], newTransaction]
         : [newTransaction],
     };
-    await localforage.setItem(dateKey, updatedTransactions);
+    yearData[month] = updatedTransactions;
+
+    await localforage.setItem(year, yearData);
 
     setTransactions([...transactions, newTransaction]);
     setAmount("");
@@ -74,12 +84,14 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
   };
 
   const deleteTransactionById = async (title, id) => {
-    const existingData = (await localforage.getItem(dateKey)) || {};
-    const updatedArray = existingData[title]?.filter(
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
+
+    const updatedArray = existingMonthData[title]?.filter(
       (transaction) => transaction.id !== id
     );
-    existingData[title] = updatedArray;
-    await localforage.setItem(dateKey, existingData);
+    existingMonthData[title] = updatedArray;
+    await localforage.setItem(year, yearData);
     setTransactions(updatedArray);
   };
 
@@ -91,8 +103,10 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
   };
 
   const handleModifyForm = async (id) => {
-    const existingData = (await localforage.getItem(dateKey)) || {};
-    const transaction = existingData[title].find(
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
+
+    const transaction = existingMonthData[title].find(
       (transaction) => transaction.id === id
     );
     setEditFormById(id);
@@ -108,16 +122,18 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
 
     if (!editDescription || editAmount <= 0) return;
 
-    const existingData = (await localforage.getItem(dateKey)) || {};
+    const yearData = (await localforage.getItem(year)) || {};
+    const existingMonthData = yearData[month] || {};
 
-    if (!existingData[title]) {
-      existingData[title] = [];
+    if (!existingMonthData[title]) {
+      existingMonthData[title] = [];
     }
 
-    const updatedTransactions = existingData[title].map((transaction) => {
+    const updatedTransactions = existingMonthData[title].map((transaction) => {
       if (transaction.id === id) {
         return {
           ...transaction,
+          date: editDate,
           description: editDescription,
           amount: parseFloat(editAmount),
         };
@@ -125,9 +141,9 @@ const CommonForm = ({ title, setTotalItem, color, dateKey, dataBydate }) => {
       return transaction;
     });
 
-    existingData[title] = updatedTransactions;
+    existingMonthData[title] = updatedTransactions;
 
-    await localforage.setItem(dateKey, existingData);
+    await localforage.setItem(year, yearData);
     setTransactions(updatedTransactions);
     setAmount("");
     setDescription("");

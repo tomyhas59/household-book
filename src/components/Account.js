@@ -88,11 +88,12 @@ const Account = ({
   saving,
   fixed,
   livingTotal,
-  dateKey,
+  year,
+  month,
   dataBydate,
 }) => {
   const [budget, setBudget] = useState("");
-  const [isBudget, setIsBudget] = useState(true);
+  const [isBudget, setIsBudget] = useState(false);
   const [originalBudget, setOriginalBudget] = useState("");
   const budgetRef = useRef(null);
   const [savingPer, setSavingPer] = useState(0);
@@ -102,37 +103,44 @@ const Account = ({
     setBudget(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const numericBudget = Number(budget);
     if (!isNaN(numericBudget) && numericBudget > 0) {
+      const yearData = (await localforage.getItem(year)) || {};
+
       const updatedData = {
         ...dataBydate,
         budget: numericBudget,
       };
-      localforage.setItem(dateKey, updatedData);
-      setIsBudget(true);
+
+      yearData[month] = updatedData;
+
+      localforage.setItem(year, yearData);
+      setIsBudget(false);
     }
   };
 
   const handleCancel = () => {
     setBudget(originalBudget);
-    setIsBudget(true);
+    setIsBudget(false);
   };
 
   useEffect(() => {
-    localforage.getItem(dateKey).then((data) => {
-      if (data) {
-        setBudget(data["budget"]);
-        setOriginalBudget(data["budget"]);
-        setIsBudget(true);
+    localforage.getItem(year).then((yearData) => {
+      if (yearData) {
+        const existingMonthData = yearData[month] || {};
+
+        setBudget(existingMonthData["budget"]);
+        setOriginalBudget(existingMonthData["budget"]);
+        setIsBudget(false);
       }
     });
-  }, [dateKey]);
+  }, [year, month]);
 
   const handleModify = () => {
     setOriginalBudget(budget);
-    setIsBudget(false);
+    setIsBudget(true);
   };
 
   useEffect(() => {
@@ -150,6 +158,18 @@ const Account = ({
     const newSavingPer = saving > 0 ? (saving / income) * 100 : 0;
     setSavingPer(newSavingPer);
   }, [income, saving]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (budgetRef.current && !budgetRef.current.contains(event.target)) {
+        setIsBudget(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <AccountContainer>
@@ -194,10 +214,6 @@ const Account = ({
         <p>소비 예산</p>
         <Saving>
           {isBudget ? (
-            <BudgetDisplay onClick={handleModify}>
-              {budget ? Number(budget).toLocaleString() : "클릭하여 등록"}
-            </BudgetDisplay>
-          ) : (
             <BudgetForm onSubmit={handleSubmit}>
               <input
                 type="number"
@@ -210,6 +226,10 @@ const Account = ({
                 취소
               </button>
             </BudgetForm>
+          ) : (
+            <BudgetDisplay onClick={handleModify}>
+              {budget ? Number(budget).toLocaleString() : "클릭하여 등록"}
+            </BudgetDisplay>
           )}
         </Saving>
       </AccountSection>

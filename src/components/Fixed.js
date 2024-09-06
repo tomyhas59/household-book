@@ -1,7 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Fixed = ({ setFixed, dateKey, dataBydate }) => {
+const Fixed = ({ setFixed, dateKey, dataBydate, year, month }) => {
   const title = "고정 지출";
 
   return (
@@ -9,7 +9,8 @@ const Fixed = ({ setFixed, dateKey, dataBydate }) => {
       title={title}
       setTotalItem={setFixed}
       color="red"
-      dateKey={dateKey}
+      year={year}
+      month={month}
       dataBydate={dataBydate}
     />
   );

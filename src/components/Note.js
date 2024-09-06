@@ -2,8 +2,8 @@ import localforage from "localforage";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-const Note = ({ dateKey, dataBydate }) => {
-  const [isNote, setIsNote] = useState(true);
+const Note = ({ year, month, dataBydate }) => {
+  const [isNote, setIsNote] = useState(false);
   const [note, setNote] = useState("");
   const [originalNote, setOriginalNote] = useState("");
   const noteRef = useRef(null);
@@ -12,33 +12,36 @@ const Note = ({ dateKey, dataBydate }) => {
     setNote(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (note === "") return;
+
+    const yearData = (await localforage.getItem(year)) || {};
 
     const updatedData = {
       ...dataBydate,
       note: note,
     };
 
-    localforage.setItem(dateKey, updatedData);
-    setIsNote(true);
+    yearData[month] = updatedData;
+    localforage.setItem(year, yearData);
+    setIsNote(false);
   };
 
   const handleCancel = () => {
     setNote(originalNote);
-    setIsNote(true);
+    setIsNote(false);
   };
 
   useEffect(() => {
     setNote(dataBydate["note"]);
     setOriginalNote(dataBydate["note"]);
-    setIsNote(true);
+    setIsNote(false);
   }, [dataBydate]);
 
   const handleModify = () => {
     setOriginalNote(note);
-    setIsNote(false);
+    setIsNote(true);
   };
 
   useEffect(() => {
@@ -47,9 +50,31 @@ const Note = ({ dateKey, dataBydate }) => {
     }
   }, [isNote]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (noteRef.current && !noteRef.current.contains(event.target)) {
+        setIsNote(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <NoteContainer>
       {isNote ? (
+        <Form onSubmit={handleSubmit}>
+          <TextArea onChange={onChangeNote} value={note} ref={noteRef} />
+          <ButtonContainer>
+            <Button type="submit">등록</Button>
+            <Button type="button" onClick={handleCancel}>
+              취소
+            </Button>
+          </ButtonContainer>
+        </Form>
+      ) : (
         <NoteDisplay onClick={handleModify}>
           {note ? (
             note
@@ -60,16 +85,6 @@ const Note = ({ dateKey, dataBydate }) => {
             </div>
           )}
         </NoteDisplay>
-      ) : (
-        <Form onSubmit={handleSubmit}>
-          <TextArea onChange={onChangeNote} value={note} ref={noteRef} />
-          <ButtonContainer>
-            <Button type="submit">등록</Button>
-            <Button type="button" onClick={handleCancel}>
-              취소
-            </Button>
-          </ButtonContainer>
-        </Form>
       )}
     </NoteContainer>
   );
