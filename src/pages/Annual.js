@@ -27,8 +27,8 @@ const Annual = () => {
   }, [year]);
 
   return (
-    <div>
-      <div>연간 결산 페이지</div>
+    <Container>
+      <Header>연간 결산 페이지</Header>
       <Select value={year} onChange={(e) => setYear(e.target.value)}>
         {years.map((year) => (
           <option key={year} value={year}>
@@ -38,31 +38,82 @@ const Annual = () => {
       </Select>
 
       {Object.keys(yearData).map((month) => (
-        <div key={month}>
-          <h2>{month}월</h2>
-          <p>
-            수입:
-            {yearData[month]["수입"].reduce((a, c) => a + c.amount, 0)}
-          </p>
-        </div>
+        <MonthContainer key={month}>
+          <MonthTitle>{month}월</MonthTitle>
+          <Category>
+            <span>수입:</span>
+            <Amount>
+              {yearData[month]["수입"].reduce((a, c) => a + c.amount, 0)}원
+            </Amount>
+          </Category>
+          <Category>
+            <span>고정 지출:</span>
+            <Amount>
+              {yearData[month]["고정 지출"].reduce((a, c) => a + c.amount, 0)}원
+            </Amount>
+          </Category>
+          <Category>
+            <span>저축:</span>
+            <Amount>
+              {yearData[month]["저축"].reduce((a, c) => a + c.amount, 0)}원
+            </Amount>
+          </Category>
+        </MonthContainer>
       ))}
-    </div>
+    </Container>
   );
 };
 
 export default Annual;
 
-const Select = styled.select`
-  appearance: none;
-  border: none;
-  background-color: inherit;
-  font-size: 1.2rem;
+const Container = styled.div`
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+`;
+
+const Header = styled.h1`
+  font-size: 2rem;
   font-weight: bold;
   color: #333;
+  margin-bottom: 20px;
+`;
+
+const Select = styled.select`
+  appearance: none;
+  border: 2px solid #ddd;
+  background-color: #fff;
+  font-size: 1.2rem;
   padding: 10px;
+  margin-bottom: 20px;
   cursor: pointer;
-  position: relative;
   &:hover {
-    color: silver;
+    border-color: #aaa;
   }
+`;
+
+const MonthContainer = styled.div`
+  padding: 15px;
+  background-color: #fff;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+`;
+
+const MonthTitle = styled.h2`
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+`;
+
+const Category = styled.div`
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const Amount = styled.span`
+  font-weight: bold;
+  color: #1e90ff;
 `;
