@@ -8,6 +8,8 @@ const Annual = () => {
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
 
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,6 +28,13 @@ const Annual = () => {
     fetchData();
   }, [year]);
 
+  const totalIncome = months.reduce((total, month) => {
+    if (yearData[month] && yearData[month]["수입"]) {
+      return total + yearData[month]["수입"].reduce((a, c) => a + c.amount, 0);
+    }
+    return total;
+  }, 0);
+
   return (
     <Container>
       <Header>연간 결산 페이지</Header>
@@ -36,30 +45,27 @@ const Annual = () => {
           </option>
         ))}
       </Select>
-
-      {Object.keys(yearData).map((month) => (
-        <MonthContainer key={month}>
-          <MonthTitle>{month}월</MonthTitle>
-          <Category>
-            <span>수입:</span>
-            <Amount>
-              {yearData[month]["수입"].reduce((a, c) => a + c.amount, 0)}원
-            </Amount>
-          </Category>
-          <Category>
-            <span>고정 지출:</span>
-            <Amount>
-              {yearData[month]["고정 지출"].reduce((a, c) => a + c.amount, 0)}원
-            </Amount>
-          </Category>
-          <Category>
-            <span>저축:</span>
-            <Amount>
-              {yearData[month]["저축"].reduce((a, c) => a + c.amount, 0)}원
-            </Amount>
-          </Category>
-        </MonthContainer>
-      ))}
+      <MonthList>
+        {months.map((month) => (
+          <MonthContainer key={month}>
+            <MonthTitle>{month}월</MonthTitle>
+            {["수입", "고정 지출", "저축"].map((category) => (
+              <Category>
+                <span>{category}:</span>
+                <Amount style={{ color: category === "고정 지출" && "red" }}>
+                  {yearData[month] && yearData[month][category]
+                    ? yearData[month][category]
+                        .reduce((a, c) => a + c.amount, 0)
+                        .toLocaleString()
+                    : "0"}
+                  원
+                </Amount>
+              </Category>
+            ))}
+          </MonthContainer>
+        ))}
+        <div>총 수입:{totalIncome.toLocaleString()}</div>
+      </MonthList>
     </Container>
   );
 };
@@ -90,6 +96,12 @@ const Select = styled.select`
   &:hover {
     border-color: #aaa;
   }
+`;
+
+const MonthList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 250px));
+  gap: 10px;
 `;
 
 const MonthContainer = styled.div`
