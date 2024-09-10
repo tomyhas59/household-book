@@ -2,14 +2,18 @@ import localforage from "localforage";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/Details";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { monthState, yearState } from "../recoil/atoms";
 
 const Annual = () => {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [yearData, setYearData] = useState({});
-
+  const navigator = useNavigate();
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const setRecoilMonth = useSetRecoilState(monthState);
+  const setRecoilYear = useSetRecoilState(yearState);
 
   const detailCategory = useMemo(
     () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
@@ -70,9 +74,15 @@ const Annual = () => {
     return { income, spending, savings, spendingRate, savingsRate };
   };
 
+  const goToMonthPage = (year, month) => {
+    navigator("/");
+    setRecoilYear(year);
+    setRecoilMonth(month);
+  };
+
   return (
     <Container>
-      <HomeButton to="/">홈으로</HomeButton>
+      <HomeButton to="/">월별 상세 보기</HomeButton>
       <Header>연간 결산</Header>
       <Select value={year} onChange={(e) => setYear(e.target.value)}>
         {years.map((year) => (
@@ -90,7 +100,10 @@ const Annual = () => {
           const { income, spending, savings, spendingRate, savingsRate } =
             calculate(month);
           return (
-            <MonthContainer key={month}>
+            <MonthContainer
+              key={month}
+              onClick={() => goToMonthPage(year, month)}
+            >
               <MonthTitle>{month}월</MonthTitle>
               <Category>
                 <AccountSection>
@@ -169,6 +182,10 @@ const MonthContainer = styled.div`
   margin-bottom: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: silver;
+  }
 `;
 
 const MonthTitle = styled.h2`
@@ -203,7 +220,7 @@ const AccountSection = styled.div`
 
 const HomeButton = styled(Link)`
   text-decoration: none;
-  font-size: 9px;
+  font-size: 10px;
   background-color: lightcoral;
   border-radius: 5px;
   padding: 3px;

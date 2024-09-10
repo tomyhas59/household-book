@@ -8,7 +8,7 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
 
   return (
     <DateContainer>
-      <AnnualButton to="/annual">연간 결산</AnnualButton>
+      <AnnualButton to="/annual">연간 결산 보기</AnnualButton>
       <SelectContainer>
         <Select value={year} onChange={(e) => setYear(e.target.value)}>
           {years.map((year) => (
