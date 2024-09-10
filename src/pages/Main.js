@@ -8,24 +8,31 @@ import styled from "styled-components";
 import Account from "../components/Account";
 import DateSelector from "../components/DateSelector";
 import Note from "../components/Note";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  detailsTotalsState,
+  incomeState,
+  fixedState,
+  savingState,
+  yearState,
+  monthState,
+  dataByDateState,
+  livingTotalState,
+} from "../recoil/atoms";
 
 const Main = () => {
+  const [detailsTotals, setDetailsTotals] = useRecoilState(detailsTotalsState);
+  const [income, setIncome] = useRecoilState(incomeState);
+  const [fixed, setFixed] = useRecoilState(fixedState);
+  const [saving, setSaving] = useRecoilState(savingState);
+  const [year, setYear] = useRecoilState(yearState);
+  const [month, setMonth] = useRecoilState(monthState);
+  const [dataBydate, setDataByDate] = useRecoilState(dataByDateState);
+
   const detailCategory = useMemo(
     () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
     []
   );
-  const [detailsTotals, setDetailsTotals] = useState(
-    new Array(detailCategory.length).fill(0)
-  );
-
-  const [income, setIncome] = useState(0);
-  const [fixed, setFixed] = useState(0);
-  const [saving, setSaving] = useState(0);
-
-  const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [month, setMonth] = useState(new Date().getMonth() + 1);
-
-  const [dataBydate, setDataByDate] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,20 +53,23 @@ const Main = () => {
     if (year && month) {
       fetchData();
     }
-  }, [year, month]);
+  }, [year, month, setDataByDate]);
 
-  const updateAllTotal = useCallback((index, total) => {
-    setDetailsTotals((prevTotals) => {
-      const newAllTotals = [...prevTotals];
-      if (newAllTotals[index] !== total) {
-        newAllTotals[index] = total;
-        return newAllTotals;
-      }
-      return prevTotals;
-    });
-  }, []);
+  const updateAllTotal = useCallback(
+    (index, total) => {
+      setDetailsTotals((prevTotals) => {
+        const newAllTotals = [...prevTotals];
+        if (newAllTotals[index] !== total) {
+          newAllTotals[index] = total;
+          return newAllTotals;
+        }
+        return prevTotals;
+      });
+    },
+    [setDetailsTotals]
+  );
 
-  const livingTotal = detailsTotals.reduce((acc, total) => acc + total, 0);
+  const livingTotal = useRecoilValue(livingTotalState);
 
   return (
     <MainContainer>

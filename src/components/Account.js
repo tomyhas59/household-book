@@ -177,7 +177,6 @@ const Account = ({
         <p>총 수입</p>
         <Saving>{income.toLocaleString()}</Saving>
       </AccountSection>
-
       <AccountSection>
         <p>총 고정 지출</p>
         <Spending>{fixed.toLocaleString()}</Spending>
@@ -198,7 +197,10 @@ const Account = ({
       <AccountSection>
         <p>총 저축</p>
         <ProgressContainer>
-          <ProgressBar $percentage={savingPer}>
+          <ProgressBar
+            $percentage={savingPer}
+            style={{ backgroundColor: " #3498db" }}
+          >
             <p>{savingPer.toFixed(0)}%</p>
           </ProgressBar>
         </ProgressContainer>

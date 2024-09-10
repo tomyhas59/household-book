@@ -152,10 +152,10 @@ export const ProgressContainer = styled.div`
 export const ProgressBar = styled.div`
   height: 100%;
   width: ${(props) => props.$percentage}%;
-  background-color: #3498db;
+  background-color: crimson;
   transition: width 0.3s ease;
   > p {
-    color: skyblue;
+    color: #fff;
     position: absolute;
     left: 50%;
     top: 50%;

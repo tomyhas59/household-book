@@ -1,7 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Saving = ({ setSaving, dateKey, dataBydate, year, month }) => {
+const Saving = ({ setSaving, dataBydate, year, month }) => {
   const title = "저축";
 
   return (

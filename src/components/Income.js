@@ -1,7 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Income = ({ setIncome, dateKey, dataBydate, year, month }) => {
+const Income = ({ setIncome, dataBydate, year, month }) => {
   const title = "수입";
 
   return (
