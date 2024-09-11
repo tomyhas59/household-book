@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Details from "../components/Details";
 import localforage from "localforage";
 import Income from "../components/Income";
@@ -8,7 +8,7 @@ import styled from "styled-components";
 import Account from "../components/Account";
 import DateSelector from "../components/DateSelector";
 import Note from "../components/Note";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   detailsTotalsState,
   incomeState,
@@ -21,7 +21,7 @@ import {
 } from "../recoil/atoms";
 
 const Main = () => {
-  const [detailsTotals, setDetailsTotals] = useRecoilState(detailsTotalsState);
+  const setDetailsTotals = useSetRecoilState(detailsTotalsState);
   const [income, setIncome] = useRecoilState(incomeState);
   const [fixed, setFixed] = useRecoilState(fixedState);
   const [saving, setSaving] = useRecoilState(savingState);
