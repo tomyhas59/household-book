@@ -160,9 +160,11 @@ const Account = ({
   }, [income, saving]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (budgetRef.current && !budgetRef.current.contains(event.target)) {
-        setIsBudget(false);
+    const handleClickOutside = (e) => {
+      if (budgetRef.current && !budgetRef.current.contains(e.target)) {
+        if (!e.target.closest("button")) {
+          setIsBudget(false);
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);

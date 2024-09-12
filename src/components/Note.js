@@ -45,15 +45,18 @@ const Note = ({ year, month, dataBydate }) => {
   };
 
   useEffect(() => {
-    if (!isNote && noteRef.current) {
+    if (isNote && noteRef.current) {
       noteRef.current.focus();
     }
   }, [isNote]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (noteRef.current && !noteRef.current.contains(event.target)) {
-        setIsNote(false);
+    const handleClickOutside = (e) => {
+      if (noteRef.current && !noteRef.current.contains(e.target)) {
+        if (!e.target.closest("button")) {
+          setIsNote(false);
+          setNote(originalNote);
+        }
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
