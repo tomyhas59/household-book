@@ -1,5 +1,5 @@
 import localforage from "localforage";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/Details";
 import { Link, useNavigate } from "react-router-dom";
@@ -53,23 +53,41 @@ const Annual = () => {
     fetchData();
   }, [year]);
 
-  const calculateTotal = (month, category) =>
-    yearData[month]?.[category]?.reduce((a, c) => a + c.amount, 0) || 0;
+  const calculateTotal = useCallback(
+    (month, category) =>
+      yearData[month]?.[category]?.reduce((a, c) => a + c.amount, 0) || 0,
+    [yearData]
+  );
 
-  const totalIncome = () =>
-    months.reduce((total, month) => total + calculateTotal(month, "수입"), 0);
+  const totalIncome = useCallback(
+    () =>
+      months.reduce((total, month) => total + calculateTotal(month, "수입"), 0),
+    [calculateTotal, months]
+  );
 
-  const totalFixed = () =>
-    months.reduce(
-      (total, month) => total + calculateTotal(month, "고정 지출"),
-      0
-    );
+  const totalFixed = useCallback(
+    () =>
+      months.reduce(
+        (total, month) => total + calculateTotal(month, "고정 지출"),
+        0
+      ),
+    [calculateTotal, months]
+  );
 
-  const totalSavings = () =>
-    months.reduce((total, month) => total + calculateTotal(month, "저축"), 0);
+  const totalSavings = useCallback(
+    () =>
+      months.reduce((total, month) => total + calculateTotal(month, "저축"), 0),
+    [calculateTotal, months]
+  );
 
-  const totalCategory = (category) =>
-    months.reduce((total, month) => total + calculateTotal(month, category), 0);
+  const totalCategory = useCallback(
+    (category) =>
+      months.reduce(
+        (total, month) => total + calculateTotal(month, category),
+        0
+      ),
+    [calculateTotal, months]
+  );
 
   const totalDetails = (month) =>
     DETAIL_CATEGORIES.reduce(
@@ -140,17 +158,15 @@ const Annual = () => {
         },
       ],
     };
-  }, [yearData]);
+  }, [totalCategory, totalFixed, totalIncome, totalSavings]);
 
   const options = {
     plugins: {
       legend: {
-        display: true,
         position: "bottom",
       },
       datalabels: {
         display: true,
-        color: "#fff",
         formatter: (value, context) => {
           const labels = context.chart.data.labels;
           const categoryName = labels[context.dataIndex];
@@ -160,9 +176,7 @@ const Annual = () => {
           return context.dataset.backgroundColor;
         },
         borderRadius: 4,
-        font: {
-          weight: "bold",
-        },
+
         padding: 6,
       },
     },
