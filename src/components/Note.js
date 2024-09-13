@@ -53,6 +53,7 @@ const Note = ({ year, month, dataBydate }) => {
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (noteRef.current && !noteRef.current.contains(e.target)) {
+        //버튼이 없을 시 실행
         if (!e.target.closest("button")) {
           setIsNote(false);
           setNote(originalNote);
@@ -63,7 +64,7 @@ const Note = ({ year, month, dataBydate }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [originalNote]);
 
   return (
     <NoteContainer>

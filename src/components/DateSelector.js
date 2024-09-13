@@ -64,8 +64,11 @@ const Select = styled.select`
 `;
 
 const AnnualButton = styled(Link)`
+  position: absolute;
+  top: 5%;
+  left: 5%;
   text-decoration: none;
-  font-size: 9px;
+  font-size: 10px;
   background-color: lightcoral;
   border-radius: 5px;
   padding: 3px;
