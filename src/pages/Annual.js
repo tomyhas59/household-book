@@ -292,6 +292,11 @@ const Container = styled.div`
   grid-template-areas:
     "a a"
     "b c";
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 const HeaderContainer = styled.div`
@@ -305,6 +310,12 @@ const HeaderContainer = styled.div`
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   grid-area: a;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
 `;
 
 const LeftSection = styled.div`
@@ -314,6 +325,11 @@ const LeftSection = styled.div`
   > p {
     color: #fff;
     font-weight: bold;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 5px;
   }
 `;
 
@@ -327,6 +343,12 @@ const Header = styled.h1`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  @media (max-width: 768px) {
+    position: static;
+    transform: none;
+    font-size: 1.5rem;
+  }
 `;
 
 const Select = styled.select`
@@ -342,6 +364,11 @@ const Select = styled.select`
 
   &:hover {
     border-color: #7f8fa6;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 8px;
   }
 `;
 
@@ -363,12 +390,21 @@ const HomeButton = styled(Link)`
 const MonthListContainer = styled.div`
   grid-area: b;
   padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const MonthList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    gap: 10px;
+    justify-content: center;
+  }
 `;
 
 const MonthContainer = styled.div`
@@ -378,10 +414,16 @@ const MonthContainer = styled.div`
   width: 250px;
   cursor: pointer;
   transition: transform 0.2s;
+
   &:hover {
     background-color: #d0d3d4;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 15px;
   }
 `;
 
@@ -391,17 +433,29 @@ const MonthTitle = styled.h2`
   margin-bottom: 10px;
   color: #2c3e50;
   text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const Category = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+  }
 `;
 
 const AccountSection = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
 `;
 
 const Amount = styled.p`
@@ -427,4 +481,8 @@ const PieChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
