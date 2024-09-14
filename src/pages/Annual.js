@@ -175,9 +175,14 @@ const Annual = () => {
         backgroundColor: (context) => {
           return context.dataset.backgroundColor;
         },
+        borderColor: "#000",
+        borderWidth: 1,
+        color: "brown",
         borderRadius: 4,
-
         padding: 6,
+        font: {
+          size: 17,
+        },
       },
     },
   };
@@ -245,10 +250,8 @@ const Annual = () => {
                   <CategoryDetails>
                     {Object.entries(categories).map(([key, value]) => (
                       <Detail key={key}>
-                        <p style={{ color: "gray" }}>{key}</p>
-                        <p style={{ color: "gray" }}>
-                          {value.toLocaleString()}원
-                        </p>
+                        <p>{key}</p>
+                        <p> {value.toLocaleString()}원 </p>
                       </Detail>
                     ))}
                   </CategoryDetails>
@@ -288,7 +291,7 @@ const Container = styled.div`
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 60% 40%;
   grid-template-areas:
     "a a"
     "b c";
@@ -312,9 +315,7 @@ const HeaderContainer = styled.div`
   grid-area: a;
 
   @media (max-width: 768px) {
-    flex-direction: column;
     height: auto;
-    gap: 10px;
   }
 `;
 
@@ -328,8 +329,10 @@ const LeftSection = styled.div`
   }
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 5px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    gap: 10px;
   }
 `;
 
@@ -390,7 +393,6 @@ const HomeButton = styled(Link)`
 const MonthListContainer = styled.div`
   grid-area: b;
   padding: 20px;
-
   @media (max-width: 768px) {
     padding: 10px;
   }
@@ -422,7 +424,7 @@ const MonthContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 100%;
+    width: 200px;
     padding: 15px;
   }
 `;
@@ -468,10 +470,13 @@ const CategoryDetails = styled.div`
   gap: 5px;
 `;
 
-const Detail = styled.p`
+const Detail = styled.div`
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
+  > p {
+    color: gray;
+  }
 `;
 
 const PieChartContainer = styled.div`
@@ -481,7 +486,7 @@ const PieChartContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  gap: 20px;
   @media (max-width: 768px) {
     padding: 15px;
   }
