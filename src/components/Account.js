@@ -4,25 +4,23 @@ import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "./Details";
 
 const AccountContainer = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
-  height: 90vh;
+  height: 100%;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 5px;
 `;
 
 const AccountSection = styled.div`
   width: 100%;
-  height: 15vh;
+  height: 13vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: white;
   margin-bottom: 5px;
   padding: 5px;
-  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
   > p {

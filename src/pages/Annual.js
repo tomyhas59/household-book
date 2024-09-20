@@ -170,8 +170,8 @@ const Annual = () => {
   return (
     <Container>
       <HeaderContainer>
-        <LeftSection>
-          <HomeButton to="/">뒤로</HomeButton>
+        <HeaderLeftSection>
+          <HomeButton to="/">월별로 보기</HomeButton>
           <Select value={year} onChange={(e) => setYear(e.target.value)}>
             {years.map((year) => (
               <option key={year} value={year}>
@@ -181,8 +181,8 @@ const Annual = () => {
           </Select>
           <p>총 수입 : </p>
           <p>{totalIncome().toLocaleString()}원</p>
-        </LeftSection>
-        <Header>월별 데이터</Header>
+        </HeaderLeftSection>
+        <HeaderTitle>연도별 데이터</HeaderTitle>
       </HeaderContainer>
       <MonthListContainer>
         <MonthList>
@@ -270,7 +270,6 @@ export default Annual;
 const Container = styled.div`
   background-color: #f5f7fa;
   min-height: 100vh;
-  font-family: "Roboto", sans-serif;
   display: grid;
   grid-template-columns: 60% 40%;
   grid-template-areas:
@@ -285,11 +284,9 @@ const Container = styled.div`
 
 const HeaderContainer = styled.div`
   display: flex;
-  height: 100px;
+  height: 8vh;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
-  padding: 20px;
   background-color: #2c3e50;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -300,10 +297,10 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const LeftSection = styled.div`
+const HeaderLeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   > p {
     color: #fff;
     font-weight: bold;
@@ -317,7 +314,7 @@ const LeftSection = styled.div`
   }
 `;
 
-const Header = styled.h1`
+const HeaderTitle = styled.h1`
   font-size: 2rem;
   font-weight: 600;
   color: #ffffff;
@@ -361,7 +358,7 @@ const HomeButton = styled(Link)`
   font-size: 1rem;
   background-color: #e74c3c;
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: 10px;
   color: #ffffff;
   display: inline-block;
   transition: all 0.3s ease;

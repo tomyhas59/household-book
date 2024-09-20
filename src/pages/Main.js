@@ -73,75 +73,113 @@ const Main = () => {
 
   return (
     <MainContainer>
-      <FlexContainer>
-        <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
-          <DateSelector
-            year={year}
-            month={month}
-            setYear={setYear}
-            setMonth={setMonth}
-          />
-          <Account
-            income={income}
-            saving={saving}
-            fixed={fixed}
-            livingTotal={livingTotal}
-            dataBydate={dataBydate}
-            year={year}
-            month={month}
-          />
-        </ColumnContainer>
-        <ColumnContainer>
-          <Income
-            setIncome={setIncome}
-            dataBydate={dataBydate}
-            livingTotal={livingTotal}
-            income={income}
-            year={year}
-            month={month}
-          />
-          <Saving
-            setSaving={setSaving}
-            dataBydate={dataBydate}
-            income={income}
-            saving={saving}
-            year={year}
-            month={month}
-          />
-        </ColumnContainer>
-        <ColumnContainer>
-          <Fixed
-            setFixed={setFixed}
-            dataBydate={dataBydate}
-            income={income}
-            fixed={fixed}
-            year={year}
-            month={month}
-          />
-          <Note dataBydate={dataBydate} year={year} month={month} />
-        </ColumnContainer>
-      </FlexContainer>
-      <DetailsContainer>
-        {detailCategory.map((key, index) => (
-          <Details
-            key={index}
-            title={key}
-            detailCategory={key}
-            onTotalChange={(total) => updateAllTotal(index, total)}
-            livingTotal={livingTotal}
-            dataBydate={dataBydate}
-            year={year}
-            month={month}
-          />
-        ))}
-      </DetailsContainer>
+      <HeaderContainer>
+        <DateSelector
+          year={year}
+          month={month}
+          setYear={setYear}
+          setMonth={setMonth}
+        />
+        <HeaderTitle>월별 데이터</HeaderTitle>
+      </HeaderContainer>
+      <ContentContainer>
+        <FlexContainer>
+          <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
+            <Account
+              income={income}
+              saving={saving}
+              fixed={fixed}
+              livingTotal={livingTotal}
+              dataBydate={dataBydate}
+              year={year}
+              month={month}
+            />
+          </ColumnContainer>
+          <ColumnContainer>
+            <Income
+              setIncome={setIncome}
+              dataBydate={dataBydate}
+              livingTotal={livingTotal}
+              income={income}
+              year={year}
+              month={month}
+            />
+            <Saving
+              setSaving={setSaving}
+              dataBydate={dataBydate}
+              income={income}
+              saving={saving}
+              year={year}
+              month={month}
+            />
+          </ColumnContainer>
+          <ColumnContainer>
+            <Fixed
+              setFixed={setFixed}
+              dataBydate={dataBydate}
+              income={income}
+              fixed={fixed}
+              year={year}
+              month={month}
+            />
+            <Note dataBydate={dataBydate} year={year} month={month} />
+          </ColumnContainer>
+        </FlexContainer>
+        <DetailsContainer>
+          {detailCategory.map((key, index) => (
+            <Details
+              key={index}
+              title={key}
+              detailCategory={key}
+              onTotalChange={(total) => updateAllTotal(index, total)}
+              livingTotal={livingTotal}
+              dataBydate={dataBydate}
+              year={year}
+              month={month}
+            />
+          ))}
+        </DetailsContainer>
+      </ContentContainer>
     </MainContainer>
   );
 };
 
 export default Main;
 
-const MainContainer = styled.div`
+const MainContainer = styled.div``;
+
+const HeaderContainer = styled.header`
+  display: flex;
+  height: 8vh;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2c3e50;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
+`;
+const HeaderTitle = styled.h1`
+  font-size: 2rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  flex-grow: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  @media (max-width: 768px) {
+    position: static;
+    transform: none;
+    font-size: 1.5rem;
+  }
+`;
+
+const ContentContainer = styled.div`
   display: grid;
   grid-template-columns: 40% 60%;
   @media (max-width: 480px) {
@@ -162,10 +200,10 @@ const ColumnContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: 92vh;
 `;
 
 const DetailsContainer = styled.div`
   display: flex;
-  height: 100vh;
+  height: 92vh;
 `;

@@ -8,7 +8,7 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
 
   return (
     <DateContainer>
-      <AnnualButton to="/annual">연간 결산 보기</AnnualButton>
+      <AnnualButton to="/annual">연도별 보기</AnnualButton>
       <SelectContainer>
         <Select value={year} onChange={(e) => setYear(e.target.value)}>
           {years.map((year) => (
@@ -32,50 +32,61 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
 export default DateSelector;
 
 const DateContainer = styled.div`
-  width: 100%;
-  height: 10vh;
-  background-image: linear-gradient(to right, #ffcccc, #cce6ff);
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
-  position: relative;
-  justify-content: center;
   align-items: center;
-  border-radius: 12px;
+  gap: 5px;
+  > p {
+    color: #fff;
+    font-weight: bold;
+  }
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+  }
 `;
 
 const SelectContainer = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 `;
+
 const Select = styled.select`
   appearance: none;
-  border: none;
-  background-color: inherit;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #333;
+  border: 2px solid #ecf0f1;
+  background-color: #ffffff;
+  font-size: 1rem;
   padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  color: #2c3e50;
   cursor: pointer;
-  position: relative;
+
   &:hover {
-    color: silver;
+    border-color: #7f8fa6;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+    padding: 8px;
   }
 `;
 
 const AnnualButton = styled(Link)`
-  position: absolute;
-  top: 5%;
-  left: 5%;
+  width: 100%;
   text-decoration: none;
-  font-size: 10px;
-  background-color: lightcoral;
-  border-radius: 5px;
-  padding: 3px;
-  color: #fff;
-  transition: transform 0.2s;
+  background-color: #e74c3c;
+  border-radius: 8px;
+  padding: 10px;
+  color: #ffffff;
+  display: inline-block;
+  transition: all 0.3s ease;
+
   &:hover {
-    transform: translateY(2px);
-    color: firebrick;
+    background-color: #c0392b;
   }
 `;
