@@ -7,9 +7,8 @@ import { useSetRecoilState } from "recoil";
 import { monthState, yearState } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const DETAIL_CATEGORIES = [
   "식비",
@@ -165,27 +164,9 @@ const Annual = () => {
       legend: {
         position: "bottom",
       },
-      datalabels: {
-        display: true,
-        formatter: (value, context) => {
-          const labels = context.chart.data.labels;
-          const categoryName = labels[context.dataIndex];
-          return `${categoryName}`;
-        },
-        backgroundColor: (context) => {
-          return context.dataset.backgroundColor;
-        },
-        borderColor: "#000",
-        borderWidth: 1,
-        color: "brown",
-        borderRadius: 4,
-        padding: 6,
-        font: {
-          size: 17,
-        },
-      },
     },
   };
+
   return (
     <Container>
       <HeaderContainer>
