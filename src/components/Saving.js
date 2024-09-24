@@ -1,12 +1,10 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Saving = ({ setSaving, dataBydate, year, month }) => {
-  const title = "저축";
-
+const Saving = ({ categoryTitle, setSaving, dataBydate, year, month }) => {
   return (
     <CommonForm
-      title={title}
+      categoryTitle={categoryTitle}
       setTotalItem={setSaving}
       color="blue"
       year={year}

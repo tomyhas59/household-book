@@ -5,7 +5,10 @@ import {
   Input,
   Total,
   Container,
+  TitleContainer,
+  CopyButton,
   Title,
+  DeleteButton,
   List,
   ListItem,
   ListItemText,
@@ -15,7 +18,7 @@ import {
 } from "./Details";
 
 const CommonForm = ({
-  title,
+  categoryTitle,
   setTotalItem,
   color,
   dataBydate,
@@ -26,6 +29,7 @@ const CommonForm = ({
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [hoveredTitle, setHoveredTitle] = useState(false);
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
@@ -35,12 +39,12 @@ const CommonForm = ({
   const listRef = useRef(null);
 
   useEffect(() => {
-    if (dataBydate && dataBydate[title]) {
-      setTransactions(dataBydate[title]);
+    if (dataBydate && dataBydate[categoryTitle]) {
+      setTransactions(dataBydate[categoryTitle]);
     } else {
       setTransactions([]);
     }
-  }, [year, month, dataBydate, title]);
+  }, [year, month, dataBydate, categoryTitle]);
 
   useEffect(() => {
     const total = transactions.reduce(
@@ -68,8 +72,8 @@ const CommonForm = ({
 
     const updatedTransactions = {
       ...existingMonthData,
-      [title]: existingMonthData[title]
-        ? [...existingMonthData[title], newTransaction]
+      [categoryTitle]: existingMonthData[categoryTitle]
+        ? [...existingMonthData[categoryTitle], newTransaction]
         : [newTransaction],
     };
     yearData[month] = updatedTransactions;
@@ -83,16 +87,58 @@ const CommonForm = ({
     dateRef.current.focus();
   };
 
-  const deleteTransactionById = async (title, id) => {
+  const copyPreviousMonthData = async () => {
+    let previousMonth = parseInt(month, 10) - 1;
+    let previousYear = year;
+
+    if (previousMonth < 1) {
+      previousMonth = 12;
+      previousYear = parseInt(year, 10) - 1;
+    }
+
+    const previousYearData = (await localforage.getItem(previousYear)) || {};
+    const previousMonthData = previousYearData[previousMonth] || {};
+
+    const currentYearData = (await localforage.getItem(year)) || {};
+    const currentMonthData = currentYearData[month] || {};
+
+    if (previousMonthData[categoryTitle]) {
+      currentMonthData[categoryTitle] = previousMonthData[categoryTitle];
+
+      currentYearData[month] = currentMonthData;
+
+      await localforage.setItem(year, currentYearData);
+
+      setTransactions(previousMonthData[categoryTitle]);
+      alert("이전 달 데이터가 복사되었습니다.");
+    } else {
+      alert("이전 달에 복사할 데이터가 없습니다.");
+    }
+  };
+
+  const deleteTransactionById = async (categoryTitle, id) => {
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
 
-    const updatedArray = existingMonthData[title]?.filter(
+    const updatedArray = existingMonthData[categoryTitle]?.filter(
       (transaction) => transaction.id !== id
     );
-    existingMonthData[title] = updatedArray;
+    existingMonthData[categoryTitle] = updatedArray;
     await localforage.setItem(year, yearData);
     setTransactions(updatedArray);
+  };
+
+  const deleteAllTransaction = async () => {
+    if (window.confirm("전체 삭제하시겠습니까?")) {
+      const yearData = (await localforage.getItem(year)) || {};
+      const existingMonthData = yearData[month] || {};
+
+      existingMonthData[categoryTitle] = [];
+
+      await localforage.setItem(year, yearData);
+
+      setTransactions([]);
+    }
   };
 
   const calculateTotal = () => {
@@ -106,7 +152,7 @@ const CommonForm = ({
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
 
-    const transaction = existingMonthData[title].find(
+    const transaction = existingMonthData[categoryTitle].find(
       (transaction) => transaction.id === id
     );
     setEditFormById(id);
@@ -125,23 +171,25 @@ const CommonForm = ({
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
 
-    if (!existingMonthData[title]) {
-      existingMonthData[title] = [];
+    if (!existingMonthData[categoryTitle]) {
+      existingMonthData[categoryTitle] = [];
     }
 
-    const updatedTransactions = existingMonthData[title].map((transaction) => {
-      if (transaction.id === id) {
-        return {
-          ...transaction,
-          date: editDate,
-          description: editDescription,
-          amount: parseFloat(editAmount),
-        };
+    const updatedTransactions = existingMonthData[categoryTitle].map(
+      (transaction) => {
+        if (transaction.id === id) {
+          return {
+            ...transaction,
+            date: editDate,
+            description: editDescription,
+            amount: parseFloat(editAmount),
+          };
+        }
+        return transaction;
       }
-      return transaction;
-    });
+    );
 
-    existingMonthData[title] = updatedTransactions;
+    existingMonthData[categoryTitle] = updatedTransactions;
 
     await localforage.setItem(year, yearData);
     setTransactions(updatedTransactions);
@@ -165,7 +213,16 @@ const CommonForm = ({
 
   return (
     <Container style={{ height: "50vh" }}>
-      <Title>{title}</Title>
+      <TitleContainer
+        onMouseEnter={() => setHoveredTitle(true)}
+        onMouseLeave={() => setHoveredTitle(false)}
+      >
+        <CopyButton onClick={copyPreviousMonthData}>📂</CopyButton>
+        <Title>{categoryTitle}</Title>
+        {hoveredTitle && (
+          <DeleteButton onClick={deleteAllTransaction}>x</DeleteButton>
+        )}
+      </TitleContainer>
       <List ref={listRef} style={{ maxHeight: "70%" }}>
         {transactions.map((transaction) => (
           <React.Fragment key={transaction.id}>
@@ -221,7 +278,9 @@ const CommonForm = ({
                 </ListItemText>
                 {hoveredItemId === transaction.id ? (
                   <Button
-                    onClick={() => deleteTransactionById(title, transaction.id)}
+                    onClick={() =>
+                      deleteTransactionById(categoryTitle, transaction.id)
+                    }
                   >
                     x
                   </Button>

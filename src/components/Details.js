@@ -12,12 +12,68 @@ export const Container = styled.div`
   background-color: #f9f9f9;
 `;
 
-export const Title = styled.h2`
+export const TitleContainer = styled.h2`
   margin-top: 5px;
-  color: #2c3e50;
   text-align: center;
+  font-size: 1.4rem;
+  padding: 10px 15px;
+  position: relative;
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
+  }
+`;
+
+export const CopyButton = styled.button`
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: none;
+  padding: 2px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: transparent;
+  &:hover {
+    background-color: #f0f0f0;
+  }
+  &:hover::before {
+    content: "이전 달 데이터 복사";
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    background-color: #f9e79f;
+    color: #333;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: nowrap; // 텍스트 줄 바꿈 없이 표시
+    z-index: 1;
+  }
+`;
+
+export const Title = styled.div`
+  font-size: 1.3rem;
+  color: #2c3e50;
+  flex-grow: 1;
+  text-align: center;
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
+`;
+
+export const DeleteButton = styled.button`
+  background-color: transparent;
+  position: absolute;
+  top: 0;
+  right: 5%;
+  border: none;
+  color: #e74c3c;
   font-size: 1.2rem;
-  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease-in-out;
+
+  &:hover {
+    color: #c0392b;
+  }
+
   @media (max-width: 480px) {
     font-size: 1rem;
   }
@@ -164,8 +220,7 @@ export const ProgressBar = styled.div`
 `;
 
 const Details = ({
-  title,
-  detailCategory,
+  categoryTitle,
   onTotalChange,
   livingTotal,
   dataBydate,
@@ -177,6 +232,7 @@ const Details = ({
   const [description, setDescription] = useState("");
   const [per, setPer] = useState(0);
   const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [hoveredTitle, setHoveredTitle] = useState(false);
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
@@ -196,12 +252,12 @@ const Details = ({
   const total = calculateTotal();
 
   useEffect(() => {
-    if (dataBydate && dataBydate[detailCategory]) {
-      setTransactions(dataBydate[detailCategory]);
+    if (dataBydate && dataBydate[categoryTitle]) {
+      setTransactions(dataBydate[categoryTitle]);
     } else {
       setTransactions([]);
     }
-  }, [dataBydate, detailCategory]);
+  }, [dataBydate, categoryTitle]);
 
   useEffect(() => {
     const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
@@ -226,8 +282,8 @@ const Details = ({
 
     const updatedTransactions = {
       ...existingMonthData,
-      [detailCategory]: existingMonthData[detailCategory]
-        ? [...existingMonthData[detailCategory], newTransaction]
+      [categoryTitle]: existingMonthData[categoryTitle]
+        ? [...existingMonthData[categoryTitle], newTransaction]
         : [newTransaction],
     };
 
@@ -242,26 +298,68 @@ const Details = ({
     dateRef.current.focus();
   };
 
-  const deleteTransactionById = async (detailCategory, id) => {
+  const copyPreviousMonthData = async () => {
+    let previousMonth = parseInt(month, 10) - 1;
+    let previousYear = year;
+
+    if (previousMonth < 1) {
+      previousMonth = 12;
+      previousYear = parseInt(year, 10) - 1;
+    }
+
+    const previousYearData = (await localforage.getItem(previousYear)) || {};
+    const previousMonthData = previousYearData[previousMonth] || {};
+
+    const currentYearData = (await localforage.getItem(year)) || {};
+    const currentMonthData = currentYearData[month] || {};
+
+    if (previousMonthData[categoryTitle]) {
+      currentMonthData[categoryTitle] = previousMonthData[categoryTitle];
+
+      currentYearData[month] = currentMonthData;
+
+      await localforage.setItem(year, currentYearData);
+
+      setTransactions(previousMonthData[categoryTitle]);
+      alert("이전 달 데이터가 복사되었습니다.");
+    } else {
+      alert("이전 달에 복사할 데이터가 없습니다.");
+    }
+  };
+
+  const deleteTransactionById = async (id) => {
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
 
-    const updatedArray = existingMonthData[detailCategory]?.filter(
+    const updatedArray = existingMonthData[categoryTitle]?.filter(
       (transaction) => transaction.id !== id
     );
 
-    existingMonthData[detailCategory] = updatedArray;
+    existingMonthData[categoryTitle] = updatedArray;
 
     await localforage.setItem(year, yearData);
 
     setTransactions(updatedArray);
   };
 
+  const deleteAllTransaction = async () => {
+    if (window.confirm("전체 삭제하시겠습니까?")) {
+      const yearData = (await localforage.getItem(year)) || {};
+      const existingMonthData = yearData[month] || {};
+
+      existingMonthData[categoryTitle] = [];
+
+      await localforage.setItem(year, yearData);
+
+      setTransactions([]);
+    }
+  };
+
   const handleModifyForm = async (id) => {
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
 
-    const transaction = existingMonthData[title].find(
+    const transaction = existingMonthData[categoryTitle].find(
       (transaction) => transaction.id === id
     );
     setEditFormById(id);
@@ -279,23 +377,25 @@ const Details = ({
 
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
-    if (!existingMonthData[title]) {
-      existingMonthData[title] = [];
+    if (!existingMonthData[categoryTitle]) {
+      existingMonthData[categoryTitle] = [];
     }
 
-    const updatedTransactions = existingMonthData[title].map((transaction) => {
-      if (transaction.id === id) {
-        return {
-          ...transaction,
-          date: editDate,
-          description: editDescription,
-          amount: parseFloat(editAmount),
-        };
+    const updatedTransactions = existingMonthData[categoryTitle].map(
+      (transaction) => {
+        if (transaction.id === id) {
+          return {
+            ...transaction,
+            date: editDate,
+            description: editDescription,
+            amount: parseFloat(editAmount),
+          };
+        }
+        return transaction;
       }
-      return transaction;
-    });
+    );
 
-    existingMonthData[title] = updatedTransactions;
+    existingMonthData[categoryTitle] = updatedTransactions;
 
     await localforage.setItem(year, yearData);
     setTransactions(updatedTransactions);
@@ -319,7 +419,16 @@ const Details = ({
 
   return (
     <Container>
-      <Title>{title}</Title>
+      <TitleContainer
+        onMouseEnter={() => setHoveredTitle(true)}
+        onMouseLeave={() => setHoveredTitle(false)}
+      >
+        <CopyButton onClick={copyPreviousMonthData}>📂</CopyButton>
+        <Title>{categoryTitle}</Title>
+        {hoveredTitle && (
+          <DeleteButton onClick={deleteAllTransaction}>x</DeleteButton>
+        )}
+      </TitleContainer>
       <List ref={listRef}>
         {transactions.map((transaction) => (
           <React.Fragment key={transaction.id}>
@@ -372,9 +481,7 @@ const Details = ({
                   {transaction.amount.toLocaleString()}
                 </ListItemText>
                 {hoveredItemId === transaction.id ? (
-                  <Button
-                    onClick={() => deleteTransactionById(title, transaction.id)}
-                  >
+                  <Button onClick={() => deleteTransactionById(transaction.id)}>
                     x
                   </Button>
                 ) : (

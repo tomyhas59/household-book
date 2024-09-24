@@ -97,6 +97,7 @@ const Main = () => {
           </ColumnContainer>
           <ColumnContainer>
             <Income
+              categoryTitle="수입"
               setIncome={setIncome}
               dataBydate={dataBydate}
               livingTotal={livingTotal}
@@ -105,6 +106,7 @@ const Main = () => {
               month={month}
             />
             <Saving
+              categoryTitle="저축"
               setSaving={setSaving}
               dataBydate={dataBydate}
               income={income}
@@ -115,6 +117,7 @@ const Main = () => {
           </ColumnContainer>
           <ColumnContainer>
             <Fixed
+              categoryTitle="고정 지출"
               setFixed={setFixed}
               dataBydate={dataBydate}
               income={income}
@@ -129,8 +132,7 @@ const Main = () => {
           {detailCategory.map((key, index) => (
             <Details
               key={index}
-              title={key}
-              detailCategory={key}
+              categoryTitle={key}
               onTotalChange={(total) => updateAllTotal(index, total)}
               livingTotal={livingTotal}
               dataBydate={dataBydate}

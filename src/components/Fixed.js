@@ -1,12 +1,10 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Fixed = ({ setFixed, dataBydate, year, month }) => {
-  const title = "고정 지출";
-
+const Fixed = ({ categoryTitle, setFixed, dataBydate, year, month }) => {
   return (
     <CommonForm
-      title={title}
+      categoryTitle={categoryTitle}
       setTotalItem={setFixed}
       color="red"
       year={year}
