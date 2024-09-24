@@ -376,7 +376,7 @@ const Details = ({
   const editTransaction = async (e, id) => {
     e.preventDefault();
 
-    if (!editDescription || editAmount <= 0) return;
+    if (!editDescription || !editAmount) return;
 
     const yearData = (await localforage.getItem(year)) || {};
     const existingMonthData = yearData[month] || {};
@@ -459,7 +459,6 @@ const Details = ({
                   placeholder="비용"
                   value={editAmount}
                   onChange={(e) => setEditAmount(e.target.value)}
-                  min="0"
                 />
                 <Button type="submit">+</Button>
                 <CancelButton

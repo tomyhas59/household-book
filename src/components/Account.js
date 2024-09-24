@@ -153,7 +153,7 @@ const Account = ({
   }, [fixed, income, livingTotal]);
 
   useEffect(() => {
-    const newSavingPer = saving > 0 ? (saving / income) * 100 : 0;
+    const newSavingPer = saving > 0 && income > 0 ? (saving / income) * 100 : 0;
     setSavingPer(newSavingPer);
   }, [income, saving]);
 
