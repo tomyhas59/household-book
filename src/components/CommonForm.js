@@ -8,7 +8,7 @@ import {
   TitleContainer,
   CopyButton,
   Title,
-  DeleteButton,
+  AllDeleteButton,
   List,
   ListItem,
   ListItemText,
@@ -220,7 +220,7 @@ const CommonForm = ({
         <CopyButton onClick={copyPreviousMonthData}>📂</CopyButton>
         <Title>{categoryTitle}</Title>
         {hoveredTitle && (
-          <DeleteButton onClick={deleteAllTransaction}>x</DeleteButton>
+          <AllDeleteButton onClick={deleteAllTransaction}>x</AllDeleteButton>
         )}
       </TitleContainer>
       <List ref={listRef} style={{ maxHeight: "70%" }}>

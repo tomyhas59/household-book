@@ -59,7 +59,7 @@ export const Title = styled.div`
   }
 `;
 
-export const DeleteButton = styled.button`
+export const AllDeleteButton = styled.button`
   background-color: transparent;
   position: absolute;
   top: 0;
@@ -126,7 +126,6 @@ export const Button = styled.button`
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.2s ease-in-out;
-
   &:hover {
     background-color: rgba(128, 128, 128, 0.7);
   }
@@ -420,6 +419,12 @@ const Details = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+  }, [transactions]);
+
   return (
     <Container>
       <TitleContainer
@@ -429,7 +434,7 @@ const Details = ({
         <CopyButton onClick={copyPreviousMonthData}>📂</CopyButton>
         <Title>{categoryTitle}</Title>
         {hoveredTitle && (
-          <DeleteButton onClick={deleteAllTransaction}>x</DeleteButton>
+          <AllDeleteButton onClick={deleteAllTransaction}>x</AllDeleteButton>
         )}
       </TitleContainer>
       <List ref={listRef}>
@@ -481,14 +486,16 @@ const Details = ({
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: "red" }}>
                   {transaction.amount.toLocaleString()}
+                  {hoveredItemId === transaction.id ? (
+                    <Button
+                      onClick={() => deleteTransactionById(transaction.id)}
+                    >
+                      x
+                    </Button>
+                  ) : (
+                    <TransparentButton></TransparentButton>
+                  )}
                 </ListItemText>
-                {hoveredItemId === transaction.id ? (
-                  <Button onClick={() => deleteTransactionById(transaction.id)}>
-                    x
-                  </Button>
-                ) : (
-                  <TransparentButton></TransparentButton>
-                )}
               </ListItem>
             )}
           </React.Fragment>
