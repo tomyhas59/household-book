@@ -81,7 +81,10 @@ export const DeleteButton = styled.button`
 
 export const List = styled.div`
   overflow-y: auto;
-  max-height: 85%;
+  max-height: 83%;
+  @media (max-width: 480px) {
+    max-height: 80%;
+  }
 `;
 
 export const ListItem = styled.div`

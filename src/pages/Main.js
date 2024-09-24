@@ -152,15 +152,16 @@ const MainContainer = styled.div``;
 
 const HeaderContainer = styled.header`
   display: flex;
+  width: 100%;
   height: 8vh;
   justify-content: space-between;
   align-items: center;
   background-color: #2c3e50;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
-
   @media (max-width: 768px) {
-    height: auto;
+    position: fixed;
+    z-index: 1000;
   }
 `;
 const HeaderTitle = styled.h1`
@@ -185,6 +186,7 @@ const ContentContainer = styled.div`
   display: grid;
   grid-template-columns: 40% 60%;
   @media (max-width: 480px) {
+    padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
     * {
       font-size: 12px;
     }

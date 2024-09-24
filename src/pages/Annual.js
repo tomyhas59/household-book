@@ -284,16 +284,17 @@ const Container = styled.div`
 
 const HeaderContainer = styled.div`
   display: flex;
+  width: 100%;
   height: 8vh;
   justify-content: space-between;
   align-items: center;
   background-color: #2c3e50;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   grid-area: a;
 
   @media (max-width: 768px) {
-    height: auto;
+    position: fixed;
+    z-index: 1000;
   }
 `;
 
@@ -373,6 +374,7 @@ const MonthListContainer = styled.div`
   padding: 20px;
   @media (max-width: 768px) {
     padding: 10px;
+    padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
   }
 `;
 
