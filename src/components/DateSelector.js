@@ -40,6 +40,7 @@ const DateContainer = styled.div`
     font-weight: bold;
   }
   @media (max-width: 768px) {
+    transform: scale(0.8);
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
@@ -88,5 +89,8 @@ const AnnualButton = styled(Link)`
 
   &:hover {
     background-color: #c0392b;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
   }
 `;

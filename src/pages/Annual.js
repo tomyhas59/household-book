@@ -291,7 +291,6 @@ const HeaderContainer = styled.div`
   background-color: #2c3e50;
   position: relative;
   grid-area: a;
-
   @media (max-width: 768px) {
     position: fixed;
     z-index: 1000;
@@ -308,10 +307,10 @@ const HeaderLeftSection = styled.div`
   }
 
   @media (max-width: 768px) {
+    transform: scale(0.8);
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
-    gap: 10px;
   }
 `;
 
@@ -367,6 +366,9 @@ const HomeButton = styled(Link)`
   &:hover {
     background-color: #c0392b;
   }
+  @media (max-width: 768px) {
+    font-size: 0.7rem;
+  }
 `;
 
 const MonthListContainer = styled.div`
@@ -382,7 +384,6 @@ const MonthList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-
   @media (max-width: 768px) {
     gap: 10px;
     justify-content: center;
@@ -404,8 +405,11 @@ const MonthContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 200px;
+    width: 180px;
     padding: 15px;
+    * {
+      font-size: 0.7rem;
+    }
   }
 `;
 
