@@ -7,6 +7,7 @@ import { useSetRecoilState } from "recoil";
 import { monthState, yearState } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { StyledLink } from "./Main";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -95,7 +96,7 @@ const Annual = () => {
     );
 
   const goToMonthPage = (year, month) => {
-    navigate("/");
+    navigate("/main");
     setRecoilYear(year);
     setRecoilMonth(month);
   };
@@ -171,7 +172,7 @@ const Annual = () => {
     <Container>
       <HeaderContainer>
         <HeaderLeftSection>
-          <HomeButton to="/">월별로 보기</HomeButton>
+          <HomeButton to="/main">월별로 보기</HomeButton>
           <Select value={year} onChange={(e) => setYear(e.target.value)}>
             {years.map((year) => (
               <option key={year} value={year}>
@@ -183,6 +184,7 @@ const Annual = () => {
           <p>{totalIncome().toLocaleString()}원</p>
         </HeaderLeftSection>
         <HeaderTitle>연도별 데이터</HeaderTitle>
+        <StyledLink to="/">로그아웃</StyledLink>
       </HeaderContainer>
       <MonthListContainer>
         <MonthList>

@@ -19,6 +19,7 @@ import {
   dataByDateState,
   livingTotalState,
 } from "../recoil/atoms";
+import { Link } from "react-router-dom";
 
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
@@ -81,6 +82,7 @@ const Main = () => {
           setMonth={setMonth}
         />
         <HeaderTitle>월별 데이터</HeaderTitle>
+        <StyledLink to="/">로그아웃</StyledLink>
       </HeaderContainer>
       <ContentContainer>
         <FlexContainer>
@@ -210,4 +212,20 @@ const ColumnContainer = styled.div`
 const DetailsContainer = styled.div`
   display: flex;
   height: 92vh;
+`;
+
+export const StyledLink = styled(Link)`
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #512da8;
+    color: #fff;
+  }
 `;
