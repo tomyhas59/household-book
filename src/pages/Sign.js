@@ -34,15 +34,14 @@ const Login = () => {
   // 회원가입 요청
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
+    console.log("회원가입 버튼 클릭됨"); // 추가된 로그
+
     if (signupData.password !== signupData.passwordConfirm) {
       alert("비밀번호가 다릅니다");
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/signup",
-        signupData
-      );
+      await axios.post("http://localhost:8080/signup", signupData);
       alert("회원가입이 완료되었습니다!");
     } catch (error) {
       console.error("Signup Error", error);
@@ -54,10 +53,7 @@ const Login = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/login",
-        loginData
-      );
+      await axios.post("http://localhost:8080/login", loginData);
     } catch (error) {
       console.error("Login Error", error);
       alert("Login failed");
@@ -70,7 +66,7 @@ const Login = () => {
 
   return (
     <Container>
-      <SignUpContainer active={active}>
+      <SignUpContainer $active={active}>
         <h1>회원가입</h1>
         <FormContainer onSubmit={handleSignupSubmit}>
           <Label>
@@ -121,7 +117,7 @@ const Login = () => {
         </FormContainer>
       </SignUpContainer>
 
-      <SignInContainer active={active}>
+      <SignInContainer $active={active}>
         <h1>로그인</h1>
         <FormContainer onSubmit={handleLoginSubmit}>
           <Label>
@@ -150,14 +146,14 @@ const Login = () => {
         </FormContainer>
       </SignInContainer>
 
-      <ToggleContainer active={active}>
-        <Toggle active={active}>
-          <ToggleLeft active={active}>
+      <ToggleContainer $active={active}>
+        <Toggle $active={active}>
+          <ToggleLeft $active={active}>
             <h2>이미 아이디가 있다면?</h2>
             <p>로그인 해주세요</p>
             <Button onClick={handleToggle}>로그인</Button>
           </ToggleLeft>
-          <ToggleRight active={active}>
+          <ToggleRight $active={active}>
             <h2>아이디가 없으세요?</h2>
             <p>간단한 회원가입</p>
             <Button onClick={handleToggle}>회원가입</Button>
@@ -196,7 +192,7 @@ const absolutePosition = css`
 const SignInContainer = styled.div`
   ${absolutePosition}
   ${(props) =>
-    props.active
+    props.$active
       ? css`
           transform: translateX(100%);
           opacity: 0;
@@ -210,7 +206,7 @@ const SignUpContainer = styled.div`
   ${absolutePosition}
   opacity: 0;
   ${(props) =>
-    props.active &&
+    props.$active &&
     css`
       transform: translateX(100%);
       opacity: 1;
@@ -290,7 +286,7 @@ const ToggleContainer = styled.div`
   transition: all 0.6s ease-in-out;
   z-index: 1000;
   ${(props) =>
-    props.active
+    props.$active
       ? css`
           transform: translateX(-100%);
           border-radius: 0 150px 150px 0;
@@ -310,7 +306,8 @@ const Toggle = styled.div`
   height: 100%;
   width: 200%;
   transition: all 0.6s ease-in-out;
-  transform: ${(props) => (props.active ? "translateX(50%)" : "translateX(0)")};
+  transform: ${(props) =>
+    props.$active ? "translateX(50%)" : "translateX(0)"};
 `;
 
 const ToggleCommonStyles = css`
@@ -332,11 +329,11 @@ const ToggleRight = styled.div`
   ${ToggleCommonStyles}
   right: 0;
   transform: ${(props) =>
-    props.active ? "translateX(100%)" : "translateX(0)"};
+    props.$active ? "translateX(100%)" : "translateX(0)"};
 `;
 
 const ToggleLeft = styled.div`
   ${ToggleCommonStyles}
   transform: ${(props) =>
-    props.active ? "translateX(0)" : "translateX(-200%)"};
+    props.$active ? "translateX(0)" : "translateX(-200%)"};
 `;
