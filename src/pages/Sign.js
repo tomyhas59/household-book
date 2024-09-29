@@ -1,8 +1,68 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
+import axios from "axios"; // axios를 이용하여 서버와 통신
 
 const Login = () => {
   const [active, setActive] = useState(false);
+  const [signupData, setSignupData] = useState({
+    nickname: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  // 회원가입 데이터 변경 핸들러
+  const handleSignupChange = (e) => {
+    setSignupData({
+      ...signupData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // 로그인 데이터 변경 핸들러
+  const handleLoginChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // 회원가입 요청
+  const handleSignupSubmit = async (e) => {
+    e.preventDefault();
+    if (signupData.password !== signupData.passwordConfirm) {
+      alert("비밀번호가 다릅니다");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/signup",
+        signupData
+      );
+      alert("회원가입이 완료되었습니다!");
+    } catch (error) {
+      console.error("Signup Error", error);
+      alert("Signup failed");
+    }
+  };
+
+  // 로그인 요청
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/login",
+        loginData
+      );
+    } catch (error) {
+      console.error("Login Error", error);
+      alert("Login failed");
+    }
+  };
 
   const handleToggle = () => {
     setActive((prev) => !prev);
@@ -12,40 +72,84 @@ const Login = () => {
     <Container>
       <SignUpContainer active={active}>
         <h1>회원가입</h1>
-        <FormContainer>
+        <FormContainer onSubmit={handleSignupSubmit}>
           <Label>
             <LabelText>닉네임:</LabelText>
-            <Input placeholder="Nickname" type="text" />
+            <Input
+              name="nickname"
+              value={signupData.nickname}
+              onChange={handleSignupChange}
+              placeholder="Nickname"
+              type="text"
+              required
+            />
           </Label>
           <Label>
             <LabelText>이메일:</LabelText>
-            <Input placeholder="Email" type="email" />
+            <Input
+              name="email"
+              value={signupData.email}
+              onChange={handleSignupChange}
+              placeholder="Email"
+              type="email"
+              required
+            />
           </Label>
           <Label>
             <LabelText>비밀번호:</LabelText>
-            <Input placeholder="Password" type="password" />
+            <Input
+              name="password"
+              value={signupData.password}
+              onChange={handleSignupChange}
+              placeholder="Password"
+              type="password"
+              required
+            />
           </Label>
           <Label>
             <LabelText>비밀번호 확인:</LabelText>
-            <Input placeholder="Password confirm" type="password" />
+            <Input
+              name="passwordConfirm"
+              value={signupData.passwordConfirm}
+              onChange={handleSignupChange}
+              placeholder="Password confirm"
+              type="password"
+              required
+            />
           </Label>
-          <Button>가입하기</Button>
+          <Button type="submit">가입하기</Button>
         </FormContainer>
       </SignUpContainer>
+
       <SignInContainer active={active}>
         <h1>로그인</h1>
-        <FormContainer>
+        <FormContainer onSubmit={handleLoginSubmit}>
           <Label>
             <LabelText>이메일:</LabelText>
-            <Input placeholder="Email" type="email" />
+            <Input
+              name="email"
+              value={loginData.email}
+              onChange={handleLoginChange}
+              placeholder="Email"
+              type="email"
+              required
+            />
           </Label>
           <Label>
             <LabelText>비밀번호:</LabelText>
-            <Input placeholder="Password" type="password" />
+            <Input
+              name="password"
+              value={loginData.password}
+              onChange={handleLoginChange}
+              placeholder="Password"
+              type="password"
+              required
+            />
           </Label>
-          <Button>로그인</Button>
+          <Button type="submit">로그인</Button>
         </FormContainer>
       </SignInContainer>
+
       <ToggleContainer active={active}>
         <Toggle active={active}>
           <ToggleLeft active={active}>
