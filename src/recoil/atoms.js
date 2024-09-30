@@ -1,9 +1,17 @@
 import { atom } from "recoil";
 import { selector } from "recoil";
 
+export const userState = atom({
+  key: "userState",
+  default: {
+    nickname: "",
+    email: "",
+  },
+});
+
 export const detailsTotalsState = atom({
-  key: "detailsTotalsState", // 고유한 key
-  default: new Array(5).fill(0), // 초기값
+  key: "detailsTotalsState",
+  default: new Array(5).fill(0),
 });
 
 export const incomeState = atom({

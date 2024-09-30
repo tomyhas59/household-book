@@ -18,8 +18,9 @@ import {
   monthState,
   dataByDateState,
   livingTotalState,
+  userState,
 } from "../recoil/atoms";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
@@ -29,6 +30,7 @@ const Main = () => {
   const [year, setYear] = useRecoilState(yearState);
   const [month, setMonth] = useRecoilState(monthState);
   const [dataBydate, setDataByDate] = useRecoilState(dataByDateState);
+  const [user] = useRecoilState(userState); // userState 가져오기
 
   const detailCategory = useMemo(
     () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
@@ -71,6 +73,10 @@ const Main = () => {
   );
 
   const livingTotal = useRecoilValue(livingTotalState);
+
+  if (!user) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <MainContainer>

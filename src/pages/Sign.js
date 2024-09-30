@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import axios from "axios"; // axios를 이용하여 서버와 통신
+import { useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
+import { userState } from "../recoil/atoms";
 
 const Login = () => {
   const [active, setActive] = useState(false);
@@ -14,6 +17,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [user, setUser] = useRecoilState(userState);
+  const navigator = useNavigate();
 
   // 회원가입 데이터 변경 핸들러
   const handleSignupChange = (e) => {
@@ -34,15 +39,23 @@ const Login = () => {
   // 회원가입 요청
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
-    console.log("회원가입 버튼 클릭됨"); // 추가된 로그
 
     if (signupData.password !== signupData.passwordConfirm) {
       alert("비밀번호가 다릅니다");
       return;
     }
     try {
-      await axios.post("http://localhost:8080/signup", signupData);
+      await axios.post("http://localhost:8090/signup", signupData, {
+        withCredentials: true,
+      });
       alert("회원가입이 완료되었습니다!");
+      setSignupData({
+        nickname: "",
+        email: "",
+        password: "",
+        passwordConfirm: "",
+      });
+      setActive((prev) => !prev);
     } catch (error) {
       console.error("Signup Error", error);
       alert("Signup failed");
@@ -53,7 +66,24 @@ const Login = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/login", loginData);
+      const response = await axios.post(
+        "http://localhost:8090/login",
+        loginData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("----", response);
+      const { token, nickname, email } = response.data;
+
+      localStorage.setItem("jwt", token);
+
+      setUser({ nickname, email });
+
+      navigator("/main");
     } catch (error) {
       console.error("Login Error", error);
       alert("Login failed");
@@ -214,7 +244,7 @@ const SignUpContainer = styled.div`
     `}
 `;
 
-const FormContainer = styled.div`
+const FormContainer = styled.form`
   margin-top: 20px;
   display: flex;
   flex-direction: column;
