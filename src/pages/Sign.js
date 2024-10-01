@@ -20,6 +20,8 @@ const Login = () => {
   const [user, setUser] = useRecoilState(userState);
   const navigator = useNavigate();
 
+  console.log(user);
+
   // 회원가입 데이터 변경 핸들러
   const handleSignupChange = (e) => {
     setSignupData({
@@ -45,7 +47,7 @@ const Login = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:8090/signup", signupData, {
+      await axios.post("http://localhost:8090/api/signup", signupData, {
         withCredentials: true,
       });
       alert("회원가입이 완료되었습니다!");
@@ -67,7 +69,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8090/login",
+        "http://localhost:8090/api/login",
         loginData,
         {
           withCredentials: true,
