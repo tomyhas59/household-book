@@ -27,7 +27,7 @@ const StyledLink = styled(Link)`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #2980b9; /* 마우스 올릴 때 색상 변화 */
+    background-color: #2980b9; 
   }
 `;
 
