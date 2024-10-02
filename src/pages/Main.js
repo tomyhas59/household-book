@@ -20,7 +20,7 @@ import {
   livingTotalState,
   userState,
 } from "../recoil/atoms";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
@@ -30,7 +30,7 @@ const Main = () => {
   const [year, setYear] = useRecoilState(yearState);
   const [month, setMonth] = useRecoilState(monthState);
   const [dataBydate, setDataByDate] = useRecoilState(dataByDateState);
-  const [user] = useRecoilState(userState); // userState 가져오기
+  const [user, setUser] = useRecoilState(userState);
 
   const detailCategory = useMemo(
     () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
@@ -74,84 +74,90 @@ const Main = () => {
 
   const livingTotal = useRecoilValue(livingTotalState);
 
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+
+    setUser(null);
+    console.log("로그아웃 완료");
+  };
+
   if (!user) {
     return <Navigate to="/" replace />;
-  }
-
-  return (
-    <MainContainer>
-      <HeaderContainer>
-        <DateSelector
-          year={year}
-          month={month}
-          setYear={setYear}
-          setMonth={setMonth}
-        />
-        <HeaderTitle>월별 데이터</HeaderTitle>
-        <StyledLink to="/">로그아웃</StyledLink>
-      </HeaderContainer>
-      <ContentContainer>
-        <FlexContainer>
-          <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
-            <Account
-              income={income}
-              saving={saving}
-              fixed={fixed}
-              livingTotal={livingTotal}
-              dataBydate={dataBydate}
-              year={year}
-              month={month}
-            />
-          </ColumnContainer>
-          <ColumnContainer>
-            <Income
-              categoryTitle="수입"
-              setIncome={setIncome}
-              dataBydate={dataBydate}
-              livingTotal={livingTotal}
-              income={income}
-              year={year}
-              month={month}
-            />
-            <Saving
-              categoryTitle="저축"
-              setSaving={setSaving}
-              dataBydate={dataBydate}
-              income={income}
-              saving={saving}
-              year={year}
-              month={month}
-            />
-          </ColumnContainer>
-          <ColumnContainer>
-            <Fixed
-              categoryTitle="고정 지출"
-              setFixed={setFixed}
-              dataBydate={dataBydate}
-              income={income}
-              fixed={fixed}
-              year={year}
-              month={month}
-            />
-            <Note dataBydate={dataBydate} year={year} month={month} />
-          </ColumnContainer>
-        </FlexContainer>
-        <DetailsContainer>
-          {detailCategory.map((key, index) => (
-            <Details
-              key={index}
-              categoryTitle={key}
-              onTotalChange={(total) => updateAllTotal(index, total)}
-              livingTotal={livingTotal}
-              dataBydate={dataBydate}
-              year={year}
-              month={month}
-            />
-          ))}
-        </DetailsContainer>
-      </ContentContainer>
-    </MainContainer>
-  );
+  } else
+    return (
+      <MainContainer>
+        <HeaderContainer>
+          <DateSelector
+            year={year}
+            month={month}
+            setYear={setYear}
+            setMonth={setMonth}
+          />
+          <HeaderTitle>{user.nickname}의 월별 데이터</HeaderTitle>
+          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+        </HeaderContainer>
+        <ContentContainer>
+          <FlexContainer>
+            <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
+              <Account
+                income={income}
+                saving={saving}
+                fixed={fixed}
+                livingTotal={livingTotal}
+                dataBydate={dataBydate}
+                year={year}
+                month={month}
+              />
+            </ColumnContainer>
+            <ColumnContainer>
+              <Income
+                categoryTitle="수입"
+                setIncome={setIncome}
+                dataBydate={dataBydate}
+                livingTotal={livingTotal}
+                income={income}
+                year={year}
+                month={month}
+              />
+              <Saving
+                categoryTitle="저축"
+                setSaving={setSaving}
+                dataBydate={dataBydate}
+                income={income}
+                saving={saving}
+                year={year}
+                month={month}
+              />
+            </ColumnContainer>
+            <ColumnContainer>
+              <Fixed
+                categoryTitle="고정 지출"
+                setFixed={setFixed}
+                dataBydate={dataBydate}
+                income={income}
+                fixed={fixed}
+                year={year}
+                month={month}
+              />
+              <Note dataBydate={dataBydate} year={year} month={month} />
+            </ColumnContainer>
+          </FlexContainer>
+          <DetailsContainer>
+            {detailCategory.map((key, index) => (
+              <Details
+                key={index}
+                categoryTitle={key}
+                onTotalChange={(total) => updateAllTotal(index, total)}
+                livingTotal={livingTotal}
+                dataBydate={dataBydate}
+                year={year}
+                month={month}
+              />
+            ))}
+          </DetailsContainer>
+        </ContentContainer>
+      </MainContainer>
+    );
 };
 
 export default Main;
@@ -220,16 +226,16 @@ const DetailsContainer = styled.div`
   height: 92vh;
 `;
 
-export const StyledLink = styled(Link)`
+export const LogoutButton = styled.button`
   text-decoration: none;
-  color: #fff;
+  color: #000;
   font-size: 16px;
   font-weight: bold;
   padding: 10px 20px;
   border: 2px solid #fff;
   border-radius: 5px;
   transition: all 0.3s ease;
-
+  cursor: pointer;
   &:hover {
     background-color: #512da8;
     color: #fff;

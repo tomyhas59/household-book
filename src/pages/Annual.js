@@ -2,12 +2,12 @@ import localforage from "localforage";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/Details";
-import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { monthState, yearState } from "../recoil/atoms";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { monthState, userState, yearState } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { StyledLink } from "./Main";
+import { LogoutButton } from "./Main";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -35,6 +35,7 @@ const Annual = () => {
   const navigate = useNavigate();
   const setRecoilMonth = useSetRecoilState(monthState);
   const setRecoilYear = useSetRecoilState(yearState);
+  const [user, setUser] = useRecoilState(userState);
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -99,6 +100,12 @@ const Annual = () => {
     navigate("/main");
     setRecoilYear(year);
     setRecoilMonth(month);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    setUser(null);
+    console.log("로그아웃 완료");
   };
 
   const pieData = useMemo(() => {
@@ -168,103 +175,106 @@ const Annual = () => {
     },
   };
 
-  return (
-    <Container>
-      <HeaderContainer>
-        <HeaderLeftSection>
-          <HomeButton to="/main">월별로 보기</HomeButton>
-          <Select value={year} onChange={(e) => setYear(e.target.value)}>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}년
-              </option>
-            ))}
-          </Select>
-          <p>총 수입 : </p>
-          <p>{totalIncome().toLocaleString()}원</p>
-        </HeaderLeftSection>
-        <HeaderTitle>연도별 데이터</HeaderTitle>
-        <StyledLink to="/">로그아웃</StyledLink>
-      </HeaderContainer>
-      <MonthListContainer>
-        <MonthList>
-          {months.map((month) => {
-            const income = calculateTotal(month, "수입");
-            const spending =
-              calculateTotal(month, "고정 지출") + totalDetails(month);
-            const savings = calculateTotal(month, "저축");
+  if (!user) {
+    return <Navigate to="/" replace />;
+  } else
+    return (
+      <Container>
+        <HeaderContainer>
+          <HeaderLeftSection>
+            <HomeButton to="/main">월별로 보기</HomeButton>
+            <Select value={year} onChange={(e) => setYear(e.target.value)}>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}년
+                </option>
+              ))}
+            </Select>
+            <p>총 수입 : </p>
+            <p>{totalIncome().toLocaleString()}원</p>
+          </HeaderLeftSection>
+          <HeaderTitle>{user.nickname}의 연도별 데이터</HeaderTitle>
+          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+        </HeaderContainer>
+        <MonthListContainer>
+          <MonthList>
+            {months.map((month) => {
+              const income = calculateTotal(month, "수입");
+              const spending =
+                calculateTotal(month, "고정 지출") + totalDetails(month);
+              const savings = calculateTotal(month, "저축");
 
-            const categories = {
-              "고정 지출": calculateTotal(month, "고정 지출"),
-              식비: calculateTotal(month, "식비"),
-              생필품: calculateTotal(month, "생필품"),
-              문화생활: calculateTotal(month, "문화생활"),
-              교통비: calculateTotal(month, "교통비"),
-              "의료 및 기타": calculateTotal(month, "의료 및 기타"),
-            };
+              const categories = {
+                "고정 지출": calculateTotal(month, "고정 지출"),
+                식비: calculateTotal(month, "식비"),
+                생필품: calculateTotal(month, "생필품"),
+                문화생활: calculateTotal(month, "문화생활"),
+                교통비: calculateTotal(month, "교통비"),
+                "의료 및 기타": calculateTotal(month, "의료 및 기타"),
+              };
 
-            const spendingRate = income ? (spending / income) * 100 : 0;
-            const savingsRate = income ? (savings / income) * 100 : 0;
+              const spendingRate = income ? (spending / income) * 100 : 0;
+              const savingsRate = income ? (savings / income) * 100 : 0;
 
-            return (
-              <MonthContainer
-                key={month}
-                onClick={() => goToMonthPage(year, month)}
-              >
-                <MonthTitle>{month}월</MonthTitle>
-                <Category>
-                  <AccountSection>
-                    <p style={{ color: "#3498db" }}>수입</p>
-                    <Amount style={{ color: "#3498db" }}>
-                      {income.toLocaleString()}원
-                    </Amount>
-                  </AccountSection>
-                  <AccountSection>
-                    <p style={{ color: "crimson" }}>지출</p>
-                    <Amount style={{ color: "crimson" }}>
-                      {spending.toLocaleString()}원
-                    </Amount>
-                  </AccountSection>
-                  <ProgressContainer>
-                    <ProgressBar $percentage={spendingRate}>
-                      <p>{spendingRate.toFixed(0)}%</p>
-                    </ProgressBar>
-                  </ProgressContainer>
-                  <CategoryDetails>
-                    {Object.entries(categories).map(([key, value]) => (
-                      <Detail key={key}>
-                        <p>{key}</p>
-                        <p> {value.toLocaleString()}원 </p>
-                      </Detail>
-                    ))}
-                  </CategoryDetails>
+              return (
+                <MonthContainer
+                  key={month}
+                  onClick={() => goToMonthPage(year, month)}
+                >
+                  <MonthTitle>{month}월</MonthTitle>
+                  <Category>
+                    <AccountSection>
+                      <p style={{ color: "#3498db" }}>수입</p>
+                      <Amount style={{ color: "#3498db" }}>
+                        {income.toLocaleString()}원
+                      </Amount>
+                    </AccountSection>
+                    <AccountSection>
+                      <p style={{ color: "crimson" }}>지출</p>
+                      <Amount style={{ color: "crimson" }}>
+                        {spending.toLocaleString()}원
+                      </Amount>
+                    </AccountSection>
+                    <ProgressContainer>
+                      <ProgressBar $percentage={spendingRate}>
+                        <p>{spendingRate.toFixed(0)}%</p>
+                      </ProgressBar>
+                    </ProgressContainer>
+                    <CategoryDetails>
+                      {Object.entries(categories).map(([key, value]) => (
+                        <Detail key={key}>
+                          <p>{key}</p>
+                          <p> {value.toLocaleString()}원 </p>
+                        </Detail>
+                      ))}
+                    </CategoryDetails>
 
-                  <AccountSection>
-                    <p style={{ color: "#3498db" }}>저축</p>
-                    <Amount style={{ color: "#3498db" }}>
-                      {savings.toLocaleString()}원
-                    </Amount>
-                  </AccountSection>
-                  <ProgressContainer>
-                    <ProgressBar
-                      $percentage={savingsRate}
-                      style={{ backgroundColor: "#3498db" }}
-                    >
-                      <p>{savingsRate.toFixed(0)}%</p>
-                    </ProgressBar>
-                  </ProgressContainer>
-                </Category>
-              </MonthContainer>
-            );
-          })}
-        </MonthList>
-      </MonthListContainer>
-      <PieChartContainer>
-        <h2>연간 수입, 지출, 저축 비교</h2>
-        <Pie data={pieData} options={options} />
-      </PieChartContainer>
-    </Container>
-  );
+                    <AccountSection>
+                      <p style={{ color: "#3498db" }}>저축</p>
+                      <Amount style={{ color: "#3498db" }}>
+                        {savings.toLocaleString()}원
+                      </Amount>
+                    </AccountSection>
+                    <ProgressContainer>
+                      <ProgressBar
+                        $percentage={savingsRate}
+                        style={{ backgroundColor: "#3498db" }}
+                      >
+                        <p>{savingsRate.toFixed(0)}%</p>
+                      </ProgressBar>
+                    </ProgressContainer>
+                  </Category>
+                </MonthContainer>
+              );
+            })}
+          </MonthList>
+        </MonthListContainer>
+        <PieChartContainer>
+          <h2>연간 수입, 지출, 저축 비교</h2>
+          <Pie data={pieData} options={options} />
+        </PieChartContainer>
+      </Container>
+    );
 };
 
 export default Annual;

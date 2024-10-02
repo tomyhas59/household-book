@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import axios from "axios"; // axios를 이용하여 서버와 통신
 import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { userState } from "../recoil/atoms";
 
 const Login = () => {
@@ -17,10 +17,8 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
   const navigator = useNavigate();
-
-  console.log(user);
 
   // 회원가입 데이터 변경 핸들러
   const handleSignupChange = (e) => {
@@ -73,12 +71,8 @@ const Login = () => {
         loginData,
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
-      console.log("----", response);
       const { token, nickname, email } = response.data;
 
       localStorage.setItem("jwt", token);
@@ -199,7 +193,7 @@ const Login = () => {
 export default Login;
 
 const Container = styled.div`
-  margin: 100px auto;
+  margin: 50px auto;
   background-color: #fff;
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
@@ -209,6 +203,9 @@ const Container = styled.div`
   max-width: 100%;
   min-height: 480px;
   border: 1px solid silver;
+  @media (max-width: 480px) {
+    transform: scale(0.8);
+  }
 `;
 
 const absolutePosition = css`
@@ -260,6 +257,9 @@ const Label = styled.label`
   justify-content: center;
   align-items: center;
   color: #333;
+  @media (max-width: 480px) {
+    transform: scale(0.7);
+  }
 `;
 
 const LabelText = styled.span`
@@ -326,6 +326,9 @@ const ToggleContainer = styled.div`
       : css`
           border-radius: 150px 0 0 150px;
         `}
+  h2 {
+    word-break: keep-all;
+  }
 `;
 
 const Toggle = styled.div`
