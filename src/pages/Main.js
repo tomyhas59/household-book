@@ -107,6 +107,7 @@ const Main = () => {
                 dataBydate={dataBydate}
                 year={year}
                 month={month}
+                user={user}
               />
             </ColumnContainer>
             <ColumnContainer>
@@ -116,6 +117,7 @@ const Main = () => {
                 dataBydate={dataBydate}
                 livingTotal={livingTotal}
                 income={income}
+                user={user}
                 year={year}
                 month={month}
               />
@@ -125,6 +127,7 @@ const Main = () => {
                 dataBydate={dataBydate}
                 income={income}
                 saving={saving}
+                user={user}
                 year={year}
                 month={month}
               />
@@ -136,10 +139,16 @@ const Main = () => {
                 dataBydate={dataBydate}
                 income={income}
                 fixed={fixed}
+                user={user}
                 year={year}
                 month={month}
               />
-              <Note dataBydate={dataBydate} year={year} month={month} />
+              <Note
+                dataBydate={dataBydate}
+                year={year}
+                month={month}
+                user={user}
+              />
             </ColumnContainer>
           </FlexContainer>
           <DetailsContainer>
@@ -151,6 +160,7 @@ const Main = () => {
                 livingTotal={livingTotal}
                 dataBydate={dataBydate}
                 year={year}
+                user={user}
                 month={month}
               />
             ))}

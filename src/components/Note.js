@@ -1,8 +1,8 @@
-import localforage from "localforage";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-const Note = ({ year, month, dataBydate }) => {
+const Note = ({ year, month, dataBydate, user }) => {
   const [isNote, setIsNote] = useState(false);
   const [note, setNote] = useState("");
   const [originalNote, setOriginalNote] = useState("");
@@ -16,16 +16,20 @@ const Note = ({ year, month, dataBydate }) => {
     e.preventDefault();
     if (note === "") return;
 
-    const yearData = (await localforage.getItem(year)) || {};
-
-    const updatedData = {
-      ...dataBydate,
-      note: note,
+    const requestData = {
+      userId: user.id,
+      yearValue: parseInt(year),
+      monthValue: parseInt(month),
+      note: note ? note : null,
     };
-
-    yearData[month] = updatedData;
-    localforage.setItem(year, yearData);
-    setIsNote(false);
+    try {
+      await axios.post("http://localhost:8090/api/saveNoteOrBudget", null, {
+        params: requestData,
+      });
+      setIsNote(false);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleCancel = () => {

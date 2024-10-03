@@ -14,7 +14,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/main" element={<Main />} />
           <Route path="/annual" element={<Annual />} />
-          <Route path="/login" element={<Sign />} />
+          <Route path="/sign" element={<Sign />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

@@ -73,11 +73,11 @@ const Login = () => {
           withCredentials: true,
         }
       );
-      const { token, nickname, email } = response.data;
+      const { token, nickname, email, id } = response.data;
 
       localStorage.setItem("jwt", token);
 
-      setUser({ nickname, email });
+      setUser({ nickname, email, id });
 
       navigator("/main");
     } catch (error) {
@@ -171,7 +171,6 @@ const Login = () => {
           <Button type="submit">로그인</Button>
         </FormContainer>
       </SignInContainer>
-
       <ToggleContainer $active={active}>
         <Toggle $active={active}>
           <ToggleLeft $active={active}>
@@ -193,15 +192,16 @@ const Login = () => {
 export default Login;
 
 const Container = styled.div`
-  margin: 50px auto;
   background-color: #fff;
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-  position: relative;
+  position: absolute;
   overflow: hidden;
   width: 768px;
-  max-width: 100%;
-  min-height: 480px;
+  height: 480px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border: 1px solid silver;
   @media (max-width: 480px) {
     transform: scale(0.8);

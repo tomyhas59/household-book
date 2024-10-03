@@ -27,7 +27,7 @@ const StyledLink = styled(Link)`
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #2980b9; 
+    background-color: #2980b9;
   }
 `;
 
@@ -35,7 +35,7 @@ const Home = () => {
   return (
     <Container>
       <Title>가계부</Title>
-      <StyledLink to="/login">로그인하기</StyledLink>
+      <StyledLink to="/sign">로그인하기</StyledLink>
     </Container>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Fixed = ({ categoryTitle, setFixed, dataBydate, year, month }) => {
+const Fixed = ({ categoryTitle, setFixed, dataBydate, year, month, user }) => {
   return (
     <CommonForm
       categoryTitle={categoryTitle}
@@ -10,6 +10,7 @@ const Fixed = ({ categoryTitle, setFixed, dataBydate, year, month }) => {
       year={year}
       month={month}
       dataBydate={dataBydate}
+      user={user}
     />
   );
 };

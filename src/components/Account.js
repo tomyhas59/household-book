@@ -2,6 +2,7 @@ import localforage from "localforage";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "./Details";
+import axios from "axios";
 
 const AccountContainer = styled.div`
   position: relative;
@@ -89,6 +90,7 @@ const Account = ({
   year,
   month,
   dataBydate,
+  user,
 }) => {
   const [budget, setBudget] = useState("");
   const [isBudget, setIsBudget] = useState(false);
@@ -101,21 +103,26 @@ const Account = ({
     setBudget(e.target.value);
   };
 
+  console.log(user.id);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const numericBudget = Number(budget);
-    if (!isNaN(numericBudget) && numericBudget > 0) {
-      const yearData = (await localforage.getItem(year)) || {};
 
-      const updatedData = {
-        ...dataBydate,
-        budget: numericBudget,
-      };
+    const requestData = {
+      userId: parseInt(user.id),
+      yearValue: parseInt(year),
+      monthValue: parseInt(month),
+      budget: budget ? parseInt(budget) : null,
+    };
 
-      yearData[month] = updatedData;
-
-      localforage.setItem(year, yearData);
-      setIsBudget(false);
+    if (!isNaN(budget) && budget > 0) {
+      try {
+        await axios.post("http://localhost:8090/api/saveNoteOrBudget", null, {
+          params: requestData,
+        });
+        setIsBudget(false);
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
