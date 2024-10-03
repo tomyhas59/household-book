@@ -40,8 +40,8 @@ export const monthState = atom({
   default: new Date().getMonth() + 1,
 });
 
-export const dataByDateState = atom({
-  key: "dataByDateState",
+export const monthDataState = atom({
+  key: "monthDataState",
   default: {},
 });
 

@@ -89,7 +89,7 @@ const Account = ({
   livingTotal,
   year,
   month,
-  dataBydate,
+  monthData,
   user,
 }) => {
   const [budget, setBudget] = useState("");
@@ -131,16 +131,10 @@ const Account = ({
   };
 
   useEffect(() => {
-    localforage.getItem(year).then((yearData) => {
-      if (yearData) {
-        const existingMonthData = yearData[month] || {};
-
-        setBudget(existingMonthData["budget"]);
-        setOriginalBudget(existingMonthData["budget"]);
-        setIsBudget(false);
-      }
-    });
-  }, [year, month]);
+    setBudget(monthData.budget);
+    setOriginalBudget(monthData.budget);
+    setIsBudget(false);
+  }, [year, month, monthData]);
 
   const handleModify = () => {
     setOriginalBudget(budget);

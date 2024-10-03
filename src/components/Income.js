@@ -1,14 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Income = ({
-  categoryTitle,
-  setIncome,
-  dataBydate,
-  year,
-  month,
-  user,
-}) => {
+const Income = ({ categoryTitle, setIncome, monthData, year, month, user }) => {
   return (
     <CommonForm
       categoryTitle={categoryTitle}
@@ -16,7 +9,7 @@ const Income = ({
       color="blue"
       year={year}
       month={month}
-      dataBydate={dataBydate}
+      monthData={monthData}
       user={user}
     />
   );

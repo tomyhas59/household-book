@@ -16,11 +16,12 @@ import {
   savingState,
   yearState,
   monthState,
-  dataByDateState,
+  monthDataState,
   livingTotalState,
   userState,
 } from "../recoil/atoms";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
@@ -29,7 +30,7 @@ const Main = () => {
   const [saving, setSaving] = useRecoilState(savingState);
   const [year, setYear] = useRecoilState(yearState);
   const [month, setMonth] = useRecoilState(monthState);
-  const [dataBydate, setDataByDate] = useRecoilState(dataByDateState);
+  const [monthData, setMonthData] = useRecoilState(monthDataState);
   const [user, setUser] = useRecoilState(userState);
 
   const detailCategory = useMemo(
@@ -40,23 +41,29 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const yearData = await localforage.getItem(year);
+        const response = await axios.get("http://localhost:8090/api/getMonth", {
+          params: {
+            userId: user.id,
+            year: year,
+            month: month,
+          },
+        });
 
-        if (!yearData) {
-          setDataByDate({});
+        if (!response) {
+          setMonthData({});
           return;
         }
-        const existingMonthData = yearData[month] || {};
-        setDataByDate(existingMonthData);
+        const existingMonthData = response.data || {};
+        setMonthData(existingMonthData);
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
-        setDataByDate({});
+        setMonthData({});
       }
     };
     if (year && month) {
       fetchData();
     }
-  }, [year, month, setDataByDate]);
+  }, [user, year, month, setMonthData]);
 
   const updateAllTotal = useCallback(
     (index, total) => {
@@ -104,7 +111,7 @@ const Main = () => {
                 saving={saving}
                 fixed={fixed}
                 livingTotal={livingTotal}
-                dataBydate={dataBydate}
+                monthData={monthData}
                 year={year}
                 month={month}
                 user={user}
@@ -114,7 +121,7 @@ const Main = () => {
               <Income
                 categoryTitle="수입"
                 setIncome={setIncome}
-                dataBydate={dataBydate}
+                monthData={monthData}
                 livingTotal={livingTotal}
                 income={income}
                 user={user}
@@ -124,7 +131,7 @@ const Main = () => {
               <Saving
                 categoryTitle="저축"
                 setSaving={setSaving}
-                dataBydate={dataBydate}
+                monthData={monthData}
                 income={income}
                 saving={saving}
                 user={user}
@@ -136,7 +143,7 @@ const Main = () => {
               <Fixed
                 categoryTitle="고정 지출"
                 setFixed={setFixed}
-                dataBydate={dataBydate}
+                monthData={monthData}
                 income={income}
                 fixed={fixed}
                 user={user}
@@ -144,7 +151,7 @@ const Main = () => {
                 month={month}
               />
               <Note
-                dataBydate={dataBydate}
+                monthData={monthData}
                 year={year}
                 month={month}
                 user={user}
@@ -158,7 +165,7 @@ const Main = () => {
                 categoryTitle={key}
                 onTotalChange={(total) => updateAllTotal(index, total)}
                 livingTotal={livingTotal}
-                dataBydate={dataBydate}
+                monthData={monthData}
                 year={year}
                 user={user}
                 month={month}

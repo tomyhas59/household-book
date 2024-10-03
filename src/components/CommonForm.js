@@ -21,7 +21,7 @@ const CommonForm = ({
   categoryTitle,
   setTotalItem,
   color,
-  dataBydate,
+  monthData,
   year,
   month,
 }) => {
@@ -39,12 +39,12 @@ const CommonForm = ({
   const listRef = useRef(null);
 
   useEffect(() => {
-    if (dataBydate && dataBydate[categoryTitle]) {
-      setTransactions(dataBydate[categoryTitle]);
+    if (monthData && monthData[categoryTitle]) {
+      setTransactions(monthData[categoryTitle]);
     } else {
       setTransactions([]);
     }
-  }, [year, month, dataBydate, categoryTitle]);
+  }, [year, month, monthData, categoryTitle]);
 
   useEffect(() => {
     const total = transactions.reduce(

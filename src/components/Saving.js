@@ -1,14 +1,7 @@
 import React from "react";
 import CommonForm from "./CommonForm";
 
-const Saving = ({
-  categoryTitle,
-  setSaving,
-  dataBydate,
-  year,
-  month,
-  user,
-}) => {
+const Saving = ({ categoryTitle, setSaving, monthData, year, month, user }) => {
   return (
     <CommonForm
       categoryTitle={categoryTitle}
@@ -17,7 +10,7 @@ const Saving = ({
       year={year}
       month={month}
       user={user}
-      dataBydate={dataBydate}
+      monthData={monthData}
     />
   );
 };

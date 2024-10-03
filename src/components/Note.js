@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-const Note = ({ year, month, dataBydate, user }) => {
+const Note = ({ year, month, monthData, user }) => {
   const [isNote, setIsNote] = useState(false);
   const [note, setNote] = useState("");
   const [originalNote, setOriginalNote] = useState("");
@@ -38,10 +38,10 @@ const Note = ({ year, month, dataBydate, user }) => {
   };
 
   useEffect(() => {
-    setNote(dataBydate["note"]);
-    setOriginalNote(dataBydate["note"]);
+    setNote(monthData.note);
+    setOriginalNote(monthData.note);
     setIsNote(false);
-  }, [dataBydate]);
+  }, [monthData]);
 
   const handleModify = () => {
     setOriginalNote(note);

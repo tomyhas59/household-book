@@ -225,7 +225,7 @@ const Details = ({
   categoryTitle,
   onTotalChange,
   livingTotal,
-  dataBydate,
+  monthData,
   year,
   month,
 }) => {
@@ -254,12 +254,12 @@ const Details = ({
   const total = calculateTotal();
 
   useEffect(() => {
-    if (dataBydate && dataBydate[categoryTitle]) {
-      setTransactions(dataBydate[categoryTitle]);
+    if (monthData && monthData[categoryTitle]) {
+      setTransactions(monthData[categoryTitle]);
     } else {
       setTransactions([]);
     }
-  }, [dataBydate, categoryTitle]);
+  }, [monthData, categoryTitle]);
 
   useEffect(() => {
     const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
