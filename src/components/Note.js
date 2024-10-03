@@ -17,9 +17,9 @@ const Note = ({ year, month, dataBydate, user }) => {
     if (note === "") return;
 
     const requestData = {
-      userId: user.id,
-      yearValue: parseInt(year),
-      monthValue: parseInt(month),
+      userId: parseInt(user.id),
+      year: parseInt(year),
+      month: parseInt(month),
       note: note ? note : null,
     };
     try {

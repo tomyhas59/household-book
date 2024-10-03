@@ -103,14 +103,13 @@ const Account = ({
     setBudget(e.target.value);
   };
 
-  console.log(user.id);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const requestData = {
       userId: parseInt(user.id),
-      yearValue: parseInt(year),
-      monthValue: parseInt(month),
+      year: parseInt(year),
+      month: parseInt(month),
       budget: budget ? parseInt(budget) : null,
     };
 
