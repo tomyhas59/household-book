@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
+import axios from "axios";
 
 export const Container = styled.div`
   position: relative;
@@ -228,6 +229,7 @@ const Details = ({
   monthData,
   year,
   month,
+  user,
 }) => {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
@@ -254,8 +256,11 @@ const Details = ({
   const total = calculateTotal();
 
   useEffect(() => {
-    if (monthData && monthData[categoryTitle]) {
-      setTransactions(monthData[categoryTitle]);
+    if (monthData && Array.isArray(monthData.transactions)) {
+      const categoryData = monthData.transactions.filter(
+        (item) => item.type === categoryTitle
+      );
+      setTransactions(categoryData);
     } else {
       setTransactions([]);
     }
@@ -273,31 +278,34 @@ const Details = ({
     if (!description || !amount) return;
 
     const newTransaction = {
-      id: Date.now(),
       date,
       amount: parseFloat(amount),
       description,
-    };
-    //기존 데이터에 추가
-    const yearData = (await localforage.getItem(year)) || {};
-    const existingMonthData = yearData[month] || {};
-
-    const updatedTransactions = {
-      ...existingMonthData,
-      [categoryTitle]: existingMonthData[categoryTitle]
-        ? [...existingMonthData[categoryTitle], newTransaction]
-        : [newTransaction],
+      type: categoryTitle,
     };
 
-    yearData[month] = updatedTransactions;
-
-    await localforage.setItem(year, yearData);
-
-    setTransactions([...transactions, newTransaction]);
-    setAmount("");
-    setDate("");
-    setDescription("");
-    dateRef.current.focus();
+    try {
+      const response = await axios.post(
+        `http://localhost:8090/api/add`,
+        newTransaction,
+        {
+          params: {
+            userId: user.id,
+            monthId: monthData.id || null,
+            year: parseInt(year),
+            month: parseInt(month),
+          },
+        }
+      );
+      console.log("add res", response);
+      setTransactions([...transactions, newTransaction]);
+      setAmount("");
+      setDate("");
+      setDescription("");
+      dateRef.current.focus();
+    } catch (err) {
+      console.error("transaction add error", err);
+    }
   };
 
   const copyPreviousMonthData = async () => {
@@ -438,8 +446,8 @@ const Details = ({
         )}
       </TitleContainer>
       <List ref={listRef}>
-        {transactions.map((transaction) => (
-          <React.Fragment key={transaction.id}>
+        {transactions.map((transaction, index) => (
+          <React.Fragment key={index}>
             {editFormById === transaction.id ? (
               <Form
                 key={transaction.id}
