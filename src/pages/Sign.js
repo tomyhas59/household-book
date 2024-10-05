@@ -201,7 +201,7 @@ const Container = styled.div`
   transform: translate(-50%, -50%);
   border: 1px solid silver;
   @media (max-width: 480px) {
-    transform: scale(0.8);
+    width: 368px;
   }
 `;
 

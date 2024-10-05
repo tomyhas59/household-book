@@ -1,4 +1,3 @@
-import localforage from "localforage";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "./Details";
