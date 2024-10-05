@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import Details from "../components/Details";
-import localforage from "localforage";
 import Income from "../components/Income";
 import Saving from "../components/Saving";
 import Fixed from "../components/Fixed";
@@ -20,7 +19,7 @@ import {
   livingTotalState,
   userState,
 } from "../recoil/atoms";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Main = () => {
@@ -31,7 +30,7 @@ const Main = () => {
   const [year, setYear] = useRecoilState(yearState);
   const [month, setMonth] = useRecoilState(monthState);
   const [monthData, setMonthData] = useRecoilState(monthDataState);
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
 
   const navigator = useNavigate();
   const detailCategory = useMemo(
@@ -50,11 +49,8 @@ const Main = () => {
           },
         });
 
-        if (!response) {
-          setMonthData({});
-          return;
-        }
         const existingMonthData = response.data || {};
+        console.log("get", existingMonthData);
         setMonthData(existingMonthData);
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);

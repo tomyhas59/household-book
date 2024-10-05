@@ -298,7 +298,7 @@ const Details = ({
         }
       );
       console.log("add res", response);
-      setTransactions([...transactions, newTransaction]);
+      setTransactions([...transactions, response.data]);
       setAmount("");
       setDate("");
       setDescription("");
@@ -337,19 +337,23 @@ const Details = ({
     }
   };
 
-  const deleteTransactionById = async (id) => {
-    const yearData = (await localforage.getItem(year)) || {};
-    const existingMonthData = yearData[month] || {};
+  const deleteTransaction = async (id) => {
+    try {
+      const response = await axios.delete("http://localhost:8090/api/delete", {
+        params: {
+          userId: user.id,
+          transactionId: id,
+        },
+      });
 
-    const updatedArray = existingMonthData[categoryTitle]?.filter(
-      (transaction) => transaction.id !== id
-    );
+      console.log(response.data);
 
-    existingMonthData[categoryTitle] = updatedArray;
-
-    await localforage.setItem(year, yearData);
-
-    setTransactions(updatedArray);
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter((transaction) => transaction.id !== id)
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const deleteAllTransaction = async () => {
@@ -495,9 +499,7 @@ const Details = ({
                 <ListItemText style={{ color: "red" }}>
                   {transaction.amount.toLocaleString()}
                   {hoveredItemId === transaction.id ? (
-                    <Button
-                      onClick={() => deleteTransactionById(transaction.id)}
-                    >
+                    <Button onClick={() => deleteTransaction(transaction.id)}>
                       x
                     </Button>
                   ) : (
