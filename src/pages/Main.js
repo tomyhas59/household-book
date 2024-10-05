@@ -21,6 +21,7 @@ import {
 } from "../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BASE_URL } from "../config/config";
 
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
@@ -41,7 +42,7 @@ const Main = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8090/api/getMonth", {
+        const response = await axios.get(`${BASE_URL}/api/getMonth`, {
           params: {
             userId: user.id,
             year: year,

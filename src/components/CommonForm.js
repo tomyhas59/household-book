@@ -17,6 +17,7 @@ import {
   TransparentButton,
 } from "./Details";
 import axios from "axios";
+import { BASE_URL } from "../config/config";
 
 const CommonForm = ({
   categoryTitle,
@@ -35,7 +36,7 @@ const CommonForm = ({
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
-  const [editDate, setEditDate] = useState(0);
+  const [editDate, setEditDate] = useState("");
   const [date, setDate] = useState("");
   const dateRef = useRef(null);
   const listRef = useRef(null);
@@ -72,20 +73,16 @@ const CommonForm = ({
     };
 
     try {
-      const response = await axios.post(
-        `http://localhost:8090/api/add`,
-        newTransaction,
-        {
-          params: {
-            monthId: monthData.id || null,
-            userId: user.id,
-            year: parseInt(year),
-            month: parseInt(month),
-          },
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/add`, newTransaction, {
+        params: {
+          monthId: monthData.id || null,
+          userId: user.id,
+          year: parseInt(year),
+          month: parseInt(month),
+        },
+      });
       console.log("add res", response.data);
-      setTransactions([...transactions, newTransaction]);
+      setTransactions([...transactions, response.data]);
       setAmount("");
       setDate("");
       setDescription("");
@@ -124,16 +121,23 @@ const CommonForm = ({
     }
   };
 
-  const deleteTransactionById = async (categoryTitle, id) => {
-    const yearData = (await localforage.getItem(year)) || {};
-    const existingMonthData = yearData[month] || {};
+  const deleteTransaction = async (id) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/api/delete`, {
+        params: {
+          userId: user.id,
+          transactionId: id,
+        },
+      });
 
-    const updatedArray = existingMonthData[categoryTitle]?.filter(
-      (transaction) => transaction.id !== id
-    );
-    existingMonthData[categoryTitle] = updatedArray;
-    await localforage.setItem(year, yearData);
-    setTransactions(updatedArray);
+      console.log(response.data);
+
+      setTransactions((prevTransactions) =>
+        prevTransactions.filter((transaction) => transaction.id !== id)
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const deleteAllTransaction = async () => {
@@ -240,7 +244,10 @@ const CommonForm = ({
                   type="number"
                   placeholder="날짜"
                   value={editDate}
-                  onChange={(e) => setEditDate(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setEditDate(value > 31 ? value.slice(-1) : value);
+                  }}
                   min="1"
                   max="31"
                 />
@@ -285,11 +292,7 @@ const CommonForm = ({
                   {transaction.amount.toLocaleString()}
                 </ListItemText>
                 {hoveredItemId === transaction.id ? (
-                  <Button
-                    onClick={() =>
-                      deleteTransactionById(categoryTitle, transaction.id)
-                    }
-                  >
+                  <Button onClick={() => deleteTransaction(transaction.id)}>
                     x
                   </Button>
                 ) : (
@@ -306,9 +309,10 @@ const CommonForm = ({
           type="number"
           placeholder="날짜"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
-          min="1"
-          max="31"
+          onChange={(e) => {
+            const value = e.target.value;
+            setDate(value > 31 ? value.slice(-1) : value);
+          }}
         />
         <Input
           type="text"

@@ -4,6 +4,7 @@ import axios from "axios"; // axios를 이용하여 서버와 통신
 import { useNavigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../recoil/atoms";
+import { BASE_URL } from "../config/config";
 
 const Login = () => {
   const [active, setActive] = useState(false);
@@ -45,7 +46,7 @@ const Login = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:8090/api/signup", signupData, {
+      await axios.post(`${BASE_URL}/api/signup`, signupData, {
         withCredentials: true,
       });
       alert("회원가입이 완료되었습니다!");
@@ -66,13 +67,9 @@ const Login = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8090/api/login",
-        loginData,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/login`, loginData, {
+        withCredentials: true,
+      });
       const { token, nickname, email, id } = response.data;
 
       localStorage.setItem("jwt", token);

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
 import axios from "axios";
+import { BASE_URL } from "../config/config";
 
 export const Container = styled.div`
   position: relative;
@@ -240,7 +241,7 @@ const Details = ({
   const [editFormById, setEditFormById] = useState(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
-  const [editDate, setEditDate] = useState(0);
+  const [editDate, setEditDate] = useState("");
   const [date, setDate] = useState("");
   const dateRef = useRef(null);
   const listRef = useRef(null);
@@ -285,18 +286,14 @@ const Details = ({
     };
 
     try {
-      const response = await axios.post(
-        `http://localhost:8090/api/add`,
-        newTransaction,
-        {
-          params: {
-            userId: user.id,
-            monthId: monthData.id || null,
-            year: parseInt(year),
-            month: parseInt(month),
-          },
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/add`, newTransaction, {
+        params: {
+          userId: user.id,
+          monthId: monthData.id || null,
+          year: parseInt(year),
+          month: parseInt(month),
+        },
+      });
       console.log("add res", response);
       setTransactions([...transactions, response.data]);
       setAmount("");
@@ -339,7 +336,7 @@ const Details = ({
 
   const deleteTransaction = async (id) => {
     try {
-      const response = await axios.delete("http://localhost:8090/api/delete", {
+      const response = await axios.delete(`${BASE_URL}/api/delete`, {
         params: {
           userId: user.id,
           transactionId: id,
@@ -461,9 +458,10 @@ const Details = ({
                   type="number"
                   placeholder="날짜"
                   value={editDate}
-                  onChange={(e) => setEditDate(e.target.value)}
-                  min="1"
-                  max="31"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setEditDate(value > 31 ? value.slice(-1) : value);
+                  }}
                 />
                 <Input
                   type="text"
@@ -517,9 +515,10 @@ const Details = ({
           type="number"
           placeholder="날짜"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
-          min="1"
-          max="31"
+          onChange={(e) => {
+            const value = e.target.value;
+            setDate(value > 31 ? value.slice(-1) : value);
+          }}
         />
         <Input
           type="text"
