@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import localforage from "localforage";
 import styled from "styled-components";
 import axios from "axios";
@@ -10,6 +10,7 @@ export const Container = styled.div`
   border: 1px solid #e0e0e0;
   width: 100%;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   background-color: #f9f9f9;
 `;
@@ -84,6 +85,7 @@ export const AllDeleteButton = styled.button`
 export const List = styled.div`
   overflow-y: auto;
   max-height: 83%;
+  flex: 1;
   @media (max-width: 480px) {
     max-height: 80%;
   }
@@ -183,17 +185,16 @@ export const Input = styled.input`
     width: 50%;
   }
 `;
+export const TotalContainer = styled.div``;
 
 export const Total = styled.div`
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: calc(100% - 20px);
+  width: 90%;
   color: #c0392b;
   font-size: 1.1rem;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  margin: 0 auto;
   > p {
     margin: 0 auto;
   }
@@ -205,8 +206,8 @@ export const ProgressContainer = styled.div`
   background-color: #e0e0e0;
   border-radius: 4px;
   overflow: hidden;
+  margin-top: 3px;
   height: 20px;
-  margin-bottom: 10px;
 `;
 
 export const ProgressBar = styled.div`
@@ -246,16 +247,6 @@ const Details = ({
   const dateRef = useRef(null);
   const listRef = useRef(null);
 
-  const calculateTotal = useCallback(() => {
-    if (transactions)
-      return transactions.reduce(
-        (acc, transaction) => acc + transaction.amount,
-        0
-      );
-  }, [transactions]);
-
-  const total = calculateTotal();
-
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions.filter(
@@ -266,6 +257,11 @@ const Details = ({
       setTransactions([]);
     }
   }, [monthData, categoryTitle]);
+
+  const total = transactions.reduce(
+    (acc, transaction) => acc + transaction.amount,
+    0
+  );
 
   useEffect(() => {
     const newPercentage = livingTotal > 0 ? (total / livingTotal) * 100 : 0;
@@ -279,7 +275,7 @@ const Details = ({
     if (!description || !amount) return;
 
     const newTransaction = {
-      date,
+      date: date || 0,
       amount: parseFloat(amount),
       description,
       type: categoryTitle,
@@ -367,17 +363,14 @@ const Details = ({
   };
 
   const handleModifyForm = async (id) => {
-    const yearData = (await localforage.getItem(year)) || {};
-    const existingMonthData = yearData[month] || {};
-
-    const transaction = existingMonthData[categoryTitle].find(
+    const prevTransaction = transactions.find(
       (transaction) => transaction.id === id
     );
     setEditFormById(id);
-    if (transaction) {
-      setEditDescription(transaction.description);
-      setEditAmount(transaction.amount);
-      setEditDate(transaction.date);
+    if (prevTransaction) {
+      setEditDescription(prevTransaction.description);
+      setEditAmount(prevTransaction.amount);
+      setEditDate(prevTransaction.date);
     }
   };
 
@@ -386,34 +379,42 @@ const Details = ({
 
     if (!editDescription || !editAmount) return;
 
-    const yearData = (await localforage.getItem(year)) || {};
-    const existingMonthData = yearData[month] || {};
-    if (!existingMonthData[categoryTitle]) {
-      existingMonthData[categoryTitle] = [];
-    }
+    const updateTransaction = {
+      date: editDate || 0,
+      amount: parseFloat(editAmount),
+      description: editDescription,
+    };
 
-    const updatedTransactions = existingMonthData[categoryTitle].map(
-      (transaction) => {
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/api/update`,
+        updateTransaction,
+        {
+          params: {
+            userId: user.id,
+            transactionId: id,
+          },
+        }
+      );
+
+      const updatedTransactions = transactions.map((transaction) => {
         if (transaction.id === id) {
           return {
             ...transaction,
-            date: editDate,
-            description: editDescription,
-            amount: parseFloat(editAmount),
+            ...response.data,
           };
         }
         return transaction;
-      }
-    );
+      });
 
-    existingMonthData[categoryTitle] = updatedTransactions;
-
-    await localforage.setItem(year, yearData);
-    setTransactions(updatedTransactions);
-    setAmount("");
-    setDate("");
-    setDescription("");
-    setEditFormById(null);
+      setTransactions(updatedTransactions);
+      setAmount("");
+      setDate("");
+      setDescription("");
+      setEditFormById(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -491,7 +492,7 @@ const Details = ({
                 onClick={() => handleModifyForm(transaction.id)}
               >
                 <ListItemText>
-                  {transaction.date && `${transaction.date}일`}
+                  {transaction.date ? `${transaction.date}일` : ""}
                 </ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: "red" }}>
@@ -508,40 +509,43 @@ const Details = ({
             )}
           </React.Fragment>
         ))}
+        <Form onSubmit={addTransaction}>
+          <Input
+            ref={dateRef}
+            type="number"
+            placeholder="날짜"
+            value={date}
+            onChange={(e) => {
+              const value = e.target.value;
+              setDate(value > 31 ? value.slice(-1) : value);
+            }}
+          />
+          <Input
+            type="text"
+            placeholder="상세"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+          <Input
+            type="number"
+            placeholder="비용"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+          />
+          <Button type="submit">+</Button>
+        </Form>
       </List>
-      <Form onSubmit={addTransaction}>
-        <Input
-          ref={dateRef}
-          type="number"
-          placeholder="날짜"
-          value={date}
-          onChange={(e) => {
-            const value = e.target.value;
-            setDate(value > 31 ? value.slice(-1) : value);
-          }}
-        />
-        <Input
-          type="text"
-          placeholder="상세"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <Input
-          type="number"
-          placeholder="비용"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        <Button type="submit">+</Button>
-      </Form>
-      <Total>
-        <ProgressContainer>
-          <ProgressBar $percentage={per}>
-            <p>{per.toFixed(0)}%</p>
-          </ProgressBar>
-        </ProgressContainer>
-        <p>{total.toLocaleString()}</p>
-      </Total>
+
+      <TotalContainer>
+        <Total>
+          <ProgressContainer>
+            <ProgressBar $percentage={per}>
+              <p>{per.toFixed(0)}%</p>
+            </ProgressBar>
+          </ProgressContainer>
+          <p>{total.toLocaleString()}</p>
+        </Total>
+      </TotalContainer>
     </Container>
   );
 };

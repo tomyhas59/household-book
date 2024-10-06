@@ -104,7 +104,7 @@ const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 46vh;
+  height: 50%;
   padding: 10px;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
