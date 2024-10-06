@@ -312,7 +312,7 @@ const HeaderContainer = styled.div`
 const HeaderLeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   > p {
     color: #fff;
     font-weight: bold;
@@ -340,7 +340,8 @@ const HeaderTitle = styled.h1`
   @media (max-width: 768px) {
     position: static;
     transform: none;
-    font-size: 1.5rem;
+    font-size: 1rem;
+    word-break: keep-all;
   }
 `;
 
@@ -417,7 +418,8 @@ const MonthContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 180px;
+    width: 170px;
+
     padding: 15px;
     * {
       font-size: 0.7rem;

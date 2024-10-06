@@ -201,9 +201,9 @@ const HeaderTitle = styled.h1`
   transform: translate(-50%, -50%);
 
   @media (max-width: 768px) {
-    position: static;
-    transform: none;
-    font-size: 1.5rem;
+    left: 70%;
+    font-size: 1rem;
+    word-break: keep-all;
   }
 `;
 
@@ -250,5 +250,10 @@ export const LogoutButton = styled.button`
   &:hover {
     background-color: #512da8;
     color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 0.5rem;
+    padding: 10px;
   }
 `;
