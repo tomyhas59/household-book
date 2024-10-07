@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import Details from "../components/Details";
 import Income from "../components/Income";
 import Saving from "../components/Saving";
@@ -23,6 +23,14 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 
+export const DETAIL_CATEGORIES = [
+  "식비",
+  "생필품",
+  "문화생활",
+  "교통비",
+  "의료 및 기타",
+];
+
 const Main = () => {
   const setDetailsTotals = useSetRecoilState(detailsTotalsState);
   const [income, setIncome] = useRecoilState(incomeState);
@@ -34,10 +42,6 @@ const Main = () => {
   const user = useRecoilValue(userState);
 
   const navigator = useNavigate();
-  const detailCategory = useMemo(
-    () => ["식비", "생필품", "문화생활", "교통비", "의료 및 기타"],
-    []
-  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,7 +55,6 @@ const Main = () => {
         });
 
         const existingMonthData = response.data || {};
-        console.log("get", existingMonthData);
         setMonthData(existingMonthData);
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
@@ -153,7 +156,7 @@ const Main = () => {
           </ColumnContainer>
         </FlexContainer>
         <DetailsContainer>
-          {detailCategory.map((key, index) => (
+          {DETAIL_CATEGORIES.map((key, index) => (
             <Details
               key={index}
               categoryTitle={key}

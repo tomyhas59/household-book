@@ -1,4 +1,3 @@
-import localforage from "localforage";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/Details";
@@ -7,17 +6,12 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { monthState, userState, yearState } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { LogoutButton } from "./Main";
+import { DETAIL_CATEGORIES, LogoutButton } from "./Main";
+import axios from "axios";
+import { BASE_URL } from "../config/config";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const DETAIL_CATEGORIES = [
-  "식비",
-  "생필품",
-  "문화생활",
-  "교통비",
-  "의료 및 기타",
-];
 const COLORS = {
   fixed: "#FF6384",
   savings: "#36A2EB",
@@ -31,7 +25,7 @@ const COLORS = {
 
 const Annual = () => {
   const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [yearData, setYearData] = useState({});
+  const [yearData, setYearData] = useState([]);
   const navigate = useNavigate();
   const setRecoilMonth = useSetRecoilState(monthState);
   const setRecoilYear = useSetRecoilState(yearState);
@@ -43,20 +37,36 @@ const Annual = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await localforage.getItem(year);
-        setYearData(data || {});
+        const response = await axios.get(`${BASE_URL}/api/getYear`, {
+          params: {
+            userId: user.id,
+            year: parseInt(year),
+          },
+        });
+        setYearData(response.data || []);
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
-        setYearData({});
+        setYearData([]);
       }
     };
 
     fetchData();
-  }, [year]);
+  }, [user, year]);
 
   const calculateTotal = useCallback(
-    (month, category) =>
-      yearData[month]?.[category]?.reduce((a, c) => a + c.amount, 0) || 0,
+    (month, category) => {
+      if (yearData.length > 0) {
+        //해당 월 찾기
+        const monthData = yearData.filter((data) => data.month === month);
+        if (monthData.length > 0) {
+          const total = monthData[0].transactions
+            .filter((transaction) => transaction.type === category)
+            .reduce((a, c) => a + c.amount, 0);
+          return total;
+        }
+      }
+      return 0;
+    },
     [yearData]
   );
 
@@ -109,9 +119,9 @@ const Annual = () => {
   };
 
   const pieData = useMemo(() => {
-    const income = totalIncome();
-    const fixed = totalFixed();
-    const savings = totalSavings();
+    const pieTotalIncome = totalIncome();
+    const pieTotallFixed = totalFixed();
+    const pieTotalSavings = totalSavings();
     const categoriesData = {
       food: totalCategory("식비"),
       necessity: totalCategory("생필품"),
@@ -121,18 +131,17 @@ const Annual = () => {
     };
 
     const remaining =
-      income -
-      (fixed +
-        savings +
+      pieTotalIncome -
+      (pieTotalSavings +
         Object.values(categoriesData).reduce((a, c) => a + c, 0));
 
     const calcPercentage = (value) =>
-      income ? ((value / income) * 100).toFixed(2) : 0;
+      pieTotalIncome ? ((value / pieTotalIncome) * 100).toFixed(2) : 0;
 
     return {
       labels: [
-        `고정 지출 (${calcPercentage(fixed)}%)`,
-        `저축 (${calcPercentage(savings)}%)`,
+        `고정 지출 (${calcPercentage(pieTotallFixed)}%)`,
+        `저축 (${calcPercentage(pieTotalSavings)}%)`,
         `식비 (${calcPercentage(categoriesData.food)}%)`,
         `생필품 (${calcPercentage(categoriesData.necessity)}%)`,
         `문화생활 (${calcPercentage(categoriesData.culture)}%)`,
@@ -143,8 +152,8 @@ const Annual = () => {
       datasets: [
         {
           data: [
-            fixed,
-            savings,
+            pieTotallFixed,
+            pieTotalSavings,
             categoriesData.food,
             categoriesData.necessity,
             categoriesData.culture,
@@ -200,8 +209,9 @@ const Annual = () => {
           <MonthList>
             {months.map((month) => {
               const income = calculateTotal(month, "수입");
-              const spending =
-                calculateTotal(month, "고정 지출") + totalDetails(month);
+              const spending = parseInt(
+                calculateTotal(month, "고정 지출") + totalDetails(month)
+              );
               const savings = calculateTotal(month, "저축");
 
               const categories = {
@@ -226,25 +236,25 @@ const Annual = () => {
                     <AccountSection>
                       <p style={{ color: "#3498db" }}>수입</p>
                       <Amount style={{ color: "#3498db" }}>
-                        {income.toLocaleString()}원
+                        {income?.toLocaleString()}원
                       </Amount>
                     </AccountSection>
                     <AccountSection>
                       <p style={{ color: "crimson" }}>지출</p>
                       <Amount style={{ color: "crimson" }}>
-                        {spending.toLocaleString()}원
+                        {spending?.toLocaleString()}원
                       </Amount>
                     </AccountSection>
                     <ProgressContainer>
                       <ProgressBar $percentage={spendingRate}>
-                        <p>{spendingRate.toFixed(0)}%</p>
+                        <p>{spendingRate?.toFixed(0)}%</p>
                       </ProgressBar>
                     </ProgressContainer>
                     <CategoryDetails>
                       {Object.entries(categories).map(([key, value]) => (
                         <Detail key={key}>
                           <p>{key}</p>
-                          <p> {value.toLocaleString()}원 </p>
+                          <p>{value?.toLocaleString()}원 </p>
                         </Detail>
                       ))}
                     </CategoryDetails>
@@ -252,7 +262,7 @@ const Annual = () => {
                     <AccountSection>
                       <p style={{ color: "#3498db" }}>저축</p>
                       <Amount style={{ color: "#3498db" }}>
-                        {savings.toLocaleString()}원
+                        {savings?.toLocaleString()}원
                       </Amount>
                     </AccountSection>
                     <ProgressContainer>
@@ -260,7 +270,7 @@ const Annual = () => {
                         $percentage={savingsRate}
                         style={{ backgroundColor: "#3498db" }}
                       >
-                        <p>{savingsRate.toFixed(0)}%</p>
+                        <p>{savingsRate?.toFixed(0)}%</p>
                       </ProgressBar>
                     </ProgressContainer>
                   </Category>
@@ -283,7 +293,7 @@ const Container = styled.div`
   background-color: #f5f7fa;
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: 65% 35%;
   grid-template-areas:
     "a a"
     "b c";
@@ -312,14 +322,14 @@ const HeaderContainer = styled.div`
 const HeaderLeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 5px;
   > p {
     color: #fff;
     font-weight: bold;
   }
 
   @media (max-width: 768px) {
-    transform: scale(0.8);
+    transform: scale(0.7);
     display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
@@ -386,7 +396,7 @@ const HomeButton = styled(Link)`
 
 const MonthListContainer = styled.div`
   grid-area: b;
-  padding: 20px;
+  padding: 10px;
   @media (max-width: 768px) {
     padding: 10px;
     padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
@@ -396,18 +406,17 @@ const MonthListContainer = styled.div`
 const MonthList = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 2px;
   @media (max-width: 768px) {
-    gap: 10px;
-    justify-content: center;
+    grid-template-columns: repeat(3, 1fr);
   }
 `;
 
 const MonthContainer = styled.div`
   background-color: #ecf0f1;
-  padding: 20px;
+  padding: 10px;
   border-radius: 12px;
-  width: 250px;
+  width: 200px;
   cursor: pointer;
   transition: transform 0.2s;
 
@@ -418,9 +427,7 @@ const MonthContainer = styled.div`
   }
 
   @media (max-width: 768px) {
-    width: 170px;
-
-    padding: 15px;
+    width: 160px;
     * {
       font-size: 0.7rem;
     }
