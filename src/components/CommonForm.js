@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import localforage from "localforage";
 
 import {
   Input,
@@ -103,23 +102,59 @@ const CommonForm = ({
       previousYear = parseInt(year, 10) - 1;
     }
 
-    const previousYearData = (await localforage.getItem(previousYear)) || {};
-    const previousMonthData = previousYearData[previousMonth] || {};
+    try {
+      // 이전 달 데이터 가져오기
+      const response = await axios.get(`${BASE_URL}/api/getTransactions`, {
+        params: {
+          month: previousMonth,
+          year: previousYear,
+          userId: user.id,
+          type: categoryTitle,
+        },
+      });
 
-    const currentYearData = (await localforage.getItem(year)) || {};
-    const currentMonthData = currentYearData[month] || {};
+      const previousTransactions = response.data;
 
-    if (previousMonthData[categoryTitle]) {
-      currentMonthData[categoryTitle] = previousMonthData[categoryTitle];
+      if (previousTransactions.length > 0) {
+        // 이번 달 데이터 삭제
+        await axios.delete(`${BASE_URL}/api/deleteAll`, {
+          params: {
+            userId: user.id,
+            monthId: monthData.id,
+            type: categoryTitle,
+          },
+        });
 
-      currentYearData[month] = currentMonthData;
+        // 이전 달 데이터 추가하기
+        const promises = previousTransactions.map(async (transaction) => {
+          const newTransaction = {
+            date: transaction.date || 0,
+            amount: parseFloat(transaction.amount),
+            description: transaction.description,
+            type: categoryTitle,
+          };
 
-      await localforage.setItem(year, currentYearData);
+          await axios.post(`${BASE_URL}/api/add`, newTransaction, {
+            params: {
+              monthId: monthData.id || null,
+              userId: user.id,
+              year: parseInt(year),
+              month: parseInt(month),
+            },
+          });
+        });
 
-      setTransactions(previousMonthData[categoryTitle]);
-      alert("이전 달 데이터가 복사되었습니다.");
-    } else {
-      alert("이전 달에 복사할 데이터가 없습니다.");
+        // 모든 요청이 완료될 때까지 기다리기
+        await Promise.all(promises);
+
+        // 새로 추가한 거래를 다시 가져와서 상태 업데이트
+        setTransactions(previousTransactions);
+        alert("이전 달 데이터가 복사되었습니다.");
+      } else {
+        alert("이전 달에 복사할 데이터가 없습니다.");
+      }
+    } catch (err) {
+      console.error("데이터 복사 중 오류 발생", err);
     }
   };
 
@@ -143,15 +178,20 @@ const CommonForm = ({
   };
 
   const deleteAllTransaction = async () => {
-    if (window.confirm("전체 삭제하시겠습니까?")) {
-      const yearData = (await localforage.getItem(year)) || {};
-      const existingMonthData = yearData[month] || {};
-
-      existingMonthData[categoryTitle] = [];
-
-      await localforage.setItem(year, yearData);
-
-      setTransactions([]);
+    try {
+      if (window.confirm("전체 삭제하시겠습니까?")) {
+        const response = await axios.delete(`${BASE_URL}/api/deleteAll`, {
+          params: {
+            userId: user.id,
+            monthId: monthData.id,
+            type: categoryTitle,
+          },
+        });
+        console.log(response.data);
+        setTransactions([]);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -294,7 +334,7 @@ const CommonForm = ({
                 </ListItemText>
                 <ListItemText>{transaction.description}</ListItemText>
                 <ListItemText style={{ color: color }}>
-                  {transaction.amount.toLocaleString()}
+                  {transaction.amount?.toLocaleString()}
                 </ListItemText>
                 {hoveredItemId === transaction.id ? (
                   <Button onClick={() => deleteTransaction(transaction.id)}>
