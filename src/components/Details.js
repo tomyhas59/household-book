@@ -15,10 +15,9 @@ export const Container = styled.div`
 `;
 
 export const TitleContainer = styled.h2`
-  margin-top: 5px;
   text-align: center;
   font-size: 1.4rem;
-  padding: 10px 15px;
+  padding-top: 20px;
   position: relative;
   @media (max-width: 480px) {
     font-size: 1.2rem;
@@ -54,7 +53,6 @@ export const CopyButton = styled.button`
 export const Title = styled.div`
   font-size: 1.3rem;
   color: #2c3e50;
-  flex-grow: 1;
   text-align: center;
   @media (max-width: 480px) {
     font-size: 1rem;
@@ -94,6 +92,7 @@ export const ListItem = styled.div`
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1.5fr 1.5fr auto;
+  gap: 6px;
   align-items: center;
   border-bottom: 1px solid #ddd;
   padding: 5px;
@@ -114,7 +113,7 @@ export const ListItemText = styled.div`
   color: #333;
   font-size: 0.7rem;
   @media (max-width: 480px) {
-    width: 50%;
+    width: auto;
   }
 `;
 
@@ -245,7 +244,7 @@ const Details = ({
   const [date, setDate] = useState("");
   const dateRef = useRef(null);
   const listRef = useRef(null);
-
+  const listItemRef = useRef(null);
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions.filter(
@@ -458,7 +457,7 @@ const Details = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (listRef.current && !listRef.current.contains(event.target)) {
+      if (listItemRef.current && !listItemRef.current.contains(event.target)) {
         setEditFormById(null);
       }
     };
@@ -493,6 +492,7 @@ const Details = ({
               <Form
                 key={transaction.id}
                 onSubmit={(e) => editTransaction(e, transaction.id)}
+                ref={listItemRef}
               >
                 <Input
                   type="number"

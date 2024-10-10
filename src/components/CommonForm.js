@@ -40,7 +40,7 @@ const CommonForm = ({
   const dateRef = useRef(null);
   const listRef = useRef(null);
   const [total, setTotal] = useState(null);
-
+  const listItemRef = useRef(null);
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions.filter(
@@ -252,7 +252,7 @@ const CommonForm = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (listRef.current && !listRef.current.contains(event.target)) {
+      if (listItemRef.current && !listItemRef.current.contains(event.target)) {
         setEditFormById(null);
       }
     };
@@ -284,7 +284,11 @@ const CommonForm = ({
         {transactions.map((transaction, index) => (
           <React.Fragment key={index}>
             {editFormById === transaction.id ? (
-              <Form onSubmit={(e) => editTransaction(e, transaction.id)}>
+              <Form
+                key={transaction.id}
+                onSubmit={(e) => editTransaction(e, transaction.id)}
+                ref={listItemRef}
+              >
                 <Input
                   type="number"
                   placeholder="날짜"
