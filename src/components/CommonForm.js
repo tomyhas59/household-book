@@ -116,15 +116,16 @@ const CommonForm = ({
       const previousTransactions = response.data;
 
       if (previousTransactions.length > 0) {
-        // 이번 달 데이터 삭제
-        await axios.delete(`${BASE_URL}/api/deleteAll`, {
-          params: {
-            userId: user.id,
-            monthId: monthData.id,
-            type: categoryTitle,
-          },
-        });
-
+        // 이번 달 데이터 있으면 데이터 삭제
+        if (monthData.id) {
+          await axios.delete(`${BASE_URL}/api/deleteAll`, {
+            params: {
+              userId: user.id,
+              monthId: monthData.id,
+              type: categoryTitle,
+            },
+          });
+        }
         // 이전 달 데이터 추가하기
         const promises = previousTransactions.map(async (transaction) => {
           const newTransaction = {

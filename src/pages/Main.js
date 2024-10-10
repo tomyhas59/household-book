@@ -53,7 +53,7 @@ const Main = () => {
             month: month,
           },
         });
-
+        console.log(response.data);
         const existingMonthData = response.data || {};
         setMonthData(existingMonthData);
       } catch (error) {
