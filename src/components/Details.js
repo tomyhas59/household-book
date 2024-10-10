@@ -409,7 +409,7 @@ const Details = ({
     if (prevTransaction) {
       setEditDescription(prevTransaction.description);
       setEditAmount(prevTransaction.amount);
-      setEditDate(prevTransaction.date);
+      setEditDate(prevTransaction.date === 0 ? "" : prevTransaction.date);
     }
   };
 
