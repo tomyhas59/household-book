@@ -133,8 +133,10 @@ const Annual = () => {
     const remaining =
       pieTotalIncome -
       (pieTotalSavings +
-        Object.values(categoriesData).reduce((a, c) => a + c, 0));
+        Object.values(categoriesData).reduce((a, c) => a + c, 0) +
+        pieTotallFixed);
 
+    console.log(pieTotalSavings);
     const calcPercentage = (value) =>
       pieTotalIncome ? ((value / pieTotalIncome) * 100).toFixed(2) : 0;
 

@@ -40,7 +40,7 @@ const CommonForm = ({
   const dateRef = useRef(null);
   const listRef = useRef(null);
   const [total, setTotal] = useState(null);
-
+  const listItemRef = useRef(null);
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions.filter(
@@ -116,15 +116,16 @@ const CommonForm = ({
       const previousTransactions = response.data;
 
       if (previousTransactions.length > 0) {
-        // 이번 달 데이터 삭제
-        await axios.delete(`${BASE_URL}/api/deleteAll`, {
-          params: {
-            userId: user.id,
-            monthId: monthData.id,
-            type: categoryTitle,
-          },
-        });
-
+        // 이번 달 데이터 있으면 데이터 삭제
+        if (monthData.id) {
+          await axios.delete(`${BASE_URL}/api/deleteAll`, {
+            params: {
+              userId: user.id,
+              monthId: monthData.id,
+              type: categoryTitle,
+            },
+          });
+        }
         // 이전 달 데이터 추가하기
         const promises = previousTransactions.map(async (transaction) => {
           const newTransaction = {
@@ -203,7 +204,7 @@ const CommonForm = ({
     if (prevTransaction) {
       setEditDescription(prevTransaction.description);
       setEditAmount(prevTransaction.amount);
-      setEditDate(prevTransaction.date);
+      setEditDate(prevTransaction.date === 0 ? "" : prevTransaction.date);
     }
   };
 
@@ -252,7 +253,7 @@ const CommonForm = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (listRef.current && !listRef.current.contains(event.target)) {
+      if (listItemRef.current && !listItemRef.current.contains(event.target)) {
         setEditFormById(null);
       }
     };
@@ -284,7 +285,11 @@ const CommonForm = ({
         {transactions.map((transaction, index) => (
           <React.Fragment key={index}>
             {editFormById === transaction.id ? (
-              <Form onSubmit={(e) => editTransaction(e, transaction.id)}>
+              <Form
+                key={transaction.id}
+                onSubmit={(e) => editTransaction(e, transaction.id)}
+                ref={listItemRef}
+              >
                 <Input
                   type="number"
                   placeholder="날짜"

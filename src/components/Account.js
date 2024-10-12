@@ -23,9 +23,10 @@ const AccountSection = styled.div`
   padding: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
-  > p {
-    margin: 2px;
-  }
+`;
+
+const AccountTitle = styled.p`
+  margin: 2px;
 `;
 
 const Saving = styled.div`
@@ -78,6 +79,16 @@ const BudgetForm = styled.form`
     &:hover {
       background-color: #27ae60;
     }
+  }
+`;
+
+const RemainingBudget = styled.div`
+  font-size: 0.7rem;
+  color: #e0e0e0;
+  > :last-child {
+    color: red;
+    font-weight: bold;
+    font-size: 0.9rem;
   }
 `;
 
@@ -173,19 +184,19 @@ const Account = ({
   return (
     <AccountContainer>
       <AccountSection>
-        <p>총 수입</p>
+        <AccountTitle>총 수입</AccountTitle>
         <Saving>{income.toLocaleString()}</Saving>
       </AccountSection>
       <AccountSection>
-        <p>총 고정 지출</p>
+        <AccountTitle>총 고정 지출</AccountTitle>
         <Spending>{fixed.toLocaleString()}</Spending>
       </AccountSection>
       <AccountSection>
-        <p>생활비 합계</p>
+        <AccountTitle>생활비 합계</AccountTitle>
         <Spending>{livingTotal.toLocaleString()}</Spending>
       </AccountSection>
       <AccountSection>
-        <p>총 지출</p>
+        <AccountTitle>총 지출</AccountTitle>
         <ProgressContainer>
           <ProgressBar $percentage={spendingPer}>
             <p>{spendingPer.toFixed(0)}%</p>
@@ -194,7 +205,7 @@ const Account = ({
         <Spending>{(livingTotal + fixed).toLocaleString()}</Spending>
       </AccountSection>
       <AccountSection>
-        <p>총 저축</p>
+        <AccountTitle>총 저축</AccountTitle>
         <ProgressContainer>
           <ProgressBar
             $percentage={savingPer}
@@ -206,13 +217,13 @@ const Account = ({
         <Saving>{saving.toLocaleString()}</Saving>
       </AccountSection>
       <AccountSection>
-        <p>남은 돈</p>
+        <AccountTitle>남은 돈</AccountTitle>
         <Saving>
           {(income - fixed - livingTotal - saving).toLocaleString()}
         </Saving>
       </AccountSection>
       <AccountSection>
-        <p>소비 예산</p>
+        <AccountTitle>소비 예산</AccountTitle>
         <Saving>
           {isBudget ? (
             <BudgetForm onSubmit={handleSubmit}>
@@ -233,6 +244,14 @@ const Account = ({
             </BudgetDisplay>
           )}
         </Saving>
+        {budget && !isBudget ? (
+          <RemainingBudget>
+            <div>소비 예산 - 생활비</div>
+            <div>
+              남은 예산: {budget ? (budget - livingTotal).toLocaleString() : ""}
+            </div>
+          </RemainingBudget>
+        ) : null}
       </AccountSection>
     </AccountContainer>
   );
