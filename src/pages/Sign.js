@@ -21,6 +21,7 @@ const Login = () => {
   const setUser = useSetRecoilState(userState);
   const navigator = useNavigate();
 
+  console.log(BASE_URL);
   // 회원가입 데이터 변경 핸들러
   const handleSignupChange = (e) => {
     setSignupData({
