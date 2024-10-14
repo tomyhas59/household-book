@@ -2,11 +2,13 @@
   "homepage": "https://tomyhas59.github.io/household-book",
   "name": "household-book",
   "version": "0.1.0",
+  "main": "src/index.tsx",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/chart.js": "^2.9.41",
     "@types/jest": "^29.5.13",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",

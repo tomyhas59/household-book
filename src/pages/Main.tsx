@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Details from "../components/Details";
 import Income from "../components/Income";
 import Saving from "../components/Saving";
@@ -48,7 +48,7 @@ const Main = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/getMonth`, {
           params: {
-            userId: user.id,
+            userId: user?.id,
             year: year,
             month: month,
           },
@@ -67,7 +67,7 @@ const Main = () => {
   }, [user, year, month, setMonthData]);
 
   const updateAllTotal = useCallback(
-    (index, total) => {
+    (index: number, total: number) => {
       setDetailsTotals((prevTotals) => {
         const newAllTotals = [...prevTotals];
         if (newAllTotals[index] !== total) {
@@ -90,7 +90,7 @@ const Main = () => {
   };
 
   useEffect(() => {
-    if (user.id === "") navigator("/");
+    if (user?.id === null) navigator("/");
   });
 
   return (
@@ -102,7 +102,7 @@ const Main = () => {
           setYear={setYear}
           setMonth={setMonth}
         />
-        <HeaderTitle>{user.nickname}의 월별 데이터</HeaderTitle>
+        <HeaderTitle>{user?.nickname}의 월별 데이터</HeaderTitle>
         <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
       </HeaderContainer>
       <ContentContainer>
@@ -122,20 +122,16 @@ const Main = () => {
           <ColumnContainer>
             <Income
               categoryTitle="수입"
-              setIncome={setIncome}
+              setTotalItem={setIncome}
               monthData={monthData}
-              livingTotal={livingTotal}
-              income={income}
               user={user}
               year={year}
               month={month}
             />
             <Saving
               categoryTitle="저축"
-              setSaving={setSaving}
+              setTotalItem={setSaving}
               monthData={monthData}
-              income={income}
-              saving={saving}
               user={user}
               year={year}
               month={month}
@@ -144,10 +140,8 @@ const Main = () => {
           <ColumnContainer>
             <Fixed
               categoryTitle="고정 지출"
-              setFixed={setFixed}
+              setTotalItem={setFixed}
               monthData={monthData}
-              income={income}
-              fixed={fixed}
               user={user}
               year={year}
               month={month}
@@ -160,7 +154,7 @@ const Main = () => {
             <Details
               key={index}
               categoryTitle={key}
-              onTotalChange={(total) => updateAllTotal(index, total)}
+              onTotalChange={(total: number) => updateAllTotal(index, total)}
               livingTotal={livingTotal}
               monthData={monthData}
               year={year}

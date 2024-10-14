@@ -1,11 +1,18 @@
-import React from "react";
 import CommonForm from "./CommonForm";
+import { PropsType } from "./Details";
 
-const Income = ({ categoryTitle, setIncome, monthData, year, month, user }) => {
+const Income: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
+  categoryTitle,
+  setTotalItem,
+  monthData,
+  year,
+  month,
+  user,
+}) => {
   return (
     <CommonForm
       categoryTitle={categoryTitle}
-      setTotalItem={setIncome}
+      setTotalItem={setTotalItem}
       color="blue"
       year={year}
       month={month}

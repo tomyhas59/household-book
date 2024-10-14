@@ -1,8 +1,20 @@
-import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { Dispatch, SetStateAction } from "react";
 
-const DateSelector = ({ year, month, setYear, setMonth }) => {
+type PropsType = {
+  year: number;
+  month: number;
+  setYear: Dispatch<SetStateAction<number>>;
+  setMonth: Dispatch<SetStateAction<number>>;
+};
+
+const DateSelector: React.FC<PropsType> = ({
+  year,
+  month,
+  setYear,
+  setMonth,
+}) => {
   const years = Array.from({ length: 10 }, (_, i) => (2024 + i).toString());
   const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
 
@@ -10,14 +22,17 @@ const DateSelector = ({ year, month, setYear, setMonth }) => {
     <DateContainer>
       <AnnualButton to="/annual">연도별 보기</AnnualButton>
       <SelectContainer>
-        <Select value={year} onChange={(e) => setYear(e.target.value)}>
+        <Select value={year} onChange={(e) => setYear(Number(e.target.value))}>
           {years.map((year) => (
             <option key={year} value={year}>
               {year}년
             </option>
           ))}
         </Select>
-        <Select value={month} onChange={(e) => setMonth(e.target.value)}>
+        <Select
+          value={month}
+          onChange={(e) => setMonth(Number(e.target.value))}
+        >
           {months.map((month) => (
             <option key={month} value={month}>
               {month}월

@@ -1,25 +1,33 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { MonthDataType, UserType } from "../type";
 
-const Note = ({ year, month, monthData, user }) => {
+type PropsType = {
+  year: number;
+  month: number;
+  monthData: MonthDataType;
+  user: UserType;
+};
+
+const Note: React.FC<PropsType> = ({ year, month, monthData, user }) => {
   const [isNote, setIsNote] = useState(false);
   const [note, setNote] = useState("");
   const [originalNote, setOriginalNote] = useState("");
-  const noteRef = useRef(null);
+  const noteRef = useRef<HTMLTextAreaElement>(null);
 
-  const onChangeNote = (e) => {
+  const onChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNote(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (note === "") return;
 
     const requestData = {
-      userId: parseInt(user.id),
-      year: parseInt(year),
-      month: parseInt(month),
+      userId: user?.id,
+      year: year,
+      month: month,
       note: note ? note : null,
     };
     try {
@@ -38,8 +46,8 @@ const Note = ({ year, month, monthData, user }) => {
   };
 
   useEffect(() => {
-    setNote(monthData.note);
-    setOriginalNote(monthData.note);
+    setNote(monthData?.note || "");
+    setOriginalNote(monthData?.note || "");
     setIsNote(false);
   }, [monthData]);
 
@@ -55,15 +63,18 @@ const Note = ({ year, month, monthData, user }) => {
   }, [isNote]);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (noteRef.current && !noteRef.current.contains(e.target)) {
-        //버튼이 없을 시 실행
-        if (!e.target.closest("button")) {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (noteRef.current && !noteRef.current.contains(target)) {
+        // 버튼이 없을 시 실행
+        if (!target.closest("button")) {
           setIsNote(false);
           setNote(originalNote);
         }
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);

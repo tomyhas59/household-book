@@ -1,14 +1,21 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/Details";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { monthState, userState, yearState } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  ChartOptions,
+} from "chart.js";
 import { DETAIL_CATEGORIES, LogoutButton } from "./Main";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
+import { MonthDataType } from "../type";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -24,8 +31,8 @@ const COLORS = {
 };
 
 const Annual = () => {
-  const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [yearData, setYearData] = useState([]);
+  const [year, setYear] = useState(new Date().getFullYear());
+  const [yearData, setYearData] = useState<MonthDataType[]>([]);
   const navigate = useNavigate();
   const setRecoilMonth = useSetRecoilState(monthState);
   const setRecoilYear = useSetRecoilState(yearState);
@@ -39,8 +46,8 @@ const Annual = () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/getYear`, {
           params: {
-            userId: user.id,
-            year: parseInt(year),
+            userId: user?.id,
+            year: year,
           },
         });
         setYearData(response.data || []);
@@ -54,15 +61,19 @@ const Annual = () => {
   }, [user, year]);
 
   const calculateTotal = useCallback(
-    (month, category) => {
+    (month: number, category: string) => {
       if (yearData.length > 0) {
         //해당 월 찾기
-        const monthData = yearData.filter((data) => data.month === month);
+        const monthData = yearData.filter((data) => data?.month === month);
         if (monthData.length > 0) {
-          const total = monthData[0].transactions
-            .filter((transaction) => transaction.type === category)
-            .reduce((a, c) => a + c.amount, 0);
-          return total;
+          const transactions = monthData[0]?.transactions;
+
+          if (transactions && Array.isArray(transactions)) {
+            const total = transactions
+              .filter((transaction) => transaction?.type === category)
+              .reduce((a, c) => a + (c?.amount || 0), 0);
+            return total;
+          }
         }
       }
       return 0;
@@ -92,7 +103,7 @@ const Annual = () => {
   );
 
   const totalCategory = useCallback(
-    (category) =>
+    (category: string) =>
       months.reduce(
         (total, month) => total + calculateTotal(month, category),
         0
@@ -100,13 +111,13 @@ const Annual = () => {
     [calculateTotal, months]
   );
 
-  const totalDetails = (month) =>
+  const totalDetails = (month: number) =>
     DETAIL_CATEGORIES.reduce(
       (total, category) => total + calculateTotal(month, category),
       0
     );
 
-  const goToMonthPage = (year, month) => {
+  const goToMonthPage = (year: number, month: number) => {
     navigate("/main");
     setRecoilYear(year);
     setRecoilMonth(month);
@@ -137,7 +148,7 @@ const Annual = () => {
         pieTotallFixed);
 
     console.log(pieTotalSavings);
-    const calcPercentage = (value) =>
+    const calcPercentage = (value: number) =>
       pieTotalIncome ? ((value / pieTotalIncome) * 100).toFixed(2) : 0;
 
     return {
@@ -178,7 +189,7 @@ const Annual = () => {
     };
   }, [totalCategory, totalFixed, totalIncome, totalSavings]);
 
-  const options = {
+  const options: ChartOptions<"pie"> = {
     plugins: {
       legend: {
         position: "bottom",
@@ -194,7 +205,12 @@ const Annual = () => {
         <HeaderContainer>
           <HeaderLeftSection>
             <HomeButton to="/main">월별로 보기</HomeButton>
-            <Select value={year} onChange={(e) => setYear(e.target.value)}>
+            <Select
+              value={year}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setYear(Number(e.target.value))
+              }
+            >
               {years.map((year) => (
                 <option key={year} value={year}>
                   {year}년
@@ -211,9 +227,8 @@ const Annual = () => {
           <MonthList>
             {months.map((month) => {
               const income = calculateTotal(month, "수입");
-              const spending = parseInt(
-                calculateTotal(month, "고정 지출") + totalDetails(month)
-              );
+              const spending =
+                calculateTotal(month, "고정 지출") + totalDetails(month);
               const savings = calculateTotal(month, "저축");
 
               const categories = {

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import styled, { css } from "styled-components";
-import axios from "axios"; // axios를 이용하여 서버와 통신
+import axios from "axios";
 import { useNavigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { userState } from "../recoil/atoms";
 import { BASE_URL } from "../config/config";
+import { UserType } from "../type";
 
 const Login = () => {
   const [active, setActive] = useState(false);
@@ -23,7 +24,7 @@ const Login = () => {
 
   console.log(BASE_URL);
   // 회원가입 데이터 변경 핸들러
-  const handleSignupChange = (e) => {
+  const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupData({
       ...signupData,
       [e.target.name]: e.target.value,
@@ -31,7 +32,7 @@ const Login = () => {
   };
 
   // 로그인 데이터 변경 핸들러
-  const handleLoginChange = (e) => {
+  const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
       ...loginData,
       [e.target.name]: e.target.value,
@@ -39,7 +40,7 @@ const Login = () => {
   };
 
   // 회원가입 요청
-  const handleSignupSubmit = async (e) => {
+  const handleSignupSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     if (signupData.password !== signupData.passwordConfirm) {
@@ -65,7 +66,7 @@ const Login = () => {
   };
 
   // 로그인 요청
-  const handleLoginSubmit = async (e) => {
+  const handleLoginSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     try {
       const response = await axios.post(`${BASE_URL}/api/login`, loginData, {
@@ -75,7 +76,7 @@ const Login = () => {
 
       localStorage.setItem("jwt", token);
 
-      setUser({ nickname, email, id });
+      setUser({ nickname, email, id } as UserType);
 
       navigator("/main");
     } catch (error) {
@@ -216,7 +217,11 @@ const absolutePosition = css`
   text-align: center;
 `;
 
-const SignInContainer = styled.div`
+interface ActiveType {
+  $active: boolean;
+}
+
+const SignInContainer = styled.div<ActiveType>`
   ${absolutePosition}
   ${(props) =>
     props.$active
@@ -229,7 +234,7 @@ const SignInContainer = styled.div`
         `}
 `;
 
-const SignUpContainer = styled.div`
+const SignUpContainer = styled.div<ActiveType>`
   ${absolutePosition}
   opacity: 0;
   ${(props) =>
@@ -307,7 +312,7 @@ const Button = styled.button`
   }
 `;
 
-const ToggleContainer = styled.div`
+const ToggleContainer = styled.div<ActiveType>`
   position: absolute;
   left: 50%;
   width: 50%;
@@ -329,7 +334,7 @@ const ToggleContainer = styled.div`
   }
 `;
 
-const Toggle = styled.div`
+const Toggle = styled.div<ActiveType>`
   background-color: #512da8;
   height: 100%;
   background: linear-gradient(to right, #5c6bc0, #512da8);
@@ -358,14 +363,14 @@ const ToggleCommonStyles = css`
   transition: all 0.6s ease-in-out;
 `;
 
-const ToggleRight = styled.div`
+const ToggleRight = styled.div<ActiveType>`
   ${ToggleCommonStyles}
   right: 0;
   transform: ${(props) =>
     props.$active ? "translateX(100%)" : "translateX(0)"};
 `;
 
-const ToggleLeft = styled.div`
+const ToggleLeft = styled.div<ActiveType>`
   ${ToggleCommonStyles}
   transform: ${(props) =>
     props.$active ? "translateX(0)" : "translateX(-200%)"};

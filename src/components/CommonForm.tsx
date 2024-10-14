@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 
 import {
   Input,
@@ -14,37 +14,34 @@ import {
   Button,
   Form,
   TransparentButton,
+  PropsType,
 } from "./Details";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
+import { TransactionType } from "../type";
 
-const CommonForm = ({
-  categoryTitle,
-  setTotalItem,
-  color,
-  monthData,
-  year,
-  user,
-  month,
-}) => {
-  const [transactions, setTransactions] = useState([]);
+const CommonForm: React.FC<
+  Omit<PropsType, "onTotalChange" | "livingTotal"> & { color: string }
+> = ({ categoryTitle, setTotalItem, color, monthData, year, user, month }) => {
+  const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
-  const [hoveredItemId, setHoveredItemId] = useState(null);
+  const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [hoveredTitle, setHoveredTitle] = useState(false);
-  const [editFormById, setEditFormById] = useState(null);
+  const [editFormById, setEditFormById] = useState<number | null>(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
-  const [editDate, setEditDate] = useState("");
-  const [date, setDate] = useState("");
-  const dateRef = useRef(null);
-  const listRef = useRef(null);
-  const [total, setTotal] = useState(null);
-  const listItemRef = useRef(null);
+  const [editDate, setEditDate] = useState<number | "">("");
+  const [date, setDate] = useState<number | "">("");
+  const dateRef = useRef<HTMLInputElement | null>(null);
+  const listRef = useRef<HTMLDivElement | null>(null);
+  const listItemRef = useRef<HTMLFormElement | null>(null);
+  const [total, setTotal] = useState<number | null>(null);
+
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions.filter(
-        (item) => item.type === categoryTitle
+        (item) => item?.type === categoryTitle
       );
       setTransactions(categoryData);
     } else {
@@ -53,18 +50,19 @@ const CommonForm = ({
   }, [monthData, categoryTitle]);
 
   useEffect(() => {
-    const total = transactions.reduce(
-      (acc, transaction) => acc + transaction.amount,
-      0
-    );
+    const total = transactions
+      .filter((transaction) => transaction?.amount !== undefined)
+      .reduce((acc, transaction) => acc + transaction?.amount!, 0);
+    setTotalItem(total);
+    setTotal(total);
     setTotalItem(total);
     setTotal(total);
   }, [transactions, setTotalItem]);
 
-  const addTransaction = async (e) => {
+  const addTransaction = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    if (!description || amount <= 0) return;
+    if (!description || Number(amount) <= 0) return;
 
     const newTransaction = {
       date: date || 0,
@@ -76,10 +74,10 @@ const CommonForm = ({
     try {
       const response = await axios.post(`${BASE_URL}/api/add`, newTransaction, {
         params: {
-          monthId: monthData.id || null,
-          userId: user.id,
-          year: parseInt(year),
-          month: parseInt(month),
+          monthId: monthData?.id || null,
+          userId: user?.id,
+          year: year,
+          month: month,
         },
       });
       console.log("add res", response.data);
@@ -87,19 +85,19 @@ const CommonForm = ({
       setAmount("");
       setDate("");
       setDescription("");
-      dateRef.current.focus();
+      dateRef.current?.focus();
     } catch (err) {
       console.error("transaction add error", err);
     }
   };
 
   const copyPreviousMonthData = async () => {
-    let previousMonth = parseInt(month, 10) - 1;
+    let previousMonth = month - 1;
     let previousYear = year;
 
     if (previousMonth < 1) {
       previousMonth = 12;
-      previousYear = parseInt(year, 10) - 1;
+      previousYear = year - 1;
     }
 
     try {
@@ -108,7 +106,7 @@ const CommonForm = ({
         params: {
           month: previousMonth,
           year: previousYear,
-          userId: user.id,
+          userId: user?.id,
           type: categoryTitle,
         },
       });
@@ -117,33 +115,35 @@ const CommonForm = ({
 
       if (previousTransactions.length > 0) {
         // 이번 달 데이터 있으면 데이터 삭제
-        if (monthData.id) {
+        if (monthData?.id) {
           await axios.delete(`${BASE_URL}/api/deleteAll`, {
             params: {
-              userId: user.id,
+              userId: user?.id,
               monthId: monthData.id,
               type: categoryTitle,
             },
           });
         }
         // 이전 달 데이터 추가하기
-        const promises = previousTransactions.map(async (transaction) => {
-          const newTransaction = {
-            date: transaction.date || 0,
-            amount: parseFloat(transaction.amount),
-            description: transaction.description,
-            type: categoryTitle,
-          };
+        const promises = previousTransactions.map(
+          async (transaction: TransactionType) => {
+            const newTransaction = {
+              date: transaction?.date || 0,
+              amount: transaction?.amount,
+              description: transaction?.description,
+              type: categoryTitle,
+            };
 
-          await axios.post(`${BASE_URL}/api/add`, newTransaction, {
-            params: {
-              monthId: monthData.id || null,
-              userId: user.id,
-              year: parseInt(year),
-              month: parseInt(month),
-            },
-          });
-        });
+            await axios.post(`${BASE_URL}/api/add`, newTransaction, {
+              params: {
+                monthId: monthData?.id || null,
+                userId: user?.id,
+                year: year,
+                month: month,
+              },
+            });
+          }
+        );
 
         // 모든 요청이 완료될 때까지 기다리기
         await Promise.all(promises);
@@ -159,11 +159,11 @@ const CommonForm = ({
     }
   };
 
-  const deleteTransaction = async (id) => {
+  const deleteTransaction = async (id: number) => {
     try {
       const response = await axios.delete(`${BASE_URL}/api/delete`, {
         params: {
-          userId: user.id,
+          userId: user?.id,
           transactionId: id,
         },
       });
@@ -171,7 +171,7 @@ const CommonForm = ({
       console.log(response.data);
 
       setTransactions((prevTransactions) =>
-        prevTransactions.filter((transaction) => transaction.id !== id)
+        prevTransactions.filter((transaction) => transaction?.id !== id)
       );
     } catch (err) {
       console.error(err);
@@ -183,8 +183,8 @@ const CommonForm = ({
       if (window.confirm("전체 삭제하시겠습니까?")) {
         const response = await axios.delete(`${BASE_URL}/api/deleteAll`, {
           params: {
-            userId: user.id,
-            monthId: monthData.id,
+            userId: user?.id,
+            monthId: monthData?.id,
             type: categoryTitle,
           },
         });
@@ -196,9 +196,9 @@ const CommonForm = ({
     }
   };
 
-  const handleModifyForm = async (id) => {
+  const handleModifyForm = async (id: number) => {
     const prevTransaction = transactions.find(
-      (transaction) => transaction.id === id
+      (transaction) => transaction?.id === id
     );
     setEditFormById(id);
     if (prevTransaction) {
@@ -208,14 +208,14 @@ const CommonForm = ({
     }
   };
 
-  const editTransaction = async (e, id) => {
+  const editTransaction = async (e: SyntheticEvent, id: number) => {
     e.preventDefault();
 
     if (!editDescription || !editAmount) return;
 
     const updateTransaction = {
       date: editDate || 0,
-      amount: parseFloat(editAmount),
+      amount: editAmount,
       description: editDescription,
     };
 
@@ -225,14 +225,14 @@ const CommonForm = ({
         updateTransaction,
         {
           params: {
-            userId: user.id,
+            userId: user?.id,
             transactionId: id,
           },
         }
       );
 
       const updatedTransactions = transactions.map((transaction) => {
-        if (transaction.id === id) {
+        if (transaction?.id === id) {
           return {
             ...transaction,
             ...response.data,
@@ -252,8 +252,11 @@ const CommonForm = ({
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (listItemRef.current && !listItemRef.current.contains(event.target)) {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        listItemRef.current &&
+        !listItemRef.current.contains(e.target as Node)
+      ) {
         setEditFormById(null);
       }
     };
@@ -284,7 +287,7 @@ const CommonForm = ({
       <List ref={listRef} style={{ maxHeight: "70%" }}>
         {transactions.map((transaction, index) => (
           <React.Fragment key={index}>
-            {editFormById === transaction.id ? (
+            {editFormById === transaction?.id ? (
               <Form
                 key={transaction.id}
                 onSubmit={(e) => editTransaction(e, transaction.id)}
@@ -296,7 +299,9 @@ const CommonForm = ({
                   value={editDate}
                   onChange={(e) => {
                     const value = e.target.value;
-                    setEditDate(value > 31 ? value.slice(-1) : value);
+                    setEditDate(
+                      Number(value) > 31 ? Number(value) % 10 : Number(value)
+                    );
                   }}
                   min="1"
                   max="31"
@@ -311,8 +316,7 @@ const CommonForm = ({
                   type="number"
                   placeholder="비용"
                   value={editAmount}
-                  onChange={(e) => setEditAmount(e.target.value)}
-                  min="0"
+                  onChange={(e) => setEditAmount(Number(e.target.value))}
                 />
                 <Button type="submit">+</Button>
                 <Button
@@ -329,19 +333,27 @@ const CommonForm = ({
               </Form>
             ) : (
               <ListItem
-                key={transaction.id}
-                onMouseEnter={() => setHoveredItemId(transaction.id)}
+                key={transaction?.id}
+                onMouseEnter={() => {
+                  if (transaction) {
+                    setHoveredItemId(transaction.id);
+                  }
+                }}
                 onMouseLeave={() => setHoveredItemId(null)}
-                onClick={() => handleModifyForm(transaction.id)}
+                onClick={() => {
+                  if (transaction) {
+                    handleModifyForm(transaction.id);
+                  }
+                }}
               >
                 <ListItemText>
-                  {transaction.date ? `${transaction.date}일` : ""}
+                  {transaction?.date ? `${transaction?.date}일` : ""}
                 </ListItemText>
-                <ListItemText>{transaction.description}</ListItemText>
+                <ListItemText>{transaction?.description}</ListItemText>
                 <ListItemText style={{ color: color }}>
-                  {transaction.amount?.toLocaleString()}
+                  {transaction?.amount?.toLocaleString()}
                 </ListItemText>
-                {hoveredItemId === transaction.id ? (
+                {hoveredItemId === transaction?.id ? (
                   <Button onClick={() => deleteTransaction(transaction.id)}>
                     x
                   </Button>
@@ -360,7 +372,7 @@ const CommonForm = ({
             value={date}
             onChange={(e) => {
               const value = e.target.value;
-              setDate(value > 31 ? value.slice(-1) : value);
+              setDate(Number(value) > 31 ? Number(value) % 10 : Number(value));
             }}
           />
           <Input

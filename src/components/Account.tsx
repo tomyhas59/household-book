@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "./Details";
 import axios from "axios";
+import { MonthDataType, UserType } from "../type";
 
 const AccountContainer = styled.div`
   position: relative;
@@ -92,7 +93,18 @@ const RemainingBudget = styled.div`
   }
 `;
 
-const Account = ({
+type PropsType = {
+  income: number;
+  saving: number;
+  fixed: number;
+  livingTotal: number;
+  year: number;
+  month: number;
+  monthData: MonthDataType;
+  user: UserType;
+};
+
+const Account: React.FC<PropsType> = ({
   income,
   saving,
   fixed,
@@ -105,25 +117,25 @@ const Account = ({
   const [budget, setBudget] = useState("");
   const [isBudget, setIsBudget] = useState(false);
   const [originalBudget, setOriginalBudget] = useState("");
-  const budgetRef = useRef(null);
+  const budgetRef = useRef<HTMLInputElement>(null);
   const [savingPer, setSavingPer] = useState(0);
   const [spendingPer, setSpendingPer] = useState(0);
 
-  const onChangeBudget = (e) => {
+  const onChangeBudget = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBudget(e.target.value);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     const requestData = {
-      userId: parseInt(user.id),
-      year: parseInt(year),
-      month: parseInt(month),
-      budget: budget ? parseInt(budget) : null,
+      userId: user?.id,
+      year: year,
+      month: month,
+      budget: budget ? Number(budget) : null,
     };
 
-    if (!isNaN(budget) && budget > 0) {
+    if (Number(budget) > 0) {
       try {
         await axios.post("http://localhost:8090/api/saveNoteOrBudget", null, {
           params: requestData,
@@ -141,11 +153,10 @@ const Account = ({
   };
 
   useEffect(() => {
-    setBudget(monthData.budget);
-    setOriginalBudget(monthData.budget);
+    setBudget(monthData?.budget?.toString() || "");
+    setOriginalBudget(monthData?.budget?.toString() || "");
     setIsBudget(false);
   }, [year, month, monthData]);
-
   const handleModify = () => {
     setOriginalBudget(budget);
     setIsBudget(true);
@@ -168,18 +179,23 @@ const Account = ({
   }, [income, saving]);
 
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (budgetRef.current && !budgetRef.current.contains(e.target)) {
-        if (!e.target.closest("button")) {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (budgetRef.current && !budgetRef.current.contains(target)) {
+        // 버튼이 없을 시 실행
+        if (!target.closest("button")) {
           setIsBudget(false);
+          setBudget(originalBudget);
         }
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [originalBudget]);
 
   return (
     <AccountContainer>
@@ -248,7 +264,8 @@ const Account = ({
           <RemainingBudget>
             <div>소비 예산 - 생활비</div>
             <div>
-              남은 예산: {budget ? (budget - livingTotal).toLocaleString() : ""}
+              남은 예산:
+              {budget ? (Number(budget) - livingTotal).toLocaleString() : ""}
             </div>
           </RemainingBudget>
         ) : null}

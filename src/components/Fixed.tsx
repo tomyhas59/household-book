@@ -1,11 +1,18 @@
-import React from "react";
 import CommonForm from "./CommonForm";
+import { PropsType } from "./Details";
 
-const Fixed = ({ categoryTitle, setFixed, monthData, year, month, user }) => {
+const Fixed: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
+  categoryTitle,
+  setTotalItem,
+  monthData,
+  year,
+  month,
+  user,
+}) => {
   return (
     <CommonForm
       categoryTitle={categoryTitle}
-      setTotalItem={setFixed}
+      setTotalItem={setTotalItem}
       color="red"
       year={year}
       month={month}

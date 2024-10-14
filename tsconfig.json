@@ -14,5 +14,6 @@
     "isolatedModules": true, // 각 파일이 독립적으로 컴파일되도록 설정
     "jsx": "react-jsx" // JSX를 React 17 이상의 방식으로 처리
   },
-  "include": ["src"] // 포함할 파일 또는 디렉토리 설정
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
