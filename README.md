@@ -1,1 +1,1 @@
-# use localforage household-book
+# 가계부 with 자바
