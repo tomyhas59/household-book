@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/household-book/static/css/main.c7ec3132.css",
-    "main.js": "/household-book/static/js/main.b0ed3fdd.js",
+    "main.js": "/household-book/static/js/main.d43e1e79.js",
     "index.html": "/household-book/index.html",
     "main.c7ec3132.css.map": "/household-book/static/css/main.c7ec3132.css.map",
-    "main.b0ed3fdd.js.map": "/household-book/static/js/main.b0ed3fdd.js.map"
+    "main.d43e1e79.js.map": "/household-book/static/js/main.d43e1e79.js.map"
   },
   "entrypoints": [
     "static/css/main.c7ec3132.css",
-    "static/js/main.b0ed3fdd.js"
+    "static/js/main.d43e1e79.js"
   ]
 }
