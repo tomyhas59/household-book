@@ -99,6 +99,7 @@ const Main = () => {
   return (
     <MainContainer>
       {loading && <Spinner />}
+
       <HeaderContainer>
         <DateSelector
           year={year}

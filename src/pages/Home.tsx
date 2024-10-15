@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import Spinner from "../components/Spinner";
 
 const Container = styled.div`
   display: flex;
@@ -34,6 +35,7 @@ const Home = () => {
   return (
     <Container>
       <Title>가계부</Title>
+      <Spinner />
       <StyledLink to="/sign">로그인하기</StyledLink>
     </Container>
   );
