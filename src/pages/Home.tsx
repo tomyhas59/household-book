@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Spinner from "../components/Spinner";
 
 const Container = styled.div`
   display: flex;
