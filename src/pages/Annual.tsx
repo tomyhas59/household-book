@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/CommonForm";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
-import { monthState, userState, yearState } from "../recoil/atoms";
+import {
+  monthState,
+  userState,
+  yearState,
+  loadingState,
+} from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -16,6 +21,7 @@ import { DETAIL_CATEGORIES, LogoutButton } from "./Main";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType } from "../type";
+import Spinner from "../components/Spinner";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -37,12 +43,15 @@ const Annual = () => {
   const setRecoilMonth = useSetRecoilState(monthState);
   const setRecoilYear = useSetRecoilState(yearState);
   const [user, setUser] = useRecoilState(userState);
+  const [loading, setLoading] = useRecoilState(loadingState);
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+
       try {
         const response = await axios.get(`${BASE_URL}/api/getYear`, {
           params: {
@@ -54,11 +63,13 @@ const Annual = () => {
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
         setYearData([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [user, year]);
+  }, [setLoading, user, year]);
 
   const calculateTotal = useCallback(
     (month: number, category: string) => {
@@ -147,7 +158,6 @@ const Annual = () => {
         Object.values(categoriesData).reduce((a, c) => a + c, 0) +
         pieTotallFixed);
 
-    console.log(pieTotalSavings);
     const calcPercentage = (value: number) =>
       pieTotalIncome ? ((value / pieTotalIncome) * 100).toFixed(2) : 0;
 
@@ -202,6 +212,8 @@ const Annual = () => {
   } else
     return (
       <Container>
+        {loading && <Spinner />}
+
         <HeaderContainer>
           <HeaderLeftSection>
             <HomeButton to="/main">월별로 보기</HomeButton>

@@ -4,8 +4,8 @@ import { ProgressBar, ProgressContainer } from "./CommonForm";
 import axios from "axios";
 import { MonthDataType, UserType } from "../type";
 import { BASE_URL } from "../config/config";
-import { useRecoilValue } from "recoil";
-import { livingTotalState } from "../recoil/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { livingTotalState, loadingState } from "../recoil/atoms";
 
 const AccountContainer = styled.div`
   position: relative;
@@ -121,6 +121,7 @@ const Account: React.FC<PropsType> = ({
   const [savingPer, setSavingPer] = useState(0);
   const [spendingPer, setSpendingPer] = useState(0);
   const livingTotal = useRecoilValue(livingTotalState);
+  const setLoading = useSetRecoilState(loadingState);
 
   const onChangeBudget = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBudget(e.target.value);
@@ -135,6 +136,7 @@ const Account: React.FC<PropsType> = ({
       month: month,
       budget: budget ? Number(budget) : null,
     };
+    setLoading(true);
 
     if (Number(budget) > 0) {
       try {
@@ -144,6 +146,8 @@ const Account: React.FC<PropsType> = ({
         setIsBudget(false);
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        setLoading(false);
       }
     }
   };

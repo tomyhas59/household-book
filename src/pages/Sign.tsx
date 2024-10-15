@@ -2,13 +2,15 @@ import { SyntheticEvent, useState } from "react";
 import styled, { css } from "styled-components";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { useSetRecoilState } from "recoil";
-import { userState } from "../recoil/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { loadingState, userState } from "../recoil/atoms";
 import { BASE_URL } from "../config/config";
 import { UserType } from "../type";
+import Spinner from "../components/Spinner";
 
 const Login = () => {
   const [active, setActive] = useState(false);
+  const [loading, setLoading] = useRecoilState(loadingState);
   const [signupData, setSignupData] = useState({
     nickname: "",
     email: "",
@@ -42,7 +44,7 @@ const Login = () => {
   // 회원가입 요청
   const handleSignupSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
+    setLoading(true);
     if (signupData.password !== signupData.passwordConfirm) {
       alert("비밀번호가 다릅니다");
       return;
@@ -62,12 +64,15 @@ const Login = () => {
     } catch (error) {
       console.error("Signup Error", error);
       alert("Signup failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   // 로그인 요청
   const handleLoginSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}/api/login`, loginData, {
         withCredentials: true,
@@ -82,6 +87,8 @@ const Login = () => {
     } catch (error) {
       console.error("Login Error", error);
       alert("Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,6 +98,7 @@ const Login = () => {
 
   return (
     <Container>
+      {loading && <Spinner />}
       <SignUpContainer $active={active}>
         <h1>회원가입</h1>
         <FormContainer onSubmit={handleSignupSubmit}>
@@ -141,7 +149,6 @@ const Login = () => {
           <Button type="submit">가입하기</Button>
         </FormContainer>
       </SignUpContainer>
-
       <SignInContainer $active={active}>
         <h1>로그인</h1>
         <FormContainer onSubmit={handleLoginSubmit}>

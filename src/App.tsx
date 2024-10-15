@@ -5,7 +5,7 @@ import { RecoilRoot } from "recoil";
 import Sign from "./pages/Sign";
 import Home from "./pages/Home";
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <RecoilRoot>
       <BrowserRouter basename={process.env.PUBLIC_URL}>

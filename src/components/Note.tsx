@@ -3,6 +3,8 @@ import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MonthDataType, UserType } from "../type";
 import { BASE_URL } from "../config/config";
+import { useSetRecoilState } from "recoil";
+import { loadingState } from "../recoil/atoms";
 
 type PropsType = {
   year: number;
@@ -16,6 +18,7 @@ const Note: React.FC<PropsType> = ({ year, month, monthData, user }) => {
   const [note, setNote] = useState("");
   const [originalNote, setOriginalNote] = useState("");
   const noteRef = useRef<HTMLTextAreaElement>(null);
+  const setLoading = useSetRecoilState(loadingState);
 
   const onChangeNote = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNote(e.target.value);
@@ -23,6 +26,7 @@ const Note: React.FC<PropsType> = ({ year, month, monthData, user }) => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    setLoading(true);
     if (note === "") return;
 
     const requestData = {
@@ -38,6 +42,8 @@ const Note: React.FC<PropsType> = ({ year, month, monthData, user }) => {
       setIsNote(false);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 

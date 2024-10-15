@@ -2,14 +2,14 @@ import { atom } from "recoil";
 import { selector } from "recoil";
 import { MonthDataType, UserType } from "../type";
 
-export const userState = atom<UserType>({
+export const userState = atom<UserType | null>({
   key: "userState",
   default: null,
 });
 
-export const detailsTotalsState = atom({
+export const detailsTotalsState = atom<number[]>({
   key: "detailsTotalsState",
-  default: new Array(5).fill(0),
+  default: new Array(5).fill(0).slice(),
 });
 
 export const incomeState = atom<number>({
@@ -48,4 +48,9 @@ export const livingTotalState = selector({
     const detailsTotals = get(detailsTotalsState);
     return detailsTotals.reduce((acc, total) => acc + total, 0);
   },
+});
+
+export const loadingState = atom<boolean>({
+  key: "loadingState",
+  default: false,
 });

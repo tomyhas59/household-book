@@ -4,8 +4,8 @@ import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType, TransactionType, UserType } from "../type";
 import styled from "styled-components";
-import { useRecoilValue } from "recoil";
-import { livingTotalState } from "../recoil/atoms";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { livingTotalState, loadingState } from "../recoil/atoms";
 
 export type PropsType = {
   categoryTitle: string;
@@ -46,6 +46,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
   const [total, setTotal] = useState<number | null>(null);
   const [per, setPer] = useState(0);
   const livingTotal = useRecoilValue(livingTotalState);
+  const setLoading = useSetRecoilState(loadingState);
 
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
@@ -77,6 +78,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
   const addTransaction = async (e: SyntheticEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     if (!description || Number(amount) <= 0) return;
 
@@ -104,6 +106,8 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       dateRef.current?.focus();
     } catch (err) {
       console.error("transaction add error", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,6 +119,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       previousMonth = 12;
       previousYear = year - 1;
     }
+    setLoading(true);
 
     try {
       // 이전 달 데이터 가져오기
@@ -172,10 +177,14 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       }
     } catch (err) {
       console.error("데이터 복사 중 오류 발생", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteTransaction = async (id: number) => {
+    setLoading(true);
+
     try {
       const response = await axios.delete(`${BASE_URL}/api/delete`, {
         params: {
@@ -191,10 +200,13 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       );
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteAllTransaction = async () => {
+    setLoading(true);
     try {
       if (window.confirm("전체 삭제하시겠습니까?")) {
         const response = await axios.delete(`${BASE_URL}/api/deleteAll`, {
@@ -209,6 +221,8 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       }
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -226,7 +240,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
   const editTransaction = async (e: SyntheticEvent, id: number) => {
     e.preventDefault();
-
+    setLoading(true);
     if (!editDescription || !editAmount) return;
 
     const updateTransaction = {
@@ -264,6 +278,8 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       setEditFormById(null);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 

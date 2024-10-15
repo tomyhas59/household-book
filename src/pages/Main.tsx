@@ -17,10 +17,12 @@ import {
   monthState,
   monthDataState,
   userState,
+  loadingState,
 } from "../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
+import Spinner from "../components/Spinner";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -39,11 +41,13 @@ const Main = () => {
   const [month, setMonth] = useRecoilState(monthState);
   const [monthData, setMonthData] = useRecoilState(monthDataState);
   const user = useRecoilValue(userState);
+  const [loading, setLoading] = useRecoilState(loadingState);
 
   const navigator = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${BASE_URL}/api/getMonth`, {
           params: {
@@ -58,12 +62,14 @@ const Main = () => {
       } catch (error) {
         console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
         setMonthData({});
+      } finally {
+        setLoading(false);
       }
     };
     if (year && month) {
       fetchData();
     }
-  }, [user, year, month, setMonthData]);
+  }, [user, year, month, setMonthData, setLoading]);
 
   const updateAllTotal = useCallback(
     (index: number, total: number) => {
@@ -92,6 +98,7 @@ const Main = () => {
 
   return (
     <MainContainer>
+      {loading && <Spinner />}
       <HeaderContainer>
         <DateSelector
           year={year}
