@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { ProgressBar, ProgressContainer } from "../components/Details";
+import { ProgressBar, ProgressContainer } from "../components/CommonForm";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { monthState, userState, yearState } from "../recoil/atoms";

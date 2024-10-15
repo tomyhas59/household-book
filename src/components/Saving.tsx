@@ -1,7 +1,6 @@
-import CommonForm from "./CommonForm";
-import { PropsType } from "./Details";
+import CommonForm, { PropsType } from "./CommonForm";
 
-const Saving: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
+const Saving: React.FC<PropsType> = ({
   categoryTitle,
   setTotalItem,
   monthData,
@@ -18,6 +17,8 @@ const Saving: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
       month={month}
       user={user}
       monthData={monthData}
+      height="50%"
+      isBar={false}
     />
   );
 };

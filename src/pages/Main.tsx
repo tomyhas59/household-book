@@ -16,7 +16,6 @@ import {
   yearState,
   monthState,
   monthDataState,
-  livingTotalState,
   userState,
 } from "../recoil/atoms";
 import { useNavigate } from "react-router-dom";
@@ -80,8 +79,6 @@ const Main = () => {
     [setDetailsTotals]
   );
 
-  const livingTotal = useRecoilValue(livingTotalState);
-
   const handleLogout = () => {
     localStorage.removeItem("jwt");
 
@@ -112,7 +109,6 @@ const Main = () => {
               income={income}
               saving={saving}
               fixed={fixed}
-              livingTotal={livingTotal}
               monthData={monthData}
               year={year}
               month={month}
@@ -155,7 +151,6 @@ const Main = () => {
               key={index}
               categoryTitle={key}
               onTotalChange={(total: number) => updateAllTotal(index, total)}
-              livingTotal={livingTotal}
               monthData={monthData}
               year={year}
               user={user}

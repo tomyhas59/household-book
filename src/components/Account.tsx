@@ -1,9 +1,11 @@
 import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { ProgressBar, ProgressContainer } from "./Details";
+import { ProgressBar, ProgressContainer } from "./CommonForm";
 import axios from "axios";
 import { MonthDataType, UserType } from "../type";
 import { BASE_URL } from "../config/config";
+import { useRecoilValue } from "recoil";
+import { livingTotalState } from "../recoil/atoms";
 
 const AccountContainer = styled.div`
   position: relative;
@@ -46,7 +48,6 @@ const BudgetDisplay = styled.div`
   align-items: center;
   justify-content: center;
   color: #2ecc71;
-  margin-bottom: 5px;
   cursor: pointer;
   &:hover {
     background-color: #f0f0f0;
@@ -98,7 +99,6 @@ type PropsType = {
   income: number;
   saving: number;
   fixed: number;
-  livingTotal: number;
   year: number;
   month: number;
   monthData: MonthDataType;
@@ -109,7 +109,6 @@ const Account: React.FC<PropsType> = ({
   income,
   saving,
   fixed,
-  livingTotal,
   year,
   month,
   monthData,
@@ -121,6 +120,7 @@ const Account: React.FC<PropsType> = ({
   const budgetRef = useRef<HTMLInputElement>(null);
   const [savingPer, setSavingPer] = useState(0);
   const [spendingPer, setSpendingPer] = useState(0);
+  const livingTotal = useRecoilValue(livingTotalState);
 
   const onChangeBudget = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBudget(e.target.value);

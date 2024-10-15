@@ -1,7 +1,6 @@
-import CommonForm from "./CommonForm";
-import { PropsType } from "./Details";
+import CommonForm, { PropsType } from "./CommonForm";
 
-const Fixed: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
+const Fixed: React.FC<PropsType> = ({
   categoryTitle,
   setTotalItem,
   monthData,
@@ -18,6 +17,8 @@ const Fixed: React.FC<Omit<PropsType, "onTotalChange" | "livingTotal">> = ({
       month={month}
       monthData={monthData}
       user={user}
+      height="50%"
+      isBar={false}
     />
   );
 };
