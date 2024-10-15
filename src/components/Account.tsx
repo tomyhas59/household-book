@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "./Details";
 import axios from "axios";
 import { MonthDataType, UserType } from "../type";
+import { BASE_URL } from "../config/config";
 
 const AccountContainer = styled.div`
   position: relative;
@@ -137,7 +138,7 @@ const Account: React.FC<PropsType> = ({
 
     if (Number(budget) > 0) {
       try {
-        await axios.post("http://localhost:8090/api/saveNoteOrBudget", null, {
+        await axios.post(`${BASE_URL}/api/saveNoteOrBudget`, null, {
           params: requestData,
         });
         setIsBudget(false);

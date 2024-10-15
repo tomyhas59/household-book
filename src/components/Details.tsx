@@ -347,7 +347,7 @@ const Details: React.FC<Omit<PropsType, "setTotalItem">> = ({
                 <ListItemText style={{ color: "red" }}>
                   {transaction?.amount.toLocaleString()}
                   {hoveredItemId === transaction?.id ? (
-                    <Button onClick={() => deleteTransaction(transaction?.id)}>
+                    <Button onClick={() => deleteTransaction(transaction.id)}>
                       x
                     </Button>
                   ) : (

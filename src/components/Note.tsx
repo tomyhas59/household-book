@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { MonthDataType, UserType } from "../type";
+import { BASE_URL } from "../config/config";
 
 type PropsType = {
   year: number;
@@ -31,7 +32,7 @@ const Note: React.FC<PropsType> = ({ year, month, monthData, user }) => {
       note: note ? note : null,
     };
     try {
-      await axios.post("http://localhost:8090/api/saveNoteOrBudget", null, {
+      await axios.post(`${BASE_URL}/api/saveNoteOrBudget`, null, {
         params: requestData,
       });
       setIsNote(false);
