@@ -55,8 +55,6 @@ const CommonForm: React.FC<
       .reduce((acc, transaction) => acc + transaction?.amount!, 0);
     setTotalItem(total);
     setTotal(total);
-    setTotalItem(total);
-    setTotal(total);
   }, [transactions, setTotalItem]);
 
   const addTransaction = async (e: SyntheticEvent) => {
