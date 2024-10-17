@@ -138,7 +138,7 @@ const Account: React.FC<PropsType> = ({
     };
     setLoading(true);
 
-    if (Number(budget) > 0) {
+    if (Number(budget) >= 0) {
       try {
         await axios.post(`${BASE_URL}/api/saveNoteOrBudget`, null, {
           params: requestData,
@@ -261,11 +261,13 @@ const Account: React.FC<PropsType> = ({
             </BudgetForm>
           ) : (
             <BudgetDisplay onClick={handleModify}>
-              {budget ? Number(budget).toLocaleString() : "클릭하여 등록"}
+              {budget && Number(budget) > 0
+                ? Number(budget).toLocaleString()
+                : "클릭하여 등록"}
             </BudgetDisplay>
           )}
         </Saving>
-        {budget && !isBudget ? (
+        {budget && !isBudget && Number(budget) > 0 ? (
           <RemainingBudget>
             <div>소비 예산 - 생활비</div>
             <div>
