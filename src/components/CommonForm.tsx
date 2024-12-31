@@ -50,9 +50,9 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
-      const categoryData = monthData.transactions.filter(
-        (item) => item?.type === categoryTitle
-      );
+      const categoryData = monthData.transactions
+        .filter((item) => item?.type === categoryTitle)
+        .sort((a, b) => a!.date - b!.date);
       setTransactions(categoryData);
     } else {
       setTransactions([]);
@@ -78,9 +78,9 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
   const addTransaction = async (e: SyntheticEvent) => {
     e.preventDefault();
-    setLoading(true);
-
     if (!description || Number(amount) <= 0) return;
+
+    setLoading(true);
 
     const newTransaction = {
       date: date || 0,
@@ -99,7 +99,11 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
         },
       });
       console.log("add res", response.data);
-      setTransactions([...transactions, response.data]);
+      const sortedTransactions = [...transactions, response.data].sort(
+        (a, b) => a.date - b.date
+      );
+
+      setTransactions(sortedTransactions);
       setAmount("");
       setDate("");
       setDescription("");
@@ -155,23 +159,29 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
               type: categoryTitle,
             };
 
-            await axios.post(`${BASE_URL}/api/add`, newTransaction, {
-              params: {
-                monthId: monthData?.id || null,
-                userId: user?.id,
-                year: year,
-                month: month,
-              },
-            });
+            const response = await axios.post(
+              `${BASE_URL}/api/add`,
+              newTransaction,
+              {
+                params: {
+                  monthId: monthData?.id || null,
+                  userId: user?.id,
+                  year: year,
+                  month: month,
+                },
+              }
+            );
+            return response.data;
           }
         );
 
         // 모든 요청이 완료될 때까지 기다리기
-        await Promise.all(promises);
+        const newTransactions = await Promise.all(promises);
 
-        // 새로 추가한 거래를 다시 가져와서 상태 업데이트
-        setTransactions(previousTransactions);
-        alert("이전 달 데이터가 복사되었습니다.");
+        const sortedTransactions = newTransactions.sort(
+          (a: { date: number }, b: { date: number }) => a.date - b.date
+        );
+        setTransactions(sortedTransactions);
       } else {
         alert("이전 달에 복사할 데이터가 없습니다.");
       }
@@ -186,14 +196,13 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
     setLoading(true);
 
     try {
-      const response = await axios.delete(`${BASE_URL}/api/delete`, {
+      await axios.delete(`${BASE_URL}/api/delete`, {
         params: {
           userId: user?.id,
           transactionId: id,
+          monthId: monthData?.id,
         },
       });
-
-      console.log(response.data);
 
       setTransactions((prevTransactions) =>
         prevTransactions.filter((transaction) => transaction?.id !== id)
@@ -240,8 +249,8 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
   const editTransaction = async (e: SyntheticEvent, id: number) => {
     e.preventDefault();
-    setLoading(true);
     if (!editDescription || !editAmount) return;
+    setLoading(true);
 
     const updateTransaction = {
       date: editDate || 0,
@@ -257,6 +266,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
           params: {
             userId: user?.id,
             transactionId: id,
+            monthId: monthData?.id,
           },
         }
       );
