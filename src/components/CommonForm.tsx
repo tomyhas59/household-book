@@ -33,13 +33,13 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState<number | "">("");
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [hoveredTitle, setHoveredTitle] = useState(false);
   const [editFormById, setEditFormById] = useState<number | null>(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState<number | "">("");
-  const [date, setDate] = useState<number | "">("");
   const dateRef = useRef<HTMLInputElement | null>(null);
   const listRef = useRef<HTMLDivElement | null>(null);
   const listItemRef = useRef<HTMLFormElement | null>(null);
@@ -411,37 +411,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
               </ListItem>
             )}
           </React.Fragment>
-        ))}{" "}
-        <Form onSubmit={addTransaction}>
-          <Input
-            ref={dateRef}
-            type="number"
-            placeholder="날짜"
-            value={date}
-            onChange={(e: { target: { value: any } }) => {
-              const value = e.target.value;
-              setDate(Number(value) > 31 ? Number(value) % 10 : Number(value));
-            }}
-          />
-          <Input
-            type="text"
-            placeholder="상세"
-            value={description}
-            onChange={(e: {
-              target: { value: React.SetStateAction<string> };
-            }) => setDescription(e.target.value)}
-          />
-          <Input
-            type="number"
-            placeholder="비용"
-            value={amount}
-            min="0"
-            onChange={(e: {
-              target: { value: React.SetStateAction<string> };
-            }) => setAmount(e.target.value)}
-          />
-          <Button type="submit">+</Button>
-        </Form>
+        ))}
       </List>
       <TotalContainer>
         <Total>

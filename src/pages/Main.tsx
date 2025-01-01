@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Details from "../components/Details";
 import Income from "../components/Income";
 import Saving from "../components/Saving";
@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import Spinner from "../components/Spinner";
+import TransactionForm from "../components/TransactionForm";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -42,6 +43,10 @@ const Main = () => {
   const [monthData, setMonthData] = useRecoilState(monthDataState);
   const user = useRecoilValue(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
+  const [transactonForm, setTransactionForm] = useState<boolean>(false);
+  const transactionFormRef = useRef<HTMLDivElement>(null);
+
+  const transactionFormButtonRef = useRef<HTMLButtonElement>(null);
 
   const navigator = useNavigate();
 
@@ -125,6 +130,30 @@ const Main = () => {
     }
   };
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        transactionFormButtonRef.current &&
+        transactionFormButtonRef.current.contains(e.target as Node)
+      ) {
+        return;
+      }
+
+      if (
+        transactionFormRef.current &&
+        !transactionFormRef.current.contains(e.target as Node)
+      ) {
+        setTransactionForm(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
     <MainContainer>
       {loading && <Spinner />}
@@ -137,11 +166,9 @@ const Main = () => {
           setMonth={setMonth}
         />
         <HeaderTitle>
-          <Button onClick={getPrevMonth}>◀️</Button>
-          <span>
-            {user?.nickname}의 {month}월 데이터
-          </span>
-          <Button onClick={getNextMonth}>▶️</Button>
+          <Button onClick={getPrevMonth}>◀</Button>
+          <span>{month}월 데이터</span>
+          <Button onClick={getNextMonth}>▶</Button>
         </HeaderTitle>
         <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
       </HeaderContainer>
@@ -202,6 +229,22 @@ const Main = () => {
           ))}
         </DetailsContainer>
       </ContentContainer>
+      <TransactionFormButton
+        ref={transactionFormButtonRef}
+        onClick={() => setTransactionForm((prev) => !prev)}
+      >
+        {transactonForm ? "취소" : "등록"}
+      </TransactionFormButton>
+      {transactonForm && (
+        <TransactionForm
+          ref={transactionFormRef}
+          monthData={monthData}
+          setMonthData={setMonthData}
+          year={year}
+          month={month}
+          user={user}
+        />
+      )}
     </MainContainer>
   );
 };
@@ -214,11 +257,12 @@ const HeaderContainer = styled.header`
   display: flex;
   width: 100%;
   height: 8vh;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   background-color: #2c3e50;
+  gap: 5px;
   position: relative;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     position: fixed;
     display: grid;
     grid-template-columns: 30% 50% 20%;
@@ -230,14 +274,16 @@ const HeaderTitle = styled.h1`
   font-weight: 600;
   color: #ffffff;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+
   span {
     margin: 0 30px;
   }
-  @media (max-width: 768px) {
+
+  @media (max-width: 480px) {
     font-size: 1rem;
     word-break: keep-all;
+    font-size: 0.8rem;
   }
 `;
 
@@ -276,19 +322,18 @@ export const LogoutButton = styled.button`
   color: #000;
   font-size: 16px;
   font-weight: bold;
-  padding: 10px 20px;
+  padding: 8px;
   border: 2px solid #fff;
   border-radius: 5px;
   transition: all 0.3s ease;
+  border: 1px solid;
   cursor: pointer;
   &:hover {
-    background-color: #512da8;
+    background-color: #e74c3c;
     color: #fff;
   }
-
-  @media (max-width: 768px) {
-    font-size: 0.5rem;
-    padding: 10px;
+  @media (max-width: 480px) {
+    transform: scale(0.7);
   }
 `;
 
@@ -301,7 +346,35 @@ const Button = styled.button`
   position: relative;
 
   &:hover {
-    color: #512da8;
+    color: #e74c3c;
     -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
+  }
+`;
+
+const TransactionFormButton = styled.button`
+  position: fixed;
+  right: 10%;
+  bottom: 10%;
+  padding: 12px 24px;
+  background-color: #4b9fef;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+
+  &:hover {
+    background-color: #4b9fef;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 10px 20px;
   }
 `;

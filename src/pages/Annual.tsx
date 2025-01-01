@@ -241,15 +241,12 @@ const Annual = () => {
                 </option>
               ))}
             </Select>
-            <p>총 수입 : </p>
-            <p>{totalIncome().toLocaleString()}원</p>
+            <p>총 수입 : {totalIncome().toLocaleString()}원</p>
           </HeaderLeftSection>
           <HeaderTitle>
-            <Button onClick={getPrevYear}>◀️</Button>
-            <span>
-              {user.nickname}의 {year}년 데이터
-            </span>
-            <Button onClick={getNextYear}>▶️</Button>
+            <Button onClick={getPrevYear}>◀</Button>
+            <span>{year}년 데이터</span>
+            <Button onClick={getNextYear}>▶</Button>
           </HeaderTitle>
           <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         </HeaderContainer>
@@ -345,7 +342,7 @@ const Container = styled.div`
     "a a"
     "b c";
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     display: flex;
     flex-direction: column;
   }
@@ -355,31 +352,37 @@ const HeaderContainer = styled.div`
   display: flex;
   width: 100%;
   height: 8vh;
-  justify-content: space-between;
+  gap: 5px;
+  justify-content: start;
   align-items: center;
   background-color: #2c3e50;
   position: relative;
   grid-area: a;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     position: fixed;
+    font-size: 0.8rem;
     z-index: 1000;
   }
 `;
 
 const HeaderLeftSection = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 5px;
   > p {
+    width: 100px;
+    grid-area: c;
     color: #fff;
     font-weight: bold;
   }
 
-  @media (max-width: 768px) {
-    transform: scale(0.7);
+  @media (max-width: 480px) {
+    transform: scale(0.8);
     display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
+    grid-template-areas:
+      "a b"
+      "c c";
   }
 `;
 
@@ -389,14 +392,15 @@ const HeaderTitle = styled.h1`
   color: #ffffff;
   text-align: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+
   span {
     margin: 0 30px;
   }
-  @media (max-width: 768px) {
-    font-size: 1rem;
+  @media (max-width: 480px) {
     word-break: keep-all;
+    font-size: 0.8rem;
   }
 `;
 
@@ -415,7 +419,7 @@ const Select = styled.select`
     border-color: #7f8fa6;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 0.9rem;
     padding: 8px;
   }
@@ -424,6 +428,8 @@ const Select = styled.select`
 const HomeButton = styled(Link)`
   text-decoration: none;
   font-size: 1rem;
+  min-width: 110px;
+  text-align: center;
   background-color: #e74c3c;
   border-radius: 8px;
   padding: 10px;
@@ -434,7 +440,7 @@ const HomeButton = styled(Link)`
   &:hover {
     background-color: #c0392b;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     min-width: 80px;
     font-size: 0.7rem;
   }
@@ -443,7 +449,7 @@ const HomeButton = styled(Link)`
 const MonthListContainer = styled.div`
   grid-area: b;
   padding: 10px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
   }
 `;
@@ -453,7 +459,7 @@ const MonthList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
@@ -472,7 +478,7 @@ const MonthContainer = styled.div`
     transform: translateY(-5px);
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     width: 160px;
     * {
       font-size: 0.7rem;
@@ -487,7 +493,7 @@ const MonthTitle = styled.h2`
   color: #2c3e50;
   text-align: center;
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 1.25rem;
   }
 `;
@@ -497,7 +503,7 @@ const Category = styled.div`
   flex-direction: column;
   gap: 10px;
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     gap: 8px;
   }
 `;
@@ -506,7 +512,7 @@ const AccountSection = styled.div`
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 0.9rem;
   }
 `;
@@ -538,7 +544,7 @@ const PieChartContainer = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     padding: 15px;
   }
 `;
@@ -552,7 +558,7 @@ const Button = styled.button`
   position: relative;
 
   &:hover {
-    color: #512da8;
+    color: #e74c3c;
     -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
   }
 `;
