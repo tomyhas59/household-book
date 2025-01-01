@@ -31,16 +31,13 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
   isBar,
 }) => {
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState<number | "">("");
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
   const [hoveredTitle, setHoveredTitle] = useState(false);
   const [editFormById, setEditFormById] = useState<number | null>(null);
   const [editDescription, setEditDescription] = useState("");
   const [editAmount, setEditAmount] = useState(0);
   const [editDate, setEditDate] = useState<number | "">("");
-  const dateRef = useRef<HTMLInputElement | null>(null);
+
   const listRef = useRef<HTMLDivElement | null>(null);
   const listItemRef = useRef<HTMLFormElement | null>(null);
   const [total, setTotal] = useState<number | null>(null);
@@ -75,45 +72,6 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
 
     setTotal(total);
   }, [transactions, setTotalItem, onTotalChange, livingTotal]);
-
-  const addTransaction = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    if (!description || Number(amount) <= 0) return;
-
-    setLoading(true);
-
-    const newTransaction = {
-      date: date || 0,
-      amount: parseFloat(amount),
-      description,
-      type: categoryTitle,
-    };
-
-    try {
-      const response = await axios.post(`${BASE_URL}/api/add`, newTransaction, {
-        params: {
-          monthId: monthData?.id || null,
-          userId: user?.id,
-          year: year,
-          month: month,
-        },
-      });
-      console.log("add res", response.data);
-      const sortedTransactions = [...transactions, response.data].sort(
-        (a, b) => a.date - b.date
-      );
-
-      setTransactions(sortedTransactions);
-      setAmount("");
-      setDate("");
-      setDescription("");
-      dateRef.current?.focus();
-    } catch (err) {
-      console.error("transaction add error", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const copyPreviousMonthData = async () => {
     let previousMonth = month - 1;
@@ -282,9 +240,6 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
       });
 
       setTransactions(updatedTransactions);
-      setAmount("");
-      setDate("");
-      setDescription("");
       setEditFormById(null);
     } catch (err) {
       console.error(err);
