@@ -48,6 +48,7 @@ export default DateSelector;
 
 const DateContainer = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 5px;
   > p {
@@ -56,9 +57,7 @@ const DateContainer = styled.div`
   }
   @media (max-width: 768px) {
     transform: scale(0.8);
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
+    flex-direction: column;
   }
 `;
 
@@ -94,6 +93,7 @@ const Select = styled.select`
 
 const AnnualButton = styled(Link)`
   width: 100%;
+  text-align: center;
   text-decoration: none;
   background-color: #e74c3c;
   border-radius: 8px;

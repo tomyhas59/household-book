@@ -206,6 +206,18 @@ const Annual = () => {
       },
     },
   };
+  const getNextYear = () => {
+    if (year) {
+      setYear(year + 1);
+    }
+  };
+
+  const getPrevYear = () => {
+    if (year) {
+      if (year - 1 < 2024) return alert("2024년부터 가능");
+      setYear(year - 1);
+    }
+  };
 
   if (!user) {
     return <Navigate to="/" replace />;
@@ -232,7 +244,13 @@ const Annual = () => {
             <p>총 수입 : </p>
             <p>{totalIncome().toLocaleString()}원</p>
           </HeaderLeftSection>
-          <HeaderTitle>{user.nickname}의 연도별 데이터</HeaderTitle>
+          <HeaderTitle>
+            <Button onClick={getPrevYear}>◀️</Button>
+            <span>
+              {user.nickname}의 {year}년 데이터
+            </span>
+            <Button onClick={getNextYear}>▶️</Button>
+          </HeaderTitle>
           <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         </HeaderContainer>
         <MonthListContainer>
@@ -370,22 +388,20 @@ const HeaderTitle = styled.h1`
   font-weight: 600;
   color: #ffffff;
   text-align: center;
-  flex-grow: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    margin: 0 30px;
+  }
   @media (max-width: 768px) {
-    position: static;
-    transform: none;
     font-size: 1rem;
     word-break: keep-all;
   }
 `;
 
 const Select = styled.select`
-  appearance: none;
+  appearance: none; //select 화살표 none
   border: 2px solid #ecf0f1;
   background-color: #ffffff;
   font-size: 1rem;
@@ -419,6 +435,7 @@ const HomeButton = styled(Link)`
     background-color: #c0392b;
   }
   @media (max-width: 768px) {
+    min-width: 80px;
     font-size: 0.7rem;
   }
 `;
@@ -427,12 +444,12 @@ const MonthListContainer = styled.div`
   grid-area: b;
   padding: 10px;
   @media (max-width: 768px) {
-    padding: 10px;
     padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
   }
 `;
 
 const MonthList = styled.div`
+  margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
@@ -523,5 +540,19 @@ const PieChartContainer = styled.div`
   gap: 20px;
   @media (max-width: 768px) {
     padding: 15px;
+  }
+`;
+const Button = styled.button`
+  background-color: transparent;
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  margin: 10px;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    color: #512da8;
+    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
   }
 `;

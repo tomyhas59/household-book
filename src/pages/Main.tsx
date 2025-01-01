@@ -96,6 +96,35 @@ const Main = () => {
     if (user?.id === null) navigator("/");
   });
 
+  const getNextMonth = () => {
+    if (month && year) {
+      let nextMonth = month + 1;
+      let nextYear = year;
+      if (nextMonth > 12) {
+        nextMonth = 1;
+        nextYear = year + 1;
+      }
+      setYear(nextYear);
+      setMonth(nextMonth);
+    }
+  };
+
+  const getPrevMonth = () => {
+    if (month && year) {
+      let previousMonth = month - 1;
+      let previousYear = year;
+
+      if (previousMonth < 1) {
+        previousMonth = 12;
+        previousYear = year - 1;
+      }
+
+      if (previousYear < 2024) return alert("2024년부터 가능");
+      setYear(previousYear);
+      setMonth(previousMonth);
+    }
+  };
+
   return (
     <MainContainer>
       {loading && <Spinner />}
@@ -107,7 +136,13 @@ const Main = () => {
           setYear={setYear}
           setMonth={setMonth}
         />
-        <HeaderTitle>{user?.nickname}의 월별 데이터</HeaderTitle>
+        <HeaderTitle>
+          <Button onClick={getPrevMonth}>◀️</Button>
+          <span>
+            {user?.nickname}의 {month}월 데이터
+          </span>
+          <Button onClick={getNextMonth}>▶️</Button>
+        </HeaderTitle>
         <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
       </HeaderContainer>
       <ContentContainer>
@@ -182,10 +217,11 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   background-color: #2c3e50;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   @media (max-width: 768px) {
     position: fixed;
+    display: grid;
+    grid-template-columns: 30% 50% 20%;
     z-index: 1000;
   }
 `;
@@ -193,15 +229,13 @@ const HeaderTitle = styled.h1`
   font-size: 2rem;
   font-weight: 600;
   color: #ffffff;
-  text-align: center;
-  flex-grow: 1;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    margin: 0 30px;
+  }
   @media (max-width: 768px) {
-    left: 70%;
     font-size: 1rem;
     word-break: keep-all;
   }
@@ -255,5 +289,19 @@ export const LogoutButton = styled.button`
   @media (max-width: 768px) {
     font-size: 0.5rem;
     padding: 10px;
+  }
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    color: #512da8;
+    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
   }
 `;
