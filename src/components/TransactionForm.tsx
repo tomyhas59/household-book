@@ -130,10 +130,10 @@ const TransactionFormContainer = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #2c3e50;
+  opacity: 0.7;
   padding: 20px;
   border-radius: 10px;
   width: 20%;
-
   margin: 20px auto;
   display: flex;
   flex-direction: column;
