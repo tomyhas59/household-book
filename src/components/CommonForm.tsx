@@ -269,6 +269,44 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
     }
   }, [transactions]);
 
+  const [draggedTransaction, setDraggedTransaction] =
+    useState<TransactionType | null>(null);
+  const [draggedFromType, setDraggedFromType] = useState<string | null>(null);
+
+  // 드래그 시작 시 호출
+  const handleDragStart = (
+    e: React.DragEvent,
+    transaction: TransactionType
+  ) => {
+    if (transaction) {
+      setDraggedTransaction(transaction);
+      setDraggedFromType(transaction.type);
+      e.dataTransfer.setData("monsterId", transaction.id.toString());
+    }
+  };
+
+  // 드래그한 아이템을 테이블로 드롭 시 호출
+  const handleDrop = (e: React.DragEvent, type: string) => {
+    e.preventDefault();
+    if (draggedTransaction) {
+      // 드래그한 몬스터를 새로운 타입으로 업데이트
+      setTransactions((transactions: TransactionType[]) =>
+        transactions.map((transaction) =>
+          transaction.id === draggedTransaction.id
+            ? { ...transaction, type }
+            : transaction
+        )
+      );
+      setDraggedTransaction(null); // 드래그 종료 후 초기화
+      setDraggedFromType(null); // 드래그 시작 지점 초기화
+    }
+  };
+
+  // 드래그 오버 시 기본 동작 방지
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
   return (
     <Container style={{ height: height }}>
       <TitleContainer
@@ -343,11 +381,8 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
                   }
                 }}
                 onMouseLeave={() => setHoveredItemId(null)}
-                onClick={() => {
-                  if (transaction) {
-                    handleModifyForm(transaction.id);
-                  }
-                }}
+                draggable
+                onDragStart={onDragStart}
               >
                 <ListItemText>
                   {transaction?.date ? `${transaction?.date}일` : ""}
