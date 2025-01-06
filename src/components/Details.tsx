@@ -8,6 +8,9 @@ const Details: React.FC<PropsType> = ({
   year,
   month,
   user,
+  onDrop,
+  onDragOver,
+  onDragStart,
 }) => {
   return (
     <CommonForm
@@ -20,6 +23,9 @@ const Details: React.FC<PropsType> = ({
       height="100%"
       color="red"
       isBar={true}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragStart={onDragStart}
     />
   );
 };

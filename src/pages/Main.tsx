@@ -24,6 +24,7 @@ import axios from "axios";
 import { BASE_URL } from "../config/config";
 import Spinner from "../components/Spinner";
 import TransactionForm from "../components/TransactionForm";
+import { TransactionType } from "../type";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -45,8 +46,9 @@ const Main = () => {
   const [loading, setLoading] = useRecoilState(loadingState);
   const [transactonForm, setTransactionForm] = useState<boolean>(false);
   const transactionFormRef = useRef<HTMLDivElement>(null);
-
   const transactionFormButtonRef = useRef<HTMLButtonElement>(null);
+  const [draggedTransaction, setDraggedTransacton] =
+    useState<TransactionType | null>(null);
 
   const navigator = useNavigate();
 
@@ -75,6 +77,44 @@ const Main = () => {
       fetchData();
     }
   }, [user, year, month, setMonthData, setLoading]);
+
+  // 드래그 시작 시 호출
+  const handleDragStart = (
+    e: React.DragEvent,
+    transaction: TransactionType
+  ) => {
+    if (transaction) {
+      setDraggedTransacton(transaction);
+    }
+  };
+
+  // 드래그한 아이템을 테이블로 드롭 시 호출
+  const handleDrop = (e: React.DragEvent, type: string) => {
+    e.preventDefault();
+    if (draggedTransaction) {
+      const updatedTransactions = monthData?.transactions?.map((transaction) =>
+        transaction?.id === draggedTransaction.id
+          ? {
+              ...transaction,
+              type,
+            }
+          : transaction
+      );
+
+      setMonthData((prev) => {
+        return {
+          ...prev,
+          transactions: updatedTransactions,
+        };
+      });
+      setDraggedTransacton(null); // 드래그 종료 후 초기화
+    }
+  };
+
+  // 드래그 오버 시 기본 동작 방지
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
 
   const updateAllTotal = useCallback(
     (index: number, total: number) => {
@@ -193,6 +233,9 @@ const Main = () => {
               user={user}
               year={year}
               month={month}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragStart={handleDragStart}
             />
             <Saving
               categoryTitle="저축"
@@ -201,6 +244,9 @@ const Main = () => {
               user={user}
               year={year}
               month={month}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragStart={handleDragStart}
             />
           </ColumnContainer>
           <ColumnContainer>
@@ -211,6 +257,9 @@ const Main = () => {
               user={user}
               year={year}
               month={month}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragStart={handleDragStart}
             />
             <Note monthData={monthData} year={year} month={month} user={user} />
           </ColumnContainer>
@@ -225,6 +274,9 @@ const Main = () => {
               year={year}
               user={user}
               month={month}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragStart={handleDragStart}
             />
           ))}
         </DetailsContainer>
@@ -313,7 +365,8 @@ const ColumnContainer = styled.div`
 `;
 
 const DetailsContainer = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
   height: 92vh;
 `;
 

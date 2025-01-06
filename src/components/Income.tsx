@@ -7,6 +7,9 @@ const Income: React.FC<PropsType> = ({
   year,
   month,
   user,
+  onDrop,
+  onDragOver,
+  onDragStart,
 }) => {
   return (
     <CommonForm
@@ -19,6 +22,9 @@ const Income: React.FC<PropsType> = ({
       user={user}
       height="50%"
       isBar={false}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+      onDragStart={onDragStart}
     />
   );
 };
