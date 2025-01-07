@@ -10,6 +10,8 @@ import styled from "styled-components";
 import { BASE_URL } from "../config/config";
 import { MonthDataType, UserType } from "../type";
 import { DETAIL_CATEGORIES } from "./../pages/Main";
+import { useSetRecoilState } from "recoil";
+import { loadingState } from "../recoil/atoms";
 
 export type PropsType = {
   setMonthData: React.Dispatch<React.SetStateAction<MonthDataType>>;
@@ -26,11 +28,12 @@ const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
     const [date, setDate] = useState<number | "">("");
     const [categoryTitle, setCategoryTitle] = useState<string>("고정 지출");
     const dateRef = useRef<HTMLInputElement | null>(null);
+    const setLoading = useSetRecoilState(loadingState);
 
     const addTransaction = async (e: SyntheticEvent) => {
       e.preventDefault();
       if (!description || Number(amount) <= 0) return;
-
+      setLoading(true);
       const newTransaction = {
         date: date || 0,
         amount: parseFloat(amount),
@@ -68,6 +71,8 @@ const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
         if (dateRef.current) dateRef.current.focus();
       } catch (err) {
         console.error("transaction add error", err);
+      } finally {
+        setLoading(false);
       }
     };
 

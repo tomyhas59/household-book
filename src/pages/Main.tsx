@@ -89,25 +89,48 @@ const Main = () => {
   };
 
   // 드래그한 아이템을 테이블로 드롭 시 호출
-  const handleDrop = (e: React.DragEvent, type: string) => {
+  const handleDrop = async (e: React.DragEvent, type: string) => {
     e.preventDefault();
-    if (draggedTransaction) {
-      const updatedTransactions = monthData?.transactions?.map((transaction) =>
-        transaction?.id === draggedTransaction.id
-          ? {
-              ...transaction,
-              type,
-            }
-          : transaction
-      );
-
-      setMonthData((prev) => {
-        return {
-          ...prev,
-          transactions: updatedTransactions,
+    setLoading(true);
+    try {
+      if (draggedTransaction) {
+        const updateTransaction = {
+          ...draggedTransaction,
+          type: type,
         };
-      });
-      setDraggedTransacton(null); // 드래그 종료 후 초기화
+
+        console.log("---", updateTransaction);
+
+        await axios.put(`${BASE_URL}/api/update`, updateTransaction, {
+          params: {
+            userId: user?.id,
+            transactionId: draggedTransaction.id,
+            monthId: monthData?.id,
+          },
+        });
+
+        const updatedTransactions = monthData?.transactions?.map(
+          (transaction) =>
+            transaction?.id === draggedTransaction.id
+              ? {
+                  ...transaction,
+                  type,
+                }
+              : transaction
+        );
+
+        setMonthData((prev) => {
+          return {
+            ...prev,
+            transactions: updatedTransactions,
+          };
+        });
+        setDraggedTransacton(null); // 드래그 종료 후 초기화
+      }
+    } catch (err) {
+      console.error();
+    } finally {
+      setLoading(false);
     }
   };
 
