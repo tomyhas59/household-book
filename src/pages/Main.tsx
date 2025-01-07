@@ -99,8 +99,6 @@ const Main = () => {
           type: type,
         };
 
-        console.log("---", updateTransaction);
-
         await axios.put(`${BASE_URL}/api/update`, updateTransaction, {
           params: {
             userId: user?.id,
@@ -332,7 +330,7 @@ const HeaderContainer = styled.header`
   display: flex;
   width: 100%;
   height: 8vh;
-  justify-content: start;
+  justify-content: space-around;
   align-items: center;
   background-color: #2c3e50;
   gap: 5px;
@@ -341,6 +339,7 @@ const HeaderContainer = styled.header`
     position: fixed;
     display: grid;
     grid-template-columns: 30% 50% 20%;
+    align-items: center;
     z-index: 1000;
   }
 `;
@@ -349,16 +348,15 @@ const HeaderTitle = styled.h1`
   font-weight: 600;
   color: #ffffff;
   display: flex;
+  justify-content: center;
   align-items: center;
-
-  span {
-    margin: 0 30px;
-  }
+  gap: 50px;
 
   @media (max-width: 480px) {
     font-size: 1rem;
     word-break: keep-all;
     font-size: 0.8rem;
+    gap: 10px;
   }
 `;
 
@@ -423,7 +421,10 @@ const Button = styled.button`
 
   &:hover {
     color: #e74c3c;
-    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
+    -webkit-text-stroke: 1px white;
+  }
+  @media (max-width: 480px) {
+    transform: scale(0.7);
   }
 `;
 

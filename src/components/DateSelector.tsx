@@ -55,7 +55,7 @@ const DateContainer = styled.div`
     color: #fff;
     font-weight: bold;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 468px) {
     transform: scale(0.8);
     flex-direction: column;
   }
@@ -85,7 +85,7 @@ const Select = styled.select`
     border-color: #7f8fa6;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     font-size: 0.9rem;
     padding: 8px;
   }
@@ -105,7 +105,8 @@ const AnnualButton = styled(Link)`
   &:hover {
     background-color: #c0392b;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
+    width: 80px;
     font-size: 0.7rem;
   }
 `;
