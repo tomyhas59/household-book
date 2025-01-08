@@ -371,10 +371,14 @@ const HeaderLeftSection = styled.div`
   align-items: center;
   gap: 5px;
   > p {
-    width: 100px;
+    width: 200px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 8px;
     grid-area: c;
-    color: #fff;
+    color: #2c3e50;
     font-weight: bold;
+    padding: 10px;
   }
 
   @media (max-width: 480px) {
@@ -383,6 +387,10 @@ const HeaderLeftSection = styled.div`
     grid-template-areas:
       "a b"
       "c c";
+    > p {
+      width: 100px;
+      padding: 5px;
+    }
   }
 `;
 

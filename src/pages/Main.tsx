@@ -330,7 +330,7 @@ const HeaderContainer = styled.header`
   display: flex;
   width: 100%;
   height: 8vh;
-  justify-content: space-around;
+  justify-content: start;
   align-items: center;
   background-color: #2c3e50;
   gap: 5px;
