@@ -231,7 +231,10 @@ const Main = () => {
           <span>{month}월 데이터</span>
           <Button onClick={getNextMonth}>▶</Button>
         </HeaderTitle>
-        <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+        <LogoutButtonWrapper>
+          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+          <div>각 데이터 드래그 가능</div>
+        </LogoutButtonWrapper>
       </HeaderContainer>
       <ContentContainer>
         <FlexContainer>
@@ -335,10 +338,11 @@ const HeaderContainer = styled.header`
   background-color: #2c3e50;
   gap: 5px;
   position: relative;
+
   @media (max-width: 480px) {
     position: fixed;
     display: grid;
-    grid-template-columns: 30% 50% 20%;
+    grid-template-columns: 30% 40% 25%;
     align-items: center;
     z-index: 1000;
   }
@@ -391,6 +395,27 @@ const DetailsContainer = styled.div`
   height: 92vh;
 `;
 
+const LogoutButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  > div {
+    text-align: center;
+    background-color: #e74c3c;
+    border-radius: 8px;
+    padding: 10px;
+    color: #ffffff;
+  }
+  @media (max-width: 480px) {
+    flex-direction: column;
+    height: 50px;
+    font-size: 8px;
+    word-break: keep-all;
+    gap: 0;
+  }
+`;
+
 export const LogoutButton = styled.button`
   text-decoration: none;
   color: #000;
@@ -407,7 +432,7 @@ export const LogoutButton = styled.button`
     color: #fff;
   }
   @media (max-width: 480px) {
-    transform: scale(0.7);
+    font-size: 8px;
   }
 `;
 
