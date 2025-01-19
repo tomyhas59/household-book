@@ -140,43 +140,45 @@ const Annual = () => {
     console.log("로그아웃 완료");
   };
 
+  //총 데이터 계산
+  const totalIncomeValue = totalIncome();
+  const totallFixedValue = totalFixed();
+  const totalSavingsValue = totalSavings();
+  const categoriesData = {
+    food: totalCategory("식비"),
+    necessity: totalCategory("생필품"),
+    culture: totalCategory("문화생활"),
+    transportation: totalCategory("교통비"),
+    others: totalCategory("의료 및 기타"),
+  };
+  const totalCategoryCost = Object.values(categoriesData).reduce(
+    (sum, categoryCost) => sum + categoryCost,
+    0
+  );
+  const totalSpending = totalCategoryCost + totallFixedValue;
+
+  const remaining = totalIncomeValue - (totalSavingsValue + totalSpending);
+
   const pieData = useMemo(() => {
-    const pieTotalIncome = totalIncome();
-    const pieTotallFixed = totalFixed();
-    const pieTotalSavings = totalSavings();
-    const categoriesData = {
-      food: totalCategory("식비"),
-      necessity: totalCategory("생필품"),
-      culture: totalCategory("문화생활"),
-      transportation: totalCategory("교통비"),
-      others: totalCategory("의료 및 기타"),
-    };
-
-    const remaining =
-      pieTotalIncome -
-      (pieTotalSavings +
-        Object.values(categoriesData).reduce((a, c) => a + c, 0) +
-        pieTotallFixed);
-
     const calcPercentage = (value: number) =>
-      pieTotalIncome ? ((value / pieTotalIncome) * 100).toFixed(2) : 0;
+      totalIncomeValue ? ((value / totalIncomeValue) * 100).toFixed(2) : 0;
 
     return {
       labels: [
-        `고정 지출 (${calcPercentage(pieTotallFixed)}%)`,
-        `저축 (${calcPercentage(pieTotalSavings)}%)`,
-        `식비 (${calcPercentage(categoriesData.food)}%)`,
-        `생필품 (${calcPercentage(categoriesData.necessity)}%)`,
-        `문화생활 (${calcPercentage(categoriesData.culture)}%)`,
-        `교통비 (${calcPercentage(categoriesData.transportation)}%)`,
-        `의료 및 기타 (${calcPercentage(categoriesData.others)}%)`,
-        `남은 금액 (${calcPercentage(remaining)}%)`,
+        `고정 지출 ${totallFixedValue.toLocaleString()}원 (${calcPercentage(totallFixedValue)}%)`,
+        `저축 ${totalSavingsValue.toLocaleString()}원(${calcPercentage(totalSavingsValue)}%)`,
+        `식비 ${categoriesData.food.toLocaleString()}원(${calcPercentage(categoriesData.food)}%)`,
+        `생필품 ${categoriesData.necessity.toLocaleString()}원(${calcPercentage(categoriesData.necessity)}%)`,
+        `문화생활 ${categoriesData.culture.toLocaleString()}원(${calcPercentage(categoriesData.culture)}%)`,
+        `교통비 ${categoriesData.transportation.toLocaleString()}원(${calcPercentage(categoriesData.transportation)}%)`,
+        `의료 및 기타 ${categoriesData.others.toLocaleString()}원(${calcPercentage(categoriesData.others)}%)`,
+        `남은 금액 ${remaining.toLocaleString()}원(${calcPercentage(remaining)}%)`,
       ],
       datasets: [
         {
           data: [
-            pieTotallFixed,
-            pieTotalSavings,
+            totallFixedValue,
+            totalSavingsValue,
             categoriesData.food,
             categoriesData.necessity,
             categoriesData.culture,
@@ -203,6 +205,7 @@ const Annual = () => {
     plugins: {
       legend: {
         position: "bottom",
+        maxHeight: 200,
       },
     },
   };
@@ -326,6 +329,7 @@ const Annual = () => {
         <PieChartContainer>
           <h2>연간 수입, 지출, 저축 비교</h2>
           <Pie data={pieData} options={options} />
+          <div>총 지출: {totalSpending.toLocaleString()}원</div>
         </PieChartContainer>
       </Container>
     );
@@ -545,17 +549,29 @@ const Detail = styled.div`
 `;
 
 const PieChartContainer = styled.div`
-  grid-area: c;
+  background-color: #f8f8f8;
+  border-radius: 10px;
   padding: 20px;
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  div {
+    text-align: center;
+    color: #555;
+    font-weight: bold;
+  }
   @media (max-width: 480px) {
     padding: 15px;
   }
 `;
+
 const Button = styled.button`
   background-color: transparent;
   color: #fff;
