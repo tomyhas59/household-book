@@ -232,8 +232,8 @@ const Main = () => {
           <Button onClick={getNextMonth}>▶</Button>
         </HeaderTitle>
         <LogoutButtonWrapper>
-          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
           <div>각 데이터 드래그 가능</div>
+          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         </LogoutButtonWrapper>
       </HeaderContainer>
       <ContentContainer>
@@ -336,14 +336,17 @@ const HeaderContainer = styled.header`
   justify-content: start;
   align-items: center;
   background-color: #2c3e50;
-  gap: 5px;
   position: relative;
-
+  padding: 5px;
   @media (max-width: 480px) {
+    height: auto;
     position: fixed;
     display: grid;
-    grid-template-columns: 30% 40% 25%;
-    align-items: center;
+
+    grid-template-areas:
+      "a a"
+      "b c";
+    grid-template-columns: 1fr 1fr;
     z-index: 1000;
   }
 `;
@@ -354,13 +357,36 @@ const HeaderTitle = styled.h1`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50px;
 
+  span {
+    margin: 0 30px;
+  }
   @media (max-width: 480px) {
-    font-size: 1rem;
+    font-size: 0.6rem;
+    grid-area: b;
     word-break: keep-all;
-    font-size: 0.8rem;
-    gap: 10px;
+  }
+`;
+
+const LogoutButtonWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  > div {
+    text-align: center;
+    background-color: #e74c3c;
+    border-radius: 8px;
+    padding: 10px;
+    color: #ffffff;
+  }
+  @media (max-width: 480px) {
+    word-break: keep-all;
+    gap: 0;
+    > div {
+      font-size: 0.6rem;
+      padding: 5px;
+    }
   }
 `;
 
@@ -395,27 +421,6 @@ const DetailsContainer = styled.div`
   height: 92vh;
 `;
 
-const LogoutButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  > div {
-    text-align: center;
-    background-color: #e74c3c;
-    border-radius: 8px;
-    padding: 10px;
-    color: #ffffff;
-  }
-  @media (max-width: 480px) {
-    flex-direction: column;
-    height: 50px;
-    font-size: 8px;
-    word-break: keep-all;
-    gap: 0;
-  }
-`;
-
 export const LogoutButton = styled.button`
   text-decoration: none;
   color: #000;
@@ -432,7 +437,9 @@ export const LogoutButton = styled.button`
     color: #fff;
   }
   @media (max-width: 480px) {
-    font-size: 8px;
+    font-size: 0.6rem;
+    margin: 0;
+    padding: 5px;
   }
 `;
 
@@ -449,7 +456,8 @@ const Button = styled.button`
     -webkit-text-stroke: 1px white;
   }
   @media (max-width: 480px) {
-    transform: scale(0.7);
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
 

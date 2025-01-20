@@ -199,7 +199,17 @@ const Annual = () => {
         },
       ],
     };
-  }, [totalCategory, totalFixed, totalIncome, totalSavings]);
+  }, [
+    categoriesData.culture,
+    categoriesData.food,
+    categoriesData.necessity,
+    categoriesData.others,
+    categoriesData.transportation,
+    remaining,
+    totalIncomeValue,
+    totalSavingsValue,
+    totallFixedValue,
+  ]);
 
   const options: ChartOptions<"pie"> = {
     plugins: {
@@ -345,7 +355,6 @@ const Container = styled.div`
   grid-template-areas:
     "a a"
     "b c";
-
   @media (max-width: 480px) {
     display: flex;
     flex-direction: column;
@@ -362,10 +371,17 @@ const HeaderContainer = styled.div`
   background-color: #2c3e50;
   position: relative;
   grid-area: a;
+  padding: 5px;
   @media (max-width: 480px) {
+    height: auto;
     position: fixed;
-    font-size: 0.8rem;
+    display: grid;
+    grid-template-areas:
+      "a a"
+      "b c";
+    grid-template-columns: 2fr 1fr;
     z-index: 1000;
+    gap: 0;
   }
 `;
 
@@ -376,23 +392,14 @@ const HeaderLeftSection = styled.div`
   gap: 5px;
   > p {
     width: 200px;
-    text-align: center;
-    background-color: #fff;
-    border-radius: 8px;
-    grid-area: c;
-    color: #2c3e50;
+    color: #fff;
     font-weight: bold;
-    padding: 10px;
   }
 
   @media (max-width: 480px) {
-    transform: scale(0.8);
-    display: grid;
-    grid-template-areas:
-      "a b"
-      "c c";
+    grid-area: a;
     > p {
-      width: 100px;
+      font-size: 0.6rem;
       padding: 5px;
     }
   }
@@ -411,8 +418,29 @@ const HeaderTitle = styled.h1`
     margin: 0 30px;
   }
   @media (max-width: 480px) {
+    font-size: 0.6rem;
+    grid-area: b;
     word-break: keep-all;
-    font-size: 0.8rem;
+  }
+`;
+
+const Button = styled.button`
+  background-color: transparent;
+  color: #fff;
+  font-size: 2rem;
+  border: none;
+  margin: 10px;
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    color: #e74c3c;
+    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
+  }
+  @media (max-width: 480px) {
+    font-size: 0.6rem;
+    margin: 0;
+    padding: 5px;
   }
 `;
 
@@ -432,8 +460,8 @@ const Select = styled.select`
   }
 
   @media (max-width: 480px) {
-    font-size: 0.9rem;
-    padding: 8px;
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
 
@@ -454,7 +482,8 @@ const HomeButton = styled(Link)`
   }
   @media (max-width: 480px) {
     min-width: 80px;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
 
@@ -569,20 +598,5 @@ const PieChartContainer = styled.div`
   }
   @media (max-width: 480px) {
     padding: 15px;
-  }
-`;
-
-const Button = styled.button`
-  background-color: transparent;
-  color: #fff;
-  font-size: 2rem;
-  border: none;
-  margin: 10px;
-  cursor: pointer;
-  position: relative;
-
-  &:hover {
-    color: #e74c3c;
-    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
   }
 `;

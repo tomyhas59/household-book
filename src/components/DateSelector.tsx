@@ -48,7 +48,7 @@ export default DateSelector;
 
 const DateContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   gap: 5px;
   > p {
@@ -56,14 +56,33 @@ const DateContainer = styled.div`
     font-weight: bold;
   }
   @media (max-width: 468px) {
-    transform: scale(0.8);
-    flex-direction: column;
+    grid-area: a;
+  }
+`;
+
+const AnnualButton = styled(Link)`
+  width: 100%;
+  text-align: center;
+  text-decoration: none;
+  background-color: #e74c3c;
+  border-radius: 8px;
+  padding: 10px;
+  color: #ffffff;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #c0392b;
+  }
+  @media (max-width: 468px) {
+    min-width: 80px;
+    width: 100px;
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
 
 const SelectContainer = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -85,28 +104,8 @@ const Select = styled.select`
     border-color: #7f8fa6;
   }
 
-  @media (max-width: 480px) {
-    font-size: 0.9rem;
-    padding: 8px;
-  }
-`;
-
-const AnnualButton = styled(Link)`
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  padding: 10px;
-  color: #ffffff;
-  display: inline-block;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #c0392b;
-  }
-  @media (max-width: 480px) {
-    width: 80px;
-    font-size: 0.7rem;
+  @media (max-width: 468px) {
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
