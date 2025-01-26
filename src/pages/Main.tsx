@@ -25,6 +25,7 @@ import { BASE_URL } from "../config/config";
 import Spinner from "../components/Spinner";
 import TransactionForm from "../components/TransactionForm";
 import { TransactionType } from "../type";
+import OptionButton from "../components/OptionButton";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -47,6 +48,7 @@ const Main = () => {
   const [transactonForm, setTransactionForm] = useState<boolean>(false);
   const transactionFormRef = useRef<HTMLDivElement>(null);
   const transactionFormButtonRef = useRef<HTMLButtonElement>(null);
+
   const [draggedTransaction, setDraggedTransacton] =
     useState<TransactionType | null>(null);
 
@@ -151,13 +153,6 @@ const Main = () => {
     [setDetailsTotals]
   );
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-
-    navigator("/");
-    console.log("로그아웃 완료");
-  };
-
   useEffect(() => {
     if (user?.id === null) navigator("/");
   });
@@ -231,10 +226,7 @@ const Main = () => {
           <span>{month}월 데이터</span>
           <Button onClick={getNextMonth}>▶</Button>
         </HeaderTitle>
-        <LogoutButtonWrapper>
-          <div>각 데이터 드래그 가능</div>
-          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-        </LogoutButtonWrapper>
+        <OptionButton />
       </HeaderContainer>
       <ContentContainer>
         <FlexContainer>
@@ -368,28 +360,6 @@ const HeaderTitle = styled.h1`
   }
 `;
 
-const LogoutButtonWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  > div {
-    text-align: center;
-    background-color: #e74c3c;
-    border-radius: 8px;
-    padding: 10px;
-    color: #ffffff;
-  }
-  @media (max-width: 480px) {
-    word-break: keep-all;
-    gap: 0;
-    > div {
-      font-size: 0.6rem;
-      padding: 5px;
-    }
-  }
-`;
-
 const ContentContainer = styled.div`
   display: grid;
   grid-template-columns: 40% 60%;
@@ -419,28 +389,6 @@ const DetailsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
   height: 92vh;
-`;
-
-export const LogoutButton = styled.button`
-  text-decoration: none;
-  color: #000;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 8px;
-  border: 2px solid #fff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-  border: 1px solid;
-  cursor: pointer;
-  &:hover {
-    background-color: #e74c3c;
-    color: #fff;
-  }
-  @media (max-width: 480px) {
-    font-size: 0.6rem;
-    margin: 0;
-    padding: 5px;
-  }
 `;
 
 const Button = styled.button`
@@ -486,5 +434,27 @@ const TransactionFormButton = styled.button`
   @media (max-width: 480px) {
     font-size: 14px;
     padding: 10px 20px;
+  }
+`;
+export const LogoutButton = styled.button`
+  width: 50px;
+  text-decoration: none;
+  color: #000;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  border: 1px solid;
+  cursor: pointer;
+  &:hover {
+    background-color: #e74c3c;
+    color: #fff;
+  }
+  @media (max-width: 480px) {
+    font-size: 0.6rem;
+    margin: 0;
+    padding: 5px;
   }
 `;

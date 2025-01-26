@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/CommonForm";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   monthState,
   userState,
@@ -17,11 +17,12 @@ import {
   Legend,
   ChartOptions,
 } from "chart.js";
-import { DETAIL_CATEGORIES, LogoutButton } from "./Main";
+import { DETAIL_CATEGORIES } from "./Main";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType } from "../type";
 import Spinner from "../components/Spinner";
+import OptionButton from "../components/OptionButton";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -42,7 +43,7 @@ const Annual = () => {
   const navigate = useNavigate();
   const setRecoilMonth = useSetRecoilState(monthState);
   const setRecoilYear = useSetRecoilState(yearState);
-  const [user, setUser] = useRecoilState(userState);
+  const user = useRecoilValue(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
@@ -132,12 +133,6 @@ const Annual = () => {
     navigate("/main");
     setRecoilYear(year);
     setRecoilMonth(month);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("jwt");
-    setUser(null);
-    console.log("로그아웃 완료");
   };
 
   //총 데이터 계산
@@ -261,7 +256,7 @@ const Annual = () => {
             <span>{year}년 데이터</span>
             <Button onClick={getNextYear}>▶</Button>
           </HeaderTitle>
-          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
+          <OptionButton />
         </HeaderContainer>
         <MonthListContainer>
           <MonthList>
