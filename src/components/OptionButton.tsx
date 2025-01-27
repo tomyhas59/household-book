@@ -7,9 +7,9 @@ import { useSetRecoilState } from "recoil";
 const OptionButton = () => {
   const navigator = useNavigate();
   const setUser = useSetRecoilState(userState);
-
-  const [popUpOption, setpopUpOption] = useState<boolean>(false);
+  const [popUpOption, setPopUpOption] = useState<boolean>(false);
   const popUpOptionRef = useRef<HTMLDivElement>(null);
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     setUser(null);
@@ -23,7 +23,7 @@ const OptionButton = () => {
         popUpOptionRef.current &&
         !popUpOptionRef.current.contains(e.target as Node)
       ) {
-        setpopUpOption(false);
+        setPopUpOption(false);
       }
     };
 
@@ -34,15 +34,19 @@ const OptionButton = () => {
     };
   }, []);
 
+  const handleOption = () => {
+    navigator("/changePassword");
+  };
+
   return (
-    <OptionButtonWrapper>
-      <OptionOpenButton onClick={() => setpopUpOption((prev) => !prev)}>
-        OPTION
-      </OptionOpenButton>
+    <OptionButtonWrapper onClick={() => setPopUpOption((prev) => !prev)}>
+      OPTION
       {popUpOption && (
         <PopUpOption ref={popUpOptionRef}>
           <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-          <ChangePasswordText>비밀번호 변경</ChangePasswordText>
+          <ChangePasswordText onClick={handleOption}>
+            비밀번호 변경
+          </ChangePasswordText>
         </PopUpOption>
       )}
     </OptionButtonWrapper>
@@ -53,14 +57,23 @@ export default OptionButton;
 
 const OptionButtonWrapper = styled.div`
   position: relative;
+  background-color: #e74c3c;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
-
+  &:hover {
+    background-color: #c0392b;
+  }
+  cursor: pointer;
   @media (max-width: 480px) {
     word-break: keep-all;
-    gap: 0;
+    min-width: 40px;
+    font-size: 0.6rem;
+    padding: 5px;
   }
 `;
 
@@ -87,21 +100,6 @@ const LogoutButton = styled.button`
   }
 `;
 
-const OptionOpenButton = styled.div`
-  text-align: center;
-  font-size: 10px;
-  text-decoration: none;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  padding: 4px;
-  color: #ffffff;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  &:hover {
-    background-color: #c0392b;
-  }
-`;
-
 const PopUpOption = styled.div`
   background-color: #e74c3c;
   padding: 5px;
@@ -112,9 +110,6 @@ const PopUpOption = styled.div`
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  @media (max-width: 480px) {
-    left: 100px;
-  }
 `;
 
 const ChangePasswordText = styled(LogoutButton)``;
