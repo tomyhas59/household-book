@@ -215,18 +215,21 @@ const Main = () => {
       {loading && <Spinner />}
 
       <HeaderContainer>
-        <DateSelector
-          year={year}
-          month={month}
-          setYear={setYear}
-          setMonth={setMonth}
-        />
+        <HeaderLeftSection>
+          <DateSelector
+            year={year}
+            month={month}
+            setYear={setYear}
+            setMonth={setMonth}
+          />
+          <OptionButton />
+        </HeaderLeftSection>
+
         <HeaderTitle>
           <Button onClick={getPrevMonth}>◀</Button>
           <span>{month}월 데이터</span>
           <Button onClick={getNextMonth}>▶</Button>
         </HeaderTitle>
-        <OptionButton />
       </HeaderContainer>
       <ContentContainer>
         <FlexContainer>
@@ -331,17 +334,38 @@ const HeaderContainer = styled.header`
   position: relative;
   padding: 5px;
   @media (max-width: 480px) {
-    height: auto;
     position: fixed;
-    display: grid;
-
-    grid-template-areas:
-      "a a"
-      "b c";
-    grid-template-columns: 1fr 1fr;
     z-index: 1000;
+    flex-direction: column;
+    justify-content: center;
   }
 `;
+
+const HeaderLeftSection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  > p {
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid #ecf0f1;
+    background-color: #ffffff;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: #2c3e50;
+  }
+
+  @media (max-width: 480px) {
+    > p {
+      font-size: 0.6rem;
+      padding: 5px;
+    }
+  }
+`;
+
 const HeaderTitle = styled.h1`
   font-size: 2rem;
   font-weight: 600;
@@ -355,7 +379,6 @@ const HeaderTitle = styled.h1`
   }
   @media (max-width: 480px) {
     font-size: 0.6rem;
-    grid-area: b;
     word-break: keep-all;
   }
 `;

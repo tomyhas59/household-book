@@ -51,13 +51,6 @@ const DateContainer = styled.div`
   justify-content: start;
   align-items: center;
   gap: 5px;
-  > p {
-    color: #fff;
-    font-weight: bold;
-  }
-  @media (max-width: 468px) {
-    grid-area: a;
-  }
 `;
 
 const AnnualButton = styled(Link)`

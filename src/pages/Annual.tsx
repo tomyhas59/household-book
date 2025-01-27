@@ -250,13 +250,13 @@ const Annual = () => {
               ))}
             </Select>
             <p>총 수입 : {totalIncome().toLocaleString()}원</p>
+            <OptionButton />
           </HeaderLeftSection>
           <HeaderTitle>
             <Button onClick={getPrevYear}>◀</Button>
             <span>{year}년 데이터</span>
             <Button onClick={getNextYear}>▶</Button>
           </HeaderTitle>
-          <OptionButton />
         </HeaderContainer>
         <MonthListContainer>
           <MonthList>
@@ -368,13 +368,8 @@ const HeaderContainer = styled.div`
   grid-area: a;
   padding: 5px;
   @media (max-width: 480px) {
-    height: auto;
-    position: fixed;
-    display: grid;
-    grid-template-areas:
-      "a a"
-      "b c";
-    grid-template-columns: 2fr 1fr;
+    flex-direction: column;
+    justify-content: center;
     z-index: 1000;
     gap: 0;
   }
@@ -386,13 +381,18 @@ const HeaderLeftSection = styled.div`
   align-items: center;
   gap: 5px;
   > p {
-    width: 200px;
     color: #fff;
     font-weight: bold;
+    border: 2px solid #ecf0f1;
+    background-color: #ffffff;
+    font-size: 1rem;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    color: #2c3e50;
   }
 
   @media (max-width: 480px) {
-    grid-area: a;
     > p {
       font-size: 0.6rem;
       padding: 5px;
@@ -414,7 +414,6 @@ const HeaderTitle = styled.h1`
   }
   @media (max-width: 480px) {
     font-size: 0.6rem;
-    grid-area: b;
     word-break: keep-all;
   }
 `;
@@ -485,9 +484,6 @@ const HomeButton = styled(Link)`
 const MonthListContainer = styled.div`
   grid-area: b;
   padding: 10px;
-  @media (max-width: 480px) {
-    padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
-  }
 `;
 
 const MonthList = styled.div`
