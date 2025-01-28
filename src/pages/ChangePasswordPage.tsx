@@ -1,28 +1,77 @@
 import styled from "styled-components";
-import { ChangeEvent, useCallback, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms";
+import axios, { AxiosError } from "axios";
+import { BASE_URL } from "../config/config";
 
 const ChangePasswordPage = () => {
+  const user = useRecoilValue(userState);
+
   const [changePasswordData, setChangePasswordData] = useState({
     prevPassword: "",
     newPassword: "",
     passwordConfirm: "",
   });
+
   const [passwordError, setPasswordError] = useState(false);
   const navigator = useNavigate();
+
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setChangePasswordData({
       ...changePasswordData,
       [e.target.name]: e.target.value,
     });
-    setPasswordError(e.target.value !== changePasswordData.newPassword);
   };
 
-  const changePasswordSubmit = useCallback(() => {}, []);
+  const changePasswordSubmit = useCallback(
+    async (e: SyntheticEvent) => {
+      e.preventDefault();
+      if (
+        changePasswordData.newPassword !== changePasswordData.passwordConfirm
+      ) {
+        setPasswordError(true);
+        return;
+      }
+
+      const data = {
+        email: user?.email,
+        prevPassword: changePasswordData.prevPassword,
+        newPassword: changePasswordData.newPassword,
+      };
+
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/api/changePassword`,
+          data
+        );
+
+        alert(response.data); //성공 메시지 호출
+        navigator("/main");
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          const axiosError = err as AxiosError;
+          if (axiosError.response) {
+            alert(axiosError.response.data); //에러 메시지 호출
+          }
+        }
+      }
+    },
+    [
+      changePasswordData.newPassword,
+      changePasswordData.passwordConfirm,
+      changePasswordData.prevPassword,
+      navigator,
+      user?.email,
+    ]
+  );
 
   return (
     <ChangePasswordFormContainer onSubmit={changePasswordSubmit}>
-      <XBox onClick={() => navigator("/main")}>x</XBox>
+      <XBox type="button" onClick={() => navigator("/main")}>
+        x
+      </XBox>
       <FormGroup>
         <Label>현재 비밀번호</Label>
         <Input
@@ -53,9 +102,9 @@ const ChangePasswordPage = () => {
           placeholder="비밀번호 확인"
         />
       </FormGroup>
-      {passwordError && (
-        <CheckMessage>비밀번호가 일치하지 않습니다</CheckMessage>
-      )}
+      <CheckMessage>
+        {passwordError ? "비밀번호가 일치하지 않습니다" : ""}
+      </CheckMessage>
       <Button type="submit">등록</Button>
     </ChangePasswordFormContainer>
   );
@@ -72,7 +121,7 @@ const ChangePasswordFormContainer = styled.form`
   flex-direction: column;
   align-items: center;
   z-index: 9999999999;
-  background-color: #e74c3c;
+  background-color: #2c3e50;
   border-radius: 8px;
   padding: 20px;
   color: #fff;
@@ -130,7 +179,8 @@ const Button = styled.button`
 
 const CheckMessage = styled.div`
   color: red;
-  margin-top: 10px;
+  width: 100%;
+  height: 20px;
   text-align: center;
   font-size: 14px;
 `;
