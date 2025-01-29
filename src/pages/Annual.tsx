@@ -249,7 +249,7 @@ const Annual = () => {
                 </option>
               ))}
             </Select>
-            <p>총 수입 : {totalIncome().toLocaleString()}원</p>
+
             <OptionButton />
           </HeaderLeftSection>
           <HeaderTitle>
@@ -259,6 +259,9 @@ const Annual = () => {
           </HeaderTitle>
         </HeaderContainer>
         <MonthListContainer>
+          <TotalIncome>
+            총 수입 : {totalIncome().toLocaleString()}원
+          </TotalIncome>
           <MonthList>
             {months.map((month) => {
               const income = calculateTotal(month, "수입");
@@ -344,7 +347,6 @@ export default Annual;
 
 const Container = styled.div`
   background-color: #f5f7fa;
-  min-height: 100vh;
   display: grid;
   grid-template-columns: 65% 35%;
   grid-template-areas:
@@ -375,29 +377,18 @@ const HeaderContainer = styled.div`
   }
 `;
 
+const TotalIncome = styled.div`
+  font-weight: bold;
+  font-size: 1rem;
+  margin: 5px;
+  transition: all 0.3s ease;
+  color: #2c3e50;
+`;
 const HeaderLeftSection = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-  > p {
-    color: #fff;
-    font-weight: bold;
-    border: 2px solid #ecf0f1;
-    background-color: #ffffff;
-    font-size: 1rem;
-    padding: 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    color: #2c3e50;
-  }
-
-  @media (max-width: 480px) {
-    > p {
-      font-size: 0.6rem;
-      padding: 5px;
-    }
-  }
 `;
 
 const HeaderTitle = styled.h1`
