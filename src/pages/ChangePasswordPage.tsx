@@ -5,6 +5,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { loadingState, userState } from "../recoil/atoms";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "../config/config";
+import Spinner from "../components/Spinner";
 
 const ChangePasswordPage = () => {
   const user = useRecoilValue(userState);
@@ -66,11 +67,14 @@ const ChangePasswordPage = () => {
       changePasswordData.prevPassword,
       navigator,
       user?.email,
+
+      setLoading,
     ]
   );
 
   return (
     <ChangePasswordFormContainer onSubmit={changePasswordSubmit}>
+      {loading && <Spinner />}
       <XBox type="button" onClick={() => navigator("/main")}>
         x
       </XBox>

@@ -38,7 +38,7 @@ const COLORS = {
 };
 
 const Annual = () => {
-  const [year, setYear] = useState(new Date().getFullYear());
+  const [year, setYear] = useRecoilState(yearState);
   const [yearData, setYearData] = useState<MonthDataType[]>([]);
   const navigate = useNavigate();
   const setRecoilMonth = useSetRecoilState(monthState);
