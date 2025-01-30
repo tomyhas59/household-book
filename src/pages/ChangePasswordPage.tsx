@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import { ChangeEvent, SyntheticEvent, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import { useRecoilValue } from "recoil";
-import { userState } from "../recoil/atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { loadingState, userState } from "../recoil/atoms";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "../config/config";
 
 const ChangePasswordPage = () => {
   const user = useRecoilValue(userState);
-
+  const [loading, setLoading] = useRecoilState(loadingState);
   const [changePasswordData, setChangePasswordData] = useState({
     prevPassword: "",
     newPassword: "",
@@ -34,7 +34,7 @@ const ChangePasswordPage = () => {
         setPasswordError(true);
         return;
       }
-
+      setLoading(true);
       const data = {
         email: user?.email,
         prevPassword: changePasswordData.prevPassword,
@@ -56,6 +56,8 @@ const ChangePasswordPage = () => {
             alert(axiosError.response.data); //에러 메시지 호출
           }
         }
+      } finally {
+        setLoading(false);
       }
     },
     [
