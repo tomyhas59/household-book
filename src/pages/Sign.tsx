@@ -1,7 +1,7 @@
 import { SyntheticEvent, useState } from "react";
 import styled, { css } from "styled-components";
-import axios from "axios";
-import { useNavigate } from "react-router";
+import axios, { AxiosError } from "axios";
+import { ErrorResponse, useNavigate } from "react-router";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { loadingState, userState } from "../recoil/atoms";
 import { BASE_URL } from "../config/config";
@@ -24,7 +24,6 @@ const Login = () => {
   const setUser = useSetRecoilState(userState);
   const navigator = useNavigate();
 
-  console.log(BASE_URL);
   // 회원가입 데이터 변경 핸들러
   const handleSignupChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupData({
@@ -47,6 +46,7 @@ const Login = () => {
     setLoading(true);
     if (signupData.password !== signupData.passwordConfirm) {
       alert("비밀번호가 다릅니다");
+      setLoading(false);
       return;
     }
     try {
@@ -85,8 +85,12 @@ const Login = () => {
 
       navigator("/main");
     } catch (error) {
-      console.error("Login Error", error);
-      alert("Login failed");
+      if (axios.isAxiosError(error)) {
+        const err = error as AxiosError<ErrorResponse>;
+        if (err.response) {
+          alert(err.response.data);
+        }
+      }
     } finally {
       setLoading(false);
     }
