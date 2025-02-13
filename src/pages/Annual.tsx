@@ -137,7 +137,7 @@ const Annual = () => {
 
   //총 데이터 계산
   const totalIncomeValue = totalIncome();
-  const totallFixedValue = totalFixed();
+  const totalFixedValue = totalFixed();
   const totalSavingsValue = totalSavings();
   const categoriesData = {
     food: totalCategory("식비"),
@@ -150,7 +150,7 @@ const Annual = () => {
     (sum, categoryCost) => sum + categoryCost,
     0
   );
-  const totalSpending = totalCategoryCost + totallFixedValue;
+  const totalSpending = totalCategoryCost + totalFixedValue;
 
   const remaining = totalIncomeValue - (totalSavingsValue + totalSpending);
 
@@ -160,7 +160,7 @@ const Annual = () => {
 
     return {
       labels: [
-        `고정 지출 ${totallFixedValue.toLocaleString()}원 (${calcPercentage(totallFixedValue)}%)`,
+        `고정 지출 ${totalFixedValue.toLocaleString()}원 (${calcPercentage(totalFixedValue)}%)`,
         `저축 ${totalSavingsValue.toLocaleString()}원(${calcPercentage(totalSavingsValue)}%)`,
         `식비 ${categoriesData.food.toLocaleString()}원(${calcPercentage(categoriesData.food)}%)`,
         `생필품 ${categoriesData.necessity.toLocaleString()}원(${calcPercentage(categoriesData.necessity)}%)`,
@@ -172,7 +172,7 @@ const Annual = () => {
       datasets: [
         {
           data: [
-            totallFixedValue,
+            totalFixedValue,
             totalSavingsValue,
             categoriesData.food,
             categoriesData.necessity,
@@ -203,7 +203,7 @@ const Annual = () => {
     remaining,
     totalIncomeValue,
     totalSavingsValue,
-    totallFixedValue,
+    totalFixedValue,
   ]);
 
   const options: ChartOptions<"pie"> = {

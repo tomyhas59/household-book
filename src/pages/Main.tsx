@@ -45,11 +45,11 @@ const Main = () => {
   const [monthData, setMonthData] = useRecoilState(monthDataState);
   const user = useRecoilValue(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
-  const [transactonForm, setTransactionForm] = useState<boolean>(false);
+  const [transactionForm, setTransactionForm] = useState<boolean>(false);
   const transactionFormRef = useRef<HTMLDivElement>(null);
   const transactionFormButtonRef = useRef<HTMLButtonElement>(null);
 
-  const [draggedTransaction, setDraggedTransacton] =
+  const [draggedTransaction, setDraggedTransaction] =
     useState<TransactionType | null>(null);
 
   const navigator = useNavigate();
@@ -86,7 +86,7 @@ const Main = () => {
     transaction: TransactionType
   ) => {
     if (transaction) {
-      setDraggedTransacton(transaction);
+      setDraggedTransaction(transaction);
     }
   };
 
@@ -125,7 +125,7 @@ const Main = () => {
             transactions: updatedTransactions,
           };
         });
-        setDraggedTransacton(null); // 드래그 종료 후 초기화
+        setDraggedTransaction(null); // 드래그 종료 후 초기화
       }
     } catch (err) {
       console.error();
@@ -304,9 +304,9 @@ const Main = () => {
         ref={transactionFormButtonRef}
         onClick={() => setTransactionForm((prev) => !prev)}
       >
-        {transactonForm ? "취소" : "등록"}
+        {transactionForm ? "취소" : "등록"}
       </TransactionFormButton>
-      {transactonForm && (
+      {transactionForm && (
         <TransactionForm
           ref={transactionFormRef}
           monthData={monthData}
