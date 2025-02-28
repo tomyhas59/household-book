@@ -67,7 +67,7 @@ const AnnualButton = styled(Link)`
   &:hover {
     background-color: #c0392b;
   }
-  @media (max-width: 468px) {
+  @media (max-width: 768px) {
     min-width: 80px;
     width: 100px;
     font-size: 0.6rem;
@@ -97,7 +97,7 @@ const Select = styled.select`
     border-color: #7f8fa6;
   }
 
-  @media (max-width: 468px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     padding: 5px;
   }

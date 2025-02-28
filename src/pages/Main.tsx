@@ -333,7 +333,7 @@ const HeaderContainer = styled.header`
   background-color: #2c3e50;
   position: relative;
   padding: 5px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     position: fixed;
     z-index: 1000;
     flex-direction: column;
@@ -358,7 +358,7 @@ const HeaderLeftSection = styled.div`
     color: #2c3e50;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     > p {
       font-size: 0.6rem;
       padding: 5px;
@@ -377,7 +377,7 @@ const HeaderTitle = styled.h1`
   span {
     margin: 0 30px;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     word-break: keep-all;
   }
@@ -386,7 +386,7 @@ const HeaderTitle = styled.h1`
 const ContentContainer = styled.div`
   display: grid;
   grid-template-columns: 40% 60%;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
     * {
       font-size: 12px;
@@ -426,7 +426,7 @@ const Button = styled.button`
     color: #e74c3c;
     -webkit-text-stroke: 1px white;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     padding: 5px;
   }
@@ -454,7 +454,7 @@ const TransactionFormButton = styled.button`
     transform: scale(1.05);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 14px;
     padding: 10px 20px;
   }
@@ -475,7 +475,7 @@ export const LogoutButton = styled.button`
     background-color: #e74c3c;
     color: #fff;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     margin: 0;
     padding: 5px;

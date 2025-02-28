@@ -69,7 +69,7 @@ const OptionButtonWrapper = styled.div`
     background-color: #c0392b;
   }
   cursor: pointer;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     word-break: keep-all;
     min-width: 40px;
     font-size: 0.6rem;
@@ -93,7 +93,7 @@ const LogoutButton = styled.button`
     background-color: #e74c3c;
     color: #fff;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     margin: 0;
     padding: 5px;

@@ -414,7 +414,7 @@ export const TitleContainer = styled.h2`
   font-size: 1.4rem;
   padding-top: 10px;
   position: relative;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 1.2rem;
   }
 `;
@@ -449,7 +449,7 @@ export const Title = styled.div`
   font-size: 1.3rem;
   color: #2c3e50;
   text-align: center;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 1rem;
   }
 `;
@@ -469,7 +469,7 @@ export const AllDeleteButton = styled.button`
     color: #c0392b;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 1rem;
   }
 `;
@@ -494,7 +494,7 @@ export const ListItem = styled.div`
     border-radius: 8px;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: flex;
     flex-wrap: wrap;
   }
@@ -504,7 +504,7 @@ export const ListItemText = styled.div`
   color: #333;
   font-size: 0.7rem;
   word-break: keep-all;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: auto;
   }
 `;
@@ -556,7 +556,7 @@ export const Form = styled.form`
   > input:first-child {
     width: 50%;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: flex;
     flex-wrap: wrap;
   }
@@ -571,7 +571,7 @@ export const Input = styled.input`
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 50%;
   }
 `;

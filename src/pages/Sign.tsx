@@ -207,13 +207,13 @@ const Container = styled.div`
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
   position: absolute;
   overflow: hidden;
-  width: 768px;
-  height: 480px;
+  width: 800px;
+  height: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 1px solid silver;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 368px;
   }
 `;
@@ -271,7 +271,7 @@ const Label = styled.label`
   justify-content: center;
   align-items: center;
   color: #333;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     transform: scale(0.7);
   }
 `;

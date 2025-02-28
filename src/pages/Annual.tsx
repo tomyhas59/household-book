@@ -352,7 +352,7 @@ const Container = styled.div`
   grid-template-areas:
     "a a"
     "b c";
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
   }
@@ -369,7 +369,7 @@ const HeaderContainer = styled.div`
   position: relative;
   grid-area: a;
   padding: 5px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     justify-content: center;
     z-index: 1000;
@@ -403,7 +403,7 @@ const HeaderTitle = styled.h1`
   span {
     margin: 0 30px;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     word-break: keep-all;
   }
@@ -422,7 +422,7 @@ const Button = styled.button`
     color: #e74c3c;
     -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     margin: 0;
     padding: 5px;
@@ -444,7 +444,7 @@ const Select = styled.select`
     border-color: #7f8fa6;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.6rem;
     padding: 5px;
   }
@@ -465,7 +465,7 @@ const HomeButton = styled(Link)`
   &:hover {
     background-color: #c0392b;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     min-width: 80px;
     font-size: 0.6rem;
     padding: 5px;
@@ -482,7 +482,7 @@ const MonthList = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 2px;
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     grid-template-columns: repeat(3, 1fr);
   }
 `;
@@ -501,7 +501,7 @@ const MonthContainer = styled.div`
     transform: translateY(-5px);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     width: 160px;
     * {
       font-size: 0.7rem;
@@ -516,7 +516,7 @@ const MonthTitle = styled.h2`
   color: #2c3e50;
   text-align: center;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 1.25rem;
   }
 `;
@@ -526,7 +526,7 @@ const Category = styled.div`
   flex-direction: column;
   gap: 10px;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     gap: 8px;
   }
 `;
@@ -535,7 +535,7 @@ const AccountSection = styled.div`
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     font-size: 0.9rem;
   }
 `;
@@ -578,7 +578,7 @@ const PieChartContainer = styled.div`
     color: #555;
     font-weight: bold;
   }
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     padding: 15px;
   }
 `;
