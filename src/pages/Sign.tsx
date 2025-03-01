@@ -62,8 +62,14 @@ const Login = () => {
       });
       setActive((prev) => !prev);
     } catch (error) {
-      console.error("Signup Error", error);
-      alert("Signup failed");
+      {
+        if (axios.isAxiosError(error)) {
+          const err = error as AxiosError<ErrorResponse>;
+          if (err.response) {
+            alert(err.response.data);
+          }
+        }
+      }
     } finally {
       setLoading(false);
     }
