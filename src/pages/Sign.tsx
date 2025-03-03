@@ -62,12 +62,10 @@ const Login = () => {
       });
       setActive((prev) => !prev);
     } catch (error) {
-      {
-        if (axios.isAxiosError(error)) {
-          const err = error as AxiosError<ErrorResponse>;
-          if (err.response) {
-            alert(err.response.data);
-          }
+      if (axios.isAxiosError(error)) {
+        const err = error as AxiosError<ErrorResponse>;
+        if (err.response) {
+          alert(err.response.data);
         }
       }
     } finally {
