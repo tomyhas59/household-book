@@ -52,9 +52,9 @@ const ChangePasswordPage = () => {
         navigator("/main");
       } catch (err) {
         if (axios.isAxiosError(err)) {
-          const axiosError = err as AxiosError;
+          const axiosError = err as any;
           if (axiosError.response) {
-            alert(axiosError.response.data); //에러 메시지 호출
+            alert(axiosError.response.data.message); //에러 메시지 호출
           }
         }
       } finally {
