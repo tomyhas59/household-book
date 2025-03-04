@@ -52,7 +52,7 @@ const ChangePasswordPage = () => {
         navigator("/main");
       } catch (err) {
         if (axios.isAxiosError(err)) {
-          const axiosError = err as any;
+          const axiosError = err as AxiosError<any>;
           if (axiosError.response) {
             alert(axiosError.response.data.message); //에러 메시지 호출
           }
