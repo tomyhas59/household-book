@@ -110,16 +110,22 @@ const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
               target: { value: React.SetStateAction<string> };
             }) => setAmount(e.target.value)}
           />
-          <Select
-            value={categoryTitle}
-            onChange={(e) => setCategoryTitle(e.target.value)}
-          >
+          <RadioContainer>
             {DETAIL_CATEGORIES.concat(["수입", "고정 지출", "저축"])
               .sort((a, b) => a.localeCompare(b))
               .map((category) => (
-                <option key={category}>{category}</option>
+                <RadioLabel key={category}>
+                  <input
+                    type="radio"
+                    name="category"
+                    value={category}
+                    checked={categoryTitle === category}
+                    onChange={() => setCategoryTitle(category)}
+                  />
+                  <span>{category}</span>
+                </RadioLabel>
               ))}
-          </Select>
+          </RadioContainer>
           <Button type="submit">+</Button>
         </Form>
       </TransactionFormContainer>
@@ -143,8 +149,12 @@ const TransactionFormContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media (max-width: 1024px) {
+    width: 30%;
+  }
+
   @media (max-width: 768px) {
-    width: 50%;
+    width: 70%;
   }
 `;
 
@@ -156,19 +166,6 @@ const Form = styled.form`
 `;
 
 const Input = styled.input`
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  width: 100%;
-  margin-bottom: 10px;
-  outline: none;
-  &:focus {
-    border-color: #4b9fef;
-  }
-`;
-
-const Select = styled.select`
   padding: 12px 15px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -195,5 +192,48 @@ const Button = styled.button`
   }
   &:active {
     background-color: #2d649b;
+  }
+`;
+
+const RadioContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 600px) {
+    gap: 8px;
+    padding: 8px;
+  }
+`;
+
+const RadioLabel = styled.label`
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #e0e0e0;
+  }
+
+  input[type="radio"] {
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  input[type="radio"]:checked + span {
+    font-weight: bold;
+    color: #007bff;
+  }
+  @media (max-width: 600px) {
+    font-size: 14px;
+    padding: 6px 10px;
   }
 `;

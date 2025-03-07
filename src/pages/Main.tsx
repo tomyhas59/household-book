@@ -322,7 +322,11 @@ const Main = () => {
 
 export default Main;
 
-const MainContainer = styled.div``;
+const MainContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+`;
 
 const HeaderContainer = styled.header`
   display: flex;
