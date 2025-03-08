@@ -20,7 +20,6 @@ const Details: React.FC<PropsType> = ({
       year={year}
       month={month}
       user={user}
-      height="100%"
       color="red"
       isBar={true}
       onDrop={onDrop}

@@ -18,6 +18,7 @@ import {
   monthDataState,
   userState,
   loadingState,
+  changePasswordFormState,
 } from "../recoil/atoms";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -26,6 +27,8 @@ import Spinner from "../components/Spinner";
 import TransactionForm from "../components/TransactionForm";
 import { TransactionType } from "../type";
 import OptionButton from "../components/OptionButton";
+import ChangePasswordForm from "../components/ChangePasswordForm";
+import { HeaderTitle } from "./Annual";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -48,6 +51,8 @@ const Main = () => {
   const [transactionForm, setTransactionForm] = useState<boolean>(false);
   const transactionFormRef = useRef<HTMLDivElement>(null);
   const transactionFormButtonRef = useRef<HTMLButtonElement>(null);
+
+  const changePasswordForm = useRecoilValue(changePasswordFormState);
 
   const [draggedTransaction, setDraggedTransaction] =
     useState<TransactionType | null>(null);
@@ -213,7 +218,7 @@ const Main = () => {
   return (
     <MainContainer>
       {loading && <Spinner />}
-
+      {changePasswordForm && <ChangePasswordForm />}
       <HeaderContainer>
         <HeaderLeftSection>
           <DateSelector
@@ -233,7 +238,7 @@ const Main = () => {
       </HeaderContainer>
       <ContentContainer>
         <FlexContainer>
-          <ColumnContainer style={{ backgroundColor: "#f0f0f0" }}>
+          <ColumnContainer>
             <Account
               income={income}
               saving={saving}
@@ -322,117 +327,94 @@ const Main = () => {
 
 export default Main;
 
-const MainContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: #fff;
-`;
-
-const HeaderContainer = styled.header`
-  display: flex;
+export const MainContainer = styled.div`
+  max-width: 1200px;
   width: 100%;
-  height: 8vh;
-  justify-content: start;
-  align-items: center;
-  background-color: #2c3e50;
-  position: relative;
-  padding: 5px;
+  margin: 0 auto;
+  padding: 20px;
+
   @media (max-width: 768px) {
-    position: fixed;
-    z-index: 1000;
-    flex-direction: column;
-    justify-content: center;
+    padding: 10px;
   }
 `;
 
-const HeaderLeftSection = styled.div`
+export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 5px;
-  > p {
-    color: #fff;
-    font-weight: bold;
-    border: 2px solid #ecf0f1;
-    background-color: #ffffff;
-    font-size: 1rem;
-    padding: 10px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    color: #2c3e50;
-  }
+  margin-bottom: 20px;
 
   @media (max-width: 768px) {
-    > p {
-      font-size: 0.6rem;
-      padding: 5px;
-    }
+    flex-direction: column;
+    gap: 10px;
   }
 `;
 
-const HeaderTitle = styled.h1`
-  font-size: 2rem;
-  font-weight: 600;
-  color: #ffffff;
+export const HeaderLeftSection = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 10px;
 
-  span {
-    margin: 0 30px;
-  }
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    word-break: keep-all;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 100%;
   }
 `;
 
-const ContentContainer = styled.div`
-  display: grid;
-  grid-template-columns: 40% 60%;
-  @media (max-width: 768px) {
-    padding-top: 8vh; // HeaderContainer 높이만큼의 패딩 추가
-    * {
-      font-size: 12px;
-    }
-    display: block;
-  }
-  overflow: hidden;
-`;
-
-const FlexContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(33%, 1fr));
-`;
-
-const ColumnContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 92vh;
-`;
-
-const DetailsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
-  height: 92vh;
-`;
-
-const Button = styled.button`
-  background-color: transparent;
-  color: #fff;
-  font-size: 2rem;
+export const Button = styled.button`
+  background: none;
   border: none;
+  font-size: 18px;
   cursor: pointer;
-  position: relative;
+  color: #333;
 
   &:hover {
-    color: #e74c3c;
-    -webkit-text-stroke: 1px white;
+    color: #3498db;
   }
+
+  @media (max-width: 600px) {
+    font-size: 16px;
+  }
+`;
+
+export const ContentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const FlexContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap; /* 모바일에서 자동 줄 바꿈 */
+
   @media (max-width: 768px) {
-    font-size: 0.6rem;
-    padding: 5px;
+    flex-direction: column;
+  }
+`;
+
+export const ColumnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  gap: 5px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+export const DetailsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -461,27 +443,5 @@ const TransactionFormButton = styled.button`
   @media (max-width: 768px) {
     font-size: 14px;
     padding: 10px 20px;
-  }
-`;
-export const LogoutButton = styled.button`
-  width: 50px;
-  text-decoration: none;
-  color: #000;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 4px;
-  border: 2px solid #fff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-  border: 1px solid;
-  cursor: pointer;
-  &:hover {
-    background-color: #e74c3c;
-    color: #fff;
-  }
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    margin: 0;
-    padding: 5px;
   }
 `;

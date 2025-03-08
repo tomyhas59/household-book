@@ -1,20 +1,25 @@
-import styled from "styled-components";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  changePasswordFormState,
+  loadingState,
+  userState,
+} from "../recoil/atoms";
 import { ChangeEvent, SyntheticEvent, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { loadingState, userState } from "../recoil/atoms";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "../config/config";
-import Spinner from "../components/Spinner";
+import styled from "styled-components";
 
-const ChangePasswordPage = () => {
+const ChangePasswordForm = () => {
   const user = useRecoilValue(userState);
-  const [loading, setLoading] = useRecoilState(loadingState);
   const [changePasswordData, setChangePasswordData] = useState({
     prevPassword: "",
     newPassword: "",
     passwordConfirm: "",
   });
+
+  const setLoading = useSetRecoilState(loadingState);
+  const setChangePasswordForm = useSetRecoilState(changePasswordFormState);
 
   const [passwordError, setPasswordError] = useState(false);
   const navigator = useNavigate();
@@ -35,7 +40,6 @@ const ChangePasswordPage = () => {
         setPasswordError(true);
         return;
       }
-      setLoading(true);
       const data = {
         email: user?.email,
         prevPassword: changePasswordData.prevPassword,
@@ -67,15 +71,13 @@ const ChangePasswordPage = () => {
       changePasswordData.prevPassword,
       navigator,
       user?.email,
-
       setLoading,
     ]
   );
 
   return (
     <ChangePasswordFormContainer onSubmit={changePasswordSubmit}>
-      {loading && <Spinner />}
-      <XBox type="button" onClick={() => navigator("/main")}>
+      <XBox type="button" onClick={() => setChangePasswordForm(false)}>
         x
       </XBox>
       <FormGroup>
@@ -116,77 +118,83 @@ const ChangePasswordPage = () => {
   );
 };
 
-export default ChangePasswordPage;
+export default ChangePasswordForm;
 
-const ChangePasswordFormContainer = styled.form`
+export const ChangePasswordFormContainer = styled.form`
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 9999;
+  gap: 15px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 350px;
+`;
+
+export const XBox = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+
+  &:hover {
+    color: #e74c3c;
+  }
+`;
+
+export const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  z-index: 9999999999;
-  background-color: #2c3e50;
-  border-radius: 8px;
-  padding: 20px;
-  color: #fff;
+  gap: 5px;
 `;
 
-const XBox = styled.button`
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  color: #fff;
-  cursor: pointer;
-  &:hover {
-    color: #bab5b5;
-  }
-`;
-const FormGroup = styled.div`
-  margin-bottom: 10px;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  font-weight: 500;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 12px;
-  font-size: 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
-`;
-
-const Button = styled.button`
-  padding: 12px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    transform 0.3s ease;
-
-  &:hover {
-    background-color: #bab5b5;
-    transform: translateY(-2px);
-  }
-`;
-
-const CheckMessage = styled.div`
-  color: red;
-  width: 100%;
-  height: 20px;
-  text-align: center;
+export const Label = styled.label`
   font-size: 14px;
+  font-weight: bold;
+  color: #333;
+`;
+
+export const Input = styled.input`
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+
+  &:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+  }
+`;
+
+export const CheckMessage = styled.p`
+  font-size: 14px;
+  color: #e74c3c;
+  height: 18px; /* 공간 확보 */
+`;
+
+export const Button = styled.button`
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background: #2980b9;
+  }
 `;

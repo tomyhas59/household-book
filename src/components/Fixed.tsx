@@ -20,7 +20,6 @@ const Fixed: React.FC<PropsType> = ({
       month={month}
       monthData={monthData}
       user={user}
-      height="50%"
       isBar={false}
       onDrop={onDrop}
       onDragOver={onDragOver}

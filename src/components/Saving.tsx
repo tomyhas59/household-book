@@ -20,7 +20,6 @@ const Saving: React.FC<PropsType> = ({
       month={month}
       user={user}
       monthData={monthData}
-      height="50%"
       isBar={false}
       onDrop={onDrop}
       onDragOver={onDragOver}

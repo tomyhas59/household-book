@@ -4,7 +4,6 @@ import Annual from "./pages/Annual";
 import { RecoilRoot } from "recoil";
 import Sign from "./pages/Sign";
 import Home from "./pages/Home";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +14,6 @@ const App: React.FC = () => {
           <Route path="/main" element={<Main />} />
           <Route path="/annual" element={<Annual />} />
           <Route path="/sign" element={<Sign />} />
-          <Route path="/changePassword" element={<ChangePasswordPage />} />
         </Routes>
       </BrowserRouter>
     </RecoilRoot>

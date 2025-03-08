@@ -140,100 +140,91 @@ const TransactionFormContainer = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #2c3e50;
-  opacity: 0.7;
-  padding: 20px;
-  border-radius: 10px;
-  width: 20%;
-  margin: 20px auto;
-  display: flex;
   flex-direction: column;
-  align-items: center;
-  @media (max-width: 1024px) {
-    width: 30%;
-  }
+  gap: 16px;
+  padding: 20px;
+  background-color: #78c0fe;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 
   @media (max-width: 768px) {
-    width: 70%;
+    padding: 16px;
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  gap: 16px;
   width: 100%;
-  gap: 15px;
 `;
 
 const Input = styled.input`
-  padding: 12px 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  font-size: 16px;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   width: 100%;
-  margin-bottom: 10px;
   outline: none;
-  &:focus {
-    border-color: #4b9fef;
-  }
-`;
 
-const Button = styled.button`
-  padding: 12px 0;
-  font-size: 18px;
-  background-color: #4b9fef;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  &:hover {
-    background-color: #357bbd;
+  &:focus {
+    border-color: #007bff;
   }
-  &:active {
-    background-color: #2d649b;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 `;
 
 const RadioContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
+  gap: 16px;
 
-  @media (max-width: 600px) {
-    gap: 8px;
-    padding: 8px;
+  @media (max-width: 768px) {
+    gap: 12px;
   }
 `;
 
 const RadioLabel = styled.label`
   display: flex;
   align-items: center;
-  font-size: 16px;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #e0e0e0;
-  }
 
   input[type="radio"] {
-    margin-right: 10px;
-    cursor: pointer;
+    margin-right: 8px;
   }
 
-  input[type="radio"]:checked + span {
-    font-weight: bold;
-    color: #007bff;
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
   }
-  @media (max-width: 600px) {
-    font-size: 14px;
-    padding: 6px 10px;
+`;
+
+const Button = styled.button`
+  padding: 12px;
+  font-size: 1.2rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 1rem;
   }
 `;

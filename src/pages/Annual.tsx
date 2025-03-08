@@ -1,13 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/CommonForm";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   monthState,
   userState,
   yearState,
   loadingState,
+  changePasswordFormState,
 } from "../recoil/atoms";
 import { Pie } from "react-chartjs-2";
 import {
@@ -23,6 +24,7 @@ import { BASE_URL } from "../config/config";
 import { MonthDataType } from "../type";
 import Spinner from "../components/Spinner";
 import OptionButton from "../components/OptionButton";
+import ChangePasswordForm from "../components/ChangePasswordForm";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -45,9 +47,11 @@ const Annual = () => {
   const setRecoilYear = useSetRecoilState(yearState);
   const user = useRecoilValue(userState);
   const [loading, setLoading] = useRecoilState(loadingState);
+  const changePasswordForm = useRecoilValue(changePasswordFormState);
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const navigator = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -210,7 +214,6 @@ const Annual = () => {
     plugins: {
       legend: {
         position: "bottom",
-        maxHeight: 200,
       },
     },
   };
@@ -233,10 +236,12 @@ const Annual = () => {
     return (
       <Container>
         {loading && <Spinner />}
-
+        {changePasswordForm && <ChangePasswordForm />}
         <HeaderContainer>
           <HeaderLeftSection>
-            <HomeButton to="/main">월별로 보기</HomeButton>
+            <HomeButton onClick={() => navigator("/main")}>
+              월별로 보기
+            </HomeButton>
             <Select
               value={year}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -345,240 +350,196 @@ const Annual = () => {
 
 export default Annual;
 
-const Container = styled.div`
-  background-color: #f5f7fa;
-  display: grid;
-  grid-template-columns: 65% 35%;
-  grid-template-areas:
-    "a a"
-    "b c";
-  @media (max-width: 768px) {
-    display: flex;
-    flex-direction: column;
-  }
-`;
-
-const HeaderContainer = styled.div`
-  display: flex;
+export const Container = styled.div`
+  max-width: 1200px;
   width: 100%;
-  height: 8vh;
-  gap: 5px;
-  justify-content: start;
-  align-items: center;
-  background-color: #2c3e50;
-  position: relative;
-  grid-area: a;
-  padding: 5px;
+  margin: 0 auto;
+  padding: 20px;
+
   @media (max-width: 768px) {
-    flex-direction: column;
-    justify-content: center;
-    z-index: 1000;
-    gap: 0;
+    padding: 10px;
   }
 `;
 
-const TotalIncome = styled.div`
-  font-weight: bold;
-  font-size: 1rem;
-  margin: 5px;
-  transition: all 0.3s ease;
-  color: #2c3e50;
-`;
-const HeaderLeftSection = styled.div`
+export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 5px;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 10px;
+  }
 `;
 
-const HeaderTitle = styled.h1`
-  font-size: 2rem;
-  font-weight: 600;
-  color: #ffffff;
-  text-align: center;
+export const HeaderLeftSection = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 10px;
 
-  span {
-    margin: 0 30px;
-  }
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    word-break: keep-all;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    width: 100%;
   }
 `;
 
-const Button = styled.button`
-  background-color: transparent;
-  color: #fff;
-  font-size: 2rem;
+export const HomeButton = styled.button`
+  background-color: #3498db;
+  color: white;
+  padding: 10px 15px;
   border: none;
-  margin: 10px;
+  border-radius: 5px;
   cursor: pointer;
-  position: relative;
+  font-size: 14px;
 
   &:hover {
-    color: #e74c3c;
-    -webkit-text-stroke: 1px white; /* 글자에 흰색 테두리 */
+    background-color: #2980b9;
   }
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    margin: 0;
-    padding: 5px;
+
+  @media (max-width: 600px) {
+    width: 100%;
   }
 `;
 
-const Select = styled.select`
-  appearance: none; //select 화살표 none
-  border: 2px solid #ecf0f1;
-  background-color: #ffffff;
-  font-size: 1rem;
-  padding: 10px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  color: #2c3e50;
+export const Select = styled.select`
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
   cursor: pointer;
 
-  &:hover {
-    border-color: #7f8fa6;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    padding: 5px;
+  @media (max-width: 600px) {
+    width: 100%;
   }
 `;
 
-const HomeButton = styled(Link)`
-  text-decoration: none;
-  font-size: 1rem;
-  min-width: 110px;
-  text-align: center;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  padding: 10px;
-  color: #ffffff;
-  display: inline-block;
-  transition: all 0.3s ease;
+export const Button = styled.button`
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #333;
 
   &:hover {
-    background-color: #c0392b;
+    color: #3498db;
   }
-  @media (max-width: 768px) {
-    min-width: 80px;
-    font-size: 0.6rem;
-    padding: 5px;
+
+  @media (max-width: 600px) {
+    font-size: 16px;
   }
 `;
 
-const MonthListContainer = styled.div`
-  grid-area: b;
-  padding: 10px;
-`;
-
-const MonthList = styled.div`
-  margin: 0 auto;
+export const HeaderTitle = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  @media (max-width: 768px) {
-    grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+
+  @media (max-width: 600px) {
+    font-size: 18px;
   }
 `;
 
-const MonthContainer = styled.div`
-  background-color: #ecf0f1;
-  padding: 10px;
-  border-radius: 12px;
-  width: 200px;
-  cursor: pointer;
-  transition: transform 0.2s;
-
-  &:hover {
-    background-color: #d0d3d4;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-  }
-
-  @media (max-width: 768px) {
-    width: 160px;
-    * {
-      font-size: 0.7rem;
-    }
-  }
+export const MonthListContainer = styled.div`
+  margin-top: 20px;
 `;
 
-const MonthTitle = styled.h2`
-  font-size: 1.5rem;
+export const TotalIncome = styled.div`
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: #2c3e50;
+  color: #2ecc71;
   text-align: center;
 
-  @media (max-width: 768px) {
-    font-size: 1.25rem;
+  @media (max-width: 600px) {
+    font-size: 16px;
   }
 `;
 
-const Category = styled.div`
+export const MonthList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const MonthContainer = styled.div`
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+`;
+
+export const MonthTitle = styled.h3`
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+
+  @media (max-width: 600px) {
+    font-size: 16px;
+  }
+`;
+
+export const Category = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-
-  @media (max-width: 768px) {
-    gap: 8px;
-  }
 `;
 
-const AccountSection = styled.div`
+export const AccountSection = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
 
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
+  @media (max-width: 600px) {
+    font-size: 12px;
   }
 `;
 
-const Amount = styled.p`
+export const Amount = styled.span`
   font-weight: bold;
 `;
 
-const CategoryDetails = styled.div`
+export const CategoryDetails = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
 `;
 
-const Detail = styled.div`
+export const Detail = styled.div`
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
-  > p {
-    color: gray;
+  font-size: 14px;
+
+  @media (max-width: 600px) {
+    font-size: 12px;
   }
 `;
 
-const PieChartContainer = styled.div`
-  background-color: #f8f8f8;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
+export const PieChartContainer = styled.div`
+  text-align: center;
+  width: 500px;
+  margin: 30px auto;
   h2 {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
-  div {
-    text-align: center;
-    color: #555;
-    font-weight: bold;
-  }
-  @media (max-width: 768px) {
-    padding: 15px;
+  @media (max-width: 600px) {
+    width: 100%;
+    h2 {
+      font-size: 16px;
+    }
   }
 `;

@@ -121,72 +121,116 @@ export default Note;
 const NoteContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  padding: 16px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
   width: 100%;
-  height: 50%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
-  cursor: pointer;
-  &:hover {
-    background-color: #f0f0f0;
+
+  @media (max-width: 768px) {
+    padding: 12px;
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  width: 100%;
 `;
 
 const TextArea = styled.textarea`
-  width: 100%;
-  height: 40vh;
-  padding: 10px;
+  padding: 12px;
+  font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 10px;
-  resize: vertical;
-  background-color: #fff;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: 200px;
+  resize: none;
+  outline: none;
+
   &:focus {
     border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    outline: none;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    font-size: 0.9rem;
   }
 `;
 
 const ButtonContainer = styled.div`
-  margin-top: 3px;
   display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+    justify-content: space-between;
+  }
 `;
 
 const Button = styled.button`
-  padding: 5px;
-  background-color: #2ecc71;
+  padding: 8px 16px;
+  font-size: 1rem;
+  background-color: #007bff;
   color: white;
   border: none;
-  font-size: 12px;
-  margin-left: 1px;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s;
+
   &:hover {
-    background-color: #27ae60;
+    background-color: #0056b3;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:nth-child(2) {
+    background-color: #ccc;
+    &:hover {
+      background-color: #aaa;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 6px 12px;
+    font-size: 0.9rem;
   }
 `;
 
 const NoteDisplay = styled.div`
-  font-size: 10px;
-  height: 50vh;
-  color: #2c3e50;
+  padding: 12px;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 250px;
+  overflow: auto;
+  cursor: pointer;
+  color: #555;
   white-space: pre-wrap;
-  > div {
-    font-size: 1.5rem;
-    text-align: center;
-    font-weight: bold;
-    color: #999;
-    opacity: 0.7;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+  @media (max-width: 768px) {
+    font-size: 0.8rem;
+  }
+  div {
+    font-size: 1rem;
+    color: #888;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    div {
+      font-size: 0.8rem;
+    }
   }
 `;

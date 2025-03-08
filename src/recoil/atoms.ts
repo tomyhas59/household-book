@@ -54,3 +54,8 @@ export const loadingState = atom<boolean>({
   key: "loadingState",
   default: false,
 });
+
+export const changePasswordFormState = atom<boolean>({
+  key: "changePasswordFormState",
+  default: false,
+});

@@ -7,94 +7,6 @@ import { BASE_URL } from "../config/config";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { livingTotalState, loadingState } from "../recoil/atoms";
 
-const AccountContainer = styled.div`
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const AccountSection = styled.div`
-  width: 100%;
-  height: 13vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: white;
-  margin-bottom: 5px;
-  padding: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: center;
-`;
-
-const AccountTitle = styled.p`
-  margin: 2px;
-`;
-
-const Saving = styled.div`
-  color: #3498db;
-  font-weight: bold;
-`;
-
-const Spending = styled.div`
-  color: #c0392b;
-  font-weight: bold;
-`;
-
-const BudgetDisplay = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #2ecc71;
-  cursor: pointer;
-  &:hover {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-  }
-`;
-
-const BudgetForm = styled.form`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  input {
-    width: 100%;
-    text-align: right;
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    padding: 3px;
-    background-color: #2ecc71;
-    color: white;
-    border: none;
-    font-size: 10px;
-    margin-left: 1px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    &:hover {
-      background-color: #27ae60;
-    }
-  }
-`;
-
-const RemainingBudget = styled.div`
-  font-size: 0.7rem;
-  color: #e0e0e0;
-  > :last-child {
-    color: red;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-`;
-
 type PropsType = {
   income: number;
   saving: number;
@@ -282,3 +194,106 @@ const Account: React.FC<PropsType> = ({
 };
 
 export default Account;
+
+const AccountContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 8px;
+`;
+
+const AccountSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 768px) {
+    padding: 8px;
+  }
+`;
+
+const AccountTitle = styled.h3`
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+  @media (max-width: 768px) {
+    font-size: 0.9rem;
+  }
+`;
+
+const Saving = styled.div`
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #3498db;
+`;
+
+const Spending = styled.div`
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #e74c3c;
+`;
+
+const BudgetForm = styled.form`
+  display: flex;
+  gap: 4px;
+  justify-content: space-between;
+  align-items: center;
+
+  input[type="number"] {
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 120px;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 1rem;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #2980b9;
+    }
+    @media (max-width: 768px) {
+      padding: 4px 8px;
+      font-size: 0.9rem;
+    }
+  }
+
+  button[type="button"] {
+    background-color: #e74c3c;
+
+    &:hover {
+      background-color: #c0392b;
+    }
+  }
+`;
+
+const BudgetDisplay = styled.div`
+  font-size: 1.1rem;
+  color: #3498db;
+  cursor: pointer;
+  text-decoration: underline;
+`;
+
+const RemainingBudget = styled.div`
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #2c3e50;
+
+  div {
+    margin-bottom: 8px;
+  }
+`;

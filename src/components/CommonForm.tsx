@@ -21,7 +21,7 @@ export type PropsType = {
   onDragStart: (e: React.DragEvent, transaction: TransactionType) => void;
 };
 
-const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
+const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   categoryTitle,
   setTotalItem,
   color,
@@ -29,7 +29,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
   year,
   user,
   month,
-  height,
+
   onTotalChange,
   isBar,
   onDrop,
@@ -276,7 +276,7 @@ const CommonForm: React.FC<PropsType & { height: string; isBar: Boolean }> = ({
   }, [transactions]);
 
   return (
-    <Container style={{ height: height }}>
+    <Container>
       <TitleContainer
         onMouseEnter={() => setHoveredTitle(true)}
         onMouseLeave={() => setHoveredTitle(false)}
@@ -403,10 +403,15 @@ export const Container = styled.div`
   position: relative;
   border: 1px solid #e0e0e0;
   width: 100%;
+  height: 360px;
   display: flex;
   justify-content: space-around;
   flex-direction: column;
   background-color: #f9f9f9;
+  border-radius: 8px;
+  @media (max-width: 768px) {
+    height: 280px;
+  }
 `;
 
 export const TitleContainer = styled.h2`
@@ -476,6 +481,7 @@ export const AllDeleteButton = styled.button`
 
 export const List = styled.div`
   overflow-y: auto;
+  min-height: 200px;
   flex: 1;
 `;
 
@@ -587,6 +593,9 @@ export const Total = styled.div<{ color: string }>`
   margin: 0 auto;
   > p {
     margin: 0 auto;
+    @media (max-width: 768px) {
+      font-size: 0.8rem;
+    }
   }
 `;
 

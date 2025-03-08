@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { userState } from "../recoil/atoms";
+import { changePasswordFormState, userState } from "../recoil/atoms";
 import { useSetRecoilState } from "recoil";
 
 const OptionButton = () => {
@@ -9,6 +9,8 @@ const OptionButton = () => {
   const setUser = useSetRecoilState(userState);
   const [popUpOption, setPopUpOption] = useState<boolean>(false);
   const popUpOptionRef = useRef<HTMLDivElement>(null);
+
+  const setChangePasswordForm = useSetRecoilState(changePasswordFormState);
 
   const handleLogout = () => {
     localStorage.removeItem("jwt");
@@ -35,7 +37,7 @@ const OptionButton = () => {
   }, []);
 
   const handleOption = () => {
-    navigator("/changePassword");
+    setChangePasswordForm(true);
   };
 
   return (
