@@ -147,7 +147,7 @@ const TextArea = styled.textarea`
   border: 1px solid #ccc;
   border-radius: 4px;
   width: 100%;
-  height: 200px;
+  height: 250px;
   resize: none;
   outline: none;
 
@@ -210,7 +210,7 @@ const NoteDisplay = styled.div`
   border-radius: 4px;
   border: 1px solid #ccc;
   width: 100%;
-  height: 250px;
+  height: 300px;
   overflow: auto;
   cursor: pointer;
   color: #555;

@@ -132,7 +132,7 @@ export const ChangePasswordFormContainer = styled.form`
   background: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  border: 5px solid;
   width: 100%;
   max-width: 350px;
 `;

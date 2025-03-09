@@ -15,7 +15,7 @@ const Fixed: React.FC<PropsType> = ({
     <CommonForm
       categoryTitle={categoryTitle}
       setTotalItem={setTotalItem}
-      color="blue"
+      color="red"
       year={year}
       month={month}
       monthData={monthData}

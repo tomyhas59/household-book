@@ -220,6 +220,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
       date: editDate || 0,
       amount: editAmount,
       description: editDescription,
+      type: categoryTitle,
     };
 
     try {
@@ -276,8 +277,8 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   }, [transactions]);
 
   return (
-    <Container>
-      <TitleContainer
+    <CommonFormContainer>
+      <TitleWrapper
         onMouseEnter={() => setHoveredTitle(true)}
         onMouseLeave={() => setHoveredTitle(false)}
       >
@@ -286,8 +287,8 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
         {hoveredTitle && (
           <AllDeleteButton onClick={deleteAllTransaction}>x</AllDeleteButton>
         )}
-      </TitleContainer>
-      <List
+      </TitleWrapper>
+      <TransactonList
         ref={listRef}
         style={{ maxHeight: "70%" }}
         onDrop={(e) => onDrop(e, categoryTitle)}
@@ -296,14 +297,14 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
         {transactions.map((transaction, index) => (
           <React.Fragment key={index}>
             {editFormById === transaction?.id ? (
-              <Form
+              <EditForm
                 key={transaction.id}
                 onSubmit={(e: React.SyntheticEvent<Element, Event>) =>
                   editTransaction(e, transaction.id)
                 }
                 ref={listItemRef}
               >
-                <Input
+                <EditInput
                   type="number"
                   placeholder="날짜"
                   value={editDate}
@@ -316,7 +317,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
                   min="1"
                   max="31"
                 />
-                <Input
+                <EditInput
                   type="text"
                   placeholder="상세"
                   value={editDescription}
@@ -324,7 +325,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
                     target: { value: React.SetStateAction<string> };
                   }) => setEditDescription(e.target.value)}
                 />
-                <Input
+                <EditInput
                   type="number"
                   placeholder="비용"
                   value={editAmount}
@@ -332,19 +333,14 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
                     setEditAmount(Number(e.target.value))
                   }
                 />
-                <Button type="submit">+</Button>
-                <Button
-                  style={{
-                    backgroundColor: "red",
-                    border: "none",
-                    color: "#fff",
-                  }}
+                <EditButton type="submit">+</EditButton>
+                <CancelButton
                   type="button"
                   onClick={() => setEditFormById(null)}
                 >
                   x
-                </Button>
-              </Form>
+                </CancelButton>
+              </EditForm>
             ) : (
               <ListItem
                 key={transaction?.id}
@@ -370,9 +366,11 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
                   {transaction?.amount?.toLocaleString()}
                 </ListItemText>
                 {hoveredItemId === transaction?.id ? (
-                  <Button onClick={() => deleteTransaction(transaction.id)}>
+                  <DeleteTransactionButton
+                    onClick={() => deleteTransaction(transaction.id)}
+                  >
                     x
-                  </Button>
+                  </DeleteTransactionButton>
                 ) : (
                   <TransparentButton></TransparentButton>
                 )}
@@ -380,7 +378,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
             )}
           </React.Fragment>
         ))}
-      </List>
+      </TransactonList>
       <TotalContainer>
         <Total color={color!}>
           {isBar ? (
@@ -393,13 +391,13 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
           <p>{total?.toLocaleString()}</p>
         </Total>
       </TotalContainer>
-    </Container>
+    </CommonFormContainer>
   );
 };
 
 export default CommonForm;
 
-export const Container = styled.div`
+export const CommonFormContainer = styled.div`
   position: relative;
   border: 1px solid #e0e0e0;
   width: 100%;
@@ -414,7 +412,7 @@ export const Container = styled.div`
   }
 `;
 
-export const TitleContainer = styled.h2`
+export const TitleWrapper = styled.h2`
   text-align: center;
   font-size: 1.4rem;
   padding-top: 10px;
@@ -433,8 +431,9 @@ export const CopyButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
   background-color: transparent;
+  transition: transform 0.5s;
   &:hover {
-    background-color: #f0f0f0;
+    transform: scale(1.2);
   }
   &:hover::before {
     content: "이전 달 데이터 복사";
@@ -460,18 +459,20 @@ export const Title = styled.div`
 `;
 
 export const AllDeleteButton = styled.button`
-  background-color: transparent;
+  background-color: #d80f0f;
+  border-radius: 10px;
+  padding: 0 8px;
   position: absolute;
   top: 0;
-  right: 5%;
+  right: 0;
   border: none;
-  color: #e74c3c;
+  color: #ffffff;
   font-size: 1.2rem;
   cursor: pointer;
   transition: color 0.3s ease-in-out;
 
   &:hover {
-    color: #c0392b;
+    color: #000000;
   }
 
   @media (max-width: 768px) {
@@ -479,10 +480,23 @@ export const AllDeleteButton = styled.button`
   }
 `;
 
-export const List = styled.div`
+export const TransactonList = styled.div`
   overflow-y: auto;
   min-height: 200px;
   flex: 1;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(28, 85, 241, 0.3); /* 스크롤바 색상 */
+    border-radius: 10px; /* 둥글게 */
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent; /* 스크롤바 트랙 투명하게 */
+  }
 `;
 
 export const ListItem = styled.div`
@@ -494,10 +508,11 @@ export const ListItem = styled.div`
   border-bottom: 1px solid #ddd;
   padding: 5px;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: grab;
   &:hover {
     background-color: #f0f0f0;
     border-radius: 8px;
+    font-weight: bold;
   }
 
   @media (max-width: 768px) {
@@ -506,20 +521,61 @@ export const ListItem = styled.div`
   }
 `;
 
+export const EditForm = styled.form`
+  display: flex;
+  align-items: center;
+  position: relative;
+  > input:first-child {
+    width: 50%;
+  }
+  @media (max-width: 768px) {
+    display: flex;
+    flex-wrap: wrap;
+  }
+`;
+
+export const EditInput = styled.input`
+  padding: 5px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+  @media (max-width: 768px) {
+    width: 50%;
+  }
+`;
+
 export const ListItemText = styled.div`
   color: #333;
-  font-size: 0.7rem;
+
   word-break: keep-all;
   @media (max-width: 768px) {
     width: auto;
   }
 `;
 
-export const Button = styled.button`
-  width: 15px;
-  height: 15px;
+export const EditButton = styled.button`
+  width: 50px;
+  padding: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease-in-out;
+  &:hover {
+    background-color: rgba(128, 128, 128, 0.7);
+  }
+`;
+
+export const DeleteTransactionButton = styled.button`
+  width: 20px;
+  padding: 5px;
+  cursor: pointer;
   background-color: #f0f0f0;
   color: #333;
   border: none;
@@ -539,10 +595,9 @@ export const TransparentButton = styled.button`
 `;
 
 export const CancelButton = styled.button`
-  width: 15px;
-  height: 15px;
+  width: 50px;
+  padding: 5px;
   cursor: pointer;
-  font-size: 0.9rem;
   background-color: #ff5252;
   color: white;
   border: none;
@@ -555,32 +610,6 @@ export const CancelButton = styled.button`
   }
 `;
 
-export const Form = styled.form`
-  display: flex;
-  align-items: center;
-  position: relative;
-  > input:first-child {
-    width: 50%;
-  }
-  @media (max-width: 768px) {
-    display: flex;
-    flex-wrap: wrap;
-  }
-`;
-
-export const Input = styled.input`
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-  @media (max-width: 768px) {
-    width: 50%;
-  }
-`;
 export const TotalContainer = styled.div``;
 
 export const Total = styled.div<{ color: string }>`
