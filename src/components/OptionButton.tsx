@@ -80,7 +80,7 @@ const OptionButtonWrapper = styled.div`
 `;
 
 const LogoutButton = styled.button`
-  width: 50px;
+  width: 70px;
   text-decoration: none;
   color: #000;
   font-size: 10px;
