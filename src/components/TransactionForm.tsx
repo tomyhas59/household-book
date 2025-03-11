@@ -136,7 +136,7 @@ const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
 export default TransactionForm;
 
 const TransactionFormContainer = styled.div`
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

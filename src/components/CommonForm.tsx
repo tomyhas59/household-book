@@ -514,11 +514,6 @@ export const ListItem = styled.div`
     border-radius: 8px;
     font-weight: bold;
   }
-
-  @media (max-width: 768px) {
-    display: flex;
-    flex-wrap: wrap;
-  }
 `;
 
 export const EditForm = styled.form`
@@ -527,10 +522,6 @@ export const EditForm = styled.form`
   position: relative;
   > input:first-child {
     width: 50%;
-  }
-  @media (max-width: 768px) {
-    display: flex;
-    flex-wrap: wrap;
   }
 `;
 
