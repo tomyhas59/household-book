@@ -220,6 +220,7 @@ const Container = styled.div`
   border: 1px solid silver;
   @media (max-width: 768px) {
     width: 368px;
+    height: 400px;
   }
 `;
 
@@ -252,6 +253,7 @@ const SignInContainer = styled.div<ActiveType>`
 
 const SignUpContainer = styled.div<ActiveType>`
   ${absolutePosition}
+  top:10%;
   opacity: 0;
   ${(props) =>
     props.$active &&
