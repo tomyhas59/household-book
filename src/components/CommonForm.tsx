@@ -288,7 +288,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
           <AllDeleteButton onClick={deleteAllTransaction}>x</AllDeleteButton>
         )}
       </TitleWrapper>
-      <TransactonList
+      <TransactionList
         ref={listRef}
         style={{ maxHeight: "70%" }}
         onDrop={(e) => onDrop(e, categoryTitle)}
@@ -378,7 +378,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
             )}
           </React.Fragment>
         ))}
-      </TransactonList>
+      </TransactionList>
       <TotalContainer>
         <Total color={color!}>
           {isBar ? (
@@ -480,7 +480,7 @@ export const AllDeleteButton = styled.button`
   }
 `;
 
-export const TransactonList = styled.div`
+export const TransactionList = styled.div`
   overflow-y: auto;
   min-height: 200px;
   flex: 1;
