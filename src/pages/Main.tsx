@@ -20,7 +20,7 @@ import {
   loadingState,
   changePasswordFormState,
 } from "../recoil/atoms";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import Spinner from "../components/Spinner";
@@ -221,13 +221,14 @@ const Main = () => {
       {changePasswordForm && <ChangePasswordForm />}
       <HeaderContainer>
         <HeaderLeftSection>
+          <AnnualButton to="/annual">연도별 보기</AnnualButton>
+          <OptionButton />
           <DateSelector
             year={year}
             month={month}
             setYear={setYear}
             setMonth={setMonth}
           />
-          <OptionButton />
         </HeaderLeftSection>
 
         <HeaderTitle>
@@ -358,6 +359,25 @@ export const HeaderLeftSection = styled.div`
   @media (max-width: 600px) {
     flex-direction: column;
     width: 100%;
+  }
+`;
+
+const AnnualButton = styled(Link)`
+  text-align: center;
+  text-decoration: none;
+  background-color: #e74c3c;
+  border-radius: 8px;
+  padding: 10px;
+  color: #ffffff;
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #c0392b;
+  }
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 5px;
   }
 `;
 

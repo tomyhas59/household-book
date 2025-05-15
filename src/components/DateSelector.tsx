@@ -20,7 +20,6 @@ const DateSelector: React.FC<PropsType> = ({
 
   return (
     <DateContainer>
-      <AnnualButton to="/annual">연도별 보기</AnnualButton>
       <SelectContainer>
         <Select value={year} onChange={(e) => setYear(Number(e.target.value))}>
           {years.map((year) => (
@@ -51,28 +50,6 @@ const DateContainer = styled.div`
   justify-content: start;
   align-items: center;
   gap: 5px;
-`;
-
-const AnnualButton = styled(Link)`
-  width: 100%;
-  text-align: center;
-  text-decoration: none;
-  background-color: #e74c3c;
-  border-radius: 8px;
-  padding: 10px;
-  color: #ffffff;
-  display: inline-block;
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: #c0392b;
-  }
-  @media (max-width: 768px) {
-    min-width: 80px;
-    width: 100px;
-    font-size: 0.6rem;
-    padding: 5px;
-  }
 `;
 
 const SelectContainer = styled.div`

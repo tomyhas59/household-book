@@ -242,6 +242,7 @@ const Annual = () => {
             <HomeButton onClick={() => navigator("/main")}>
               월별로 보기
             </HomeButton>
+            <OptionButton />
             <Select
               value={year}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
@@ -254,8 +255,6 @@ const Annual = () => {
                 </option>
               ))}
             </Select>
-
-            <OptionButton />
           </HeaderLeftSection>
           <HeaderTitle>
             <Button onClick={getPrevYear}>◀</Button>
@@ -387,9 +386,9 @@ export const HeaderLeftSection = styled.div`
 export const HomeButton = styled.button`
   background-color: #3498db;
   color: white;
-  padding: 10px 15px;
+  border-radius: 8px;
+  padding: 10px;
   border: none;
-  border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
 
@@ -399,6 +398,7 @@ export const HomeButton = styled.button`
 
   @media (max-width: 600px) {
     width: 100%;
+    padding: 8px;
   }
 `;
 
