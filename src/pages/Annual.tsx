@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/CommonForm";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   monthState,
@@ -18,7 +18,16 @@ import {
   Legend,
   ChartOptions,
 } from "chart.js";
-import { DETAIL_CATEGORIES } from "./Main";
+import {
+  Button,
+  Container,
+  DETAIL_CATEGORIES,
+  HeaderContainer,
+  HeaderLeftSection,
+  HeaderTitle,
+  OptionSelectorWrapper,
+  PageToggleLink,
+} from "./Main";
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType } from "../type";
@@ -239,22 +248,22 @@ const Annual = () => {
         {changePasswordForm && <ChangePasswordForm />}
         <HeaderContainer>
           <HeaderLeftSection>
-            <HomeButton onClick={() => navigator("/main")}>
-              월별로 보기
-            </HomeButton>
-            <OptionButton />
-            <Select
-              value={year}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setYear(Number(e.target.value))
-              }
-            >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}년
-                </option>
-              ))}
-            </Select>
+            <PageToggleLink to="/main">월별로 보기</PageToggleLink>
+            <OptionSelectorWrapper>
+              <Select
+                value={year}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                  setYear(Number(e.target.value))
+                }
+              >
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}년
+                  </option>
+                ))}
+              </Select>
+              <OptionButton />
+            </OptionSelectorWrapper>
           </HeaderLeftSection>
           <HeaderTitle>
             <Button onClick={getPrevYear}>◀</Button>
@@ -349,96 +358,21 @@ const Annual = () => {
 
 export default Annual;
 
-export const Container = styled.div`
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 20px;
-
+export const Select = styled.select`
+  appearance: none;
+  border: 2px solid #ecf0f1;
+  background-color: #ffffff;
+  padding: 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  color: #2c3e50;
+  cursor: pointer;
+  text-align: center;
+  &:hover {
+    border-color: #7f8fa6;
+  }
   @media (max-width: 768px) {
     padding: 10px;
-  }
-`;
-
-export const HeaderContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-
-  @media (max-width: 768px) {
-    flex-direction: column;
-    gap: 10px;
-  }
-`;
-
-export const HeaderLeftSection = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    width: 100%;
-  }
-`;
-
-export const HomeButton = styled.button`
-  background-color: #3498db;
-  color: white;
-  border-radius: 8px;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-
-  &:hover {
-    background-color: #2980b9;
-  }
-
-  @media (max-width: 600px) {
-    width: 100%;
-    padding: 8px;
-  }
-`;
-
-export const Select = styled.select`
-  padding: 8px;
-  font-size: 14px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  cursor: pointer;
-
-  @media (max-width: 600px) {
-    width: 100%;
-  }
-`;
-
-export const Button = styled.button`
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  color: #333;
-
-  &:hover {
-    color: #3498db;
-  }
-
-  @media (max-width: 600px) {
-    font-size: 16px;
-  }
-`;
-
-export const HeaderTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 20px;
-  font-weight: bold;
-
-  @media (max-width: 600px) {
-    font-size: 18px;
   }
 `;
 
@@ -447,14 +381,19 @@ export const MonthListContainer = styled.div`
 `;
 
 export const TotalIncome = styled.div`
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #2ecc71;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #27ae60;
   text-align: center;
 
-  @media (max-width: 600px) {
-    font-size: 16px;
+  padding: 8px 12px;
+  background-color: #eafaf1;
+  border-radius: 8px;
+
+  @media (max-width: 768px) {
+    font-size: 1.125rem;
+    padding: 6px 10px;
   }
 `;
 
@@ -463,7 +402,7 @@ export const MonthList = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 15px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -486,7 +425,7 @@ export const MonthTitle = styled.h3`
   margin-bottom: 10px;
   font-size: 18px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     font-size: 16px;
   }
 `;
@@ -503,7 +442,7 @@ export const AccountSection = styled.div`
   align-items: center;
   font-size: 14px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 `;
@@ -523,7 +462,7 @@ export const Detail = styled.div`
   justify-content: space-between;
   font-size: 14px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     font-size: 12px;
   }
 `;
@@ -536,7 +475,7 @@ export const PieChartContainer = styled.div`
     margin-bottom: 10px;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     width: 100%;
     h2 {
       font-size: 16px;

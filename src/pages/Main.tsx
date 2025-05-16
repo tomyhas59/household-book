@@ -28,7 +28,6 @@ import TransactionForm from "../components/TransactionForm";
 import { TransactionType } from "../type";
 import OptionButton from "../components/OptionButton";
 import ChangePasswordForm from "../components/ChangePasswordForm";
-import { HeaderTitle } from "./Annual";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -216,19 +215,21 @@ const Main = () => {
   }, []);
 
   return (
-    <MainContainer>
+    <Container>
       {loading && <Spinner />}
       {changePasswordForm && <ChangePasswordForm />}
       <HeaderContainer>
         <HeaderLeftSection>
-          <AnnualButton to="/annual">연도별 보기</AnnualButton>
-          <OptionButton />
-          <DateSelector
-            year={year}
-            month={month}
-            setYear={setYear}
-            setMonth={setMonth}
-          />
+          <PageToggleLink to="/annual">연도별 보기</PageToggleLink>
+          <OptionSelectorWrapper>
+            <DateSelector
+              year={year}
+              month={month}
+              setYear={setYear}
+              setMonth={setMonth}
+            />
+            <OptionButton />
+          </OptionSelectorWrapper>
         </HeaderLeftSection>
 
         <HeaderTitle>
@@ -322,13 +323,13 @@ const Main = () => {
           user={user}
         />
       )}
-    </MainContainer>
+    </Container>
   );
 };
 
 export default Main;
 
-export const MainContainer = styled.div`
+export const Container = styled.div`
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -354,15 +355,27 @@ export const HeaderContainer = styled.div`
 export const HeaderLeftSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     flex-direction: column;
     width: 100%;
   }
 `;
 
-const AnnualButton = styled(Link)`
+export const OptionSelectorWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  @media (max-width: 768px) {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 5px;
+  }
+`;
+
+export const PageToggleLink = styled(Link)`
   text-align: center;
   text-decoration: none;
   background-color: #e74c3c;
@@ -377,7 +390,20 @@ const AnnualButton = styled(Link)`
   }
   @media (max-width: 768px) {
     width: 100%;
-    padding: 5px;
+    padding: 8px;
+  }
+`;
+
+export const HeaderTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
   }
 `;
 
@@ -386,13 +412,12 @@ export const Button = styled.button`
   border: none;
   font-size: 18px;
   cursor: pointer;
-  color: #333;
 
   &:hover {
     color: #3498db;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     font-size: 16px;
   }
 `;
@@ -433,7 +458,7 @@ export const DetailsContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 15px;
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     grid-template-columns: 1fr;
   }
 `;

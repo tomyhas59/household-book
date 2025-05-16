@@ -73,9 +73,8 @@ const OptionButtonWrapper = styled.div`
   cursor: pointer;
   @media (max-width: 768px) {
     word-break: keep-all;
-    min-width: 40px;
-    font-size: 0.6rem;
-    padding: 5px;
+    font-size: 0.8rem;
+    padding: 8px;
   }
 `;
 
@@ -106,8 +105,8 @@ const PopUpOption = styled.div`
   background-color: #e74c3c;
   padding: 5px;
   position: absolute;
-  top: 20px;
-  left: 30px;
+  top: 100%;
+  left: 50%;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
