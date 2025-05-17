@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { ProgressBar, ProgressContainer } from "../components/CommonForm";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   monthState,
@@ -60,7 +60,6 @@ const Annual = () => {
 
   const years = Array.from({ length: 10 }, (_, i) => 2024 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  const navigator = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
