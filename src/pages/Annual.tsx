@@ -87,43 +87,16 @@ const Annual = () => {
   const calculateTotal = useCallback(
     (month: number, category: string) => {
       if (yearData.length > 0) {
-        //해당 월 찾기
-        const monthData = yearData.filter((data) => data?.month === month);
-        if (monthData.length > 0) {
-          const transactions = monthData[0]?.transactions;
-
-          if (transactions && Array.isArray(transactions)) {
-            const total = transactions
-              .filter((transaction) => transaction?.type === category)
-              .reduce((a, c) => a + (c?.amount || 0), 0);
-            return total;
-          }
+        const monthData = yearData.find((data) => data?.month === month);
+        if (monthData?.transactions) {
+          return monthData.transactions
+            .filter((transaction) => transaction?.type === category)
+            .reduce((sum, transaction) => sum + (transaction?.amount || 0), 0);
         }
       }
       return 0;
     },
     [yearData]
-  );
-
-  const totalIncome = useCallback(
-    () =>
-      months.reduce((total, month) => total + calculateTotal(month, "수입"), 0),
-    [calculateTotal, months]
-  );
-
-  const totalFixed = useCallback(
-    () =>
-      months.reduce(
-        (total, month) => total + calculateTotal(month, "고정 지출"),
-        0
-      ),
-    [calculateTotal, months]
-  );
-
-  const totalSavings = useCallback(
-    () =>
-      months.reduce((total, month) => total + calculateTotal(month, "저축"), 0),
-    [calculateTotal, months]
   );
 
   const totalCategory = useCallback(
@@ -148,16 +121,38 @@ const Annual = () => {
   };
 
   //총 데이터 계산
-  const totalIncomeValue = totalIncome();
-  const totalFixedValue = totalFixed();
-  const totalSavingsValue = totalSavings();
-  const categoriesData = {
-    food: totalCategory("식비"),
-    necessity: totalCategory("생필품"),
-    culture: totalCategory("문화생활"),
-    transportation: totalCategory("교통비"),
-    others: totalCategory("의료 및 기타"),
-  };
+  const totalIncomeValue = useMemo(
+    () =>
+      months.reduce((total, month) => total + calculateTotal(month, "수입"), 0),
+    [calculateTotal, months]
+  );
+
+  const totalFixedValue = useMemo(
+    () =>
+      months.reduce(
+        (total, month) => total + calculateTotal(month, "고정 지출"),
+        0
+      ),
+    [calculateTotal, months]
+  );
+
+  const totalSavingsValue = useMemo(
+    () =>
+      months.reduce((total, month) => total + calculateTotal(month, "저축"), 0),
+    [calculateTotal, months]
+  );
+
+  const categoriesData = useMemo(
+    () => ({
+      food: totalCategory("식비"),
+      necessity: totalCategory("생필품"),
+      culture: totalCategory("문화생활"),
+      transportation: totalCategory("교통비"),
+      others: totalCategory("의료 및 기타"),
+    }),
+    [totalCategory]
+  );
+
   const totalCategoryCost = Object.values(categoriesData).reduce(
     (sum, categoryCost) => sum + categoryCost,
     0
@@ -170,39 +165,46 @@ const Annual = () => {
     const calcPercentage = (value: number) =>
       totalIncomeValue ? ((value / totalIncomeValue) * 100).toFixed(2) : 0;
 
+    const items = [
+      { label: "고정 지출", value: totalFixedValue, color: COLORS.fixed },
+      { label: "저축", value: totalSavingsValue, color: COLORS.savings },
+      { label: "식비", value: categoriesData.food, color: COLORS.food },
+      {
+        label: "생필품",
+        value: categoriesData.necessity,
+        color: COLORS.necessity,
+      },
+      {
+        label: "문화생활",
+        value: categoriesData.culture,
+        color: COLORS.culture,
+      },
+      {
+        label: "교통비",
+        value: categoriesData.transportation,
+        color: COLORS.transportation,
+      },
+      {
+        label: "의료 및 기타",
+        value: categoriesData.others,
+        color: COLORS.others,
+      },
+      {
+        label: "남은 금액",
+        value: remaining > 0 ? remaining : 0,
+        color: COLORS.remaining,
+      },
+    ];
+
     return {
-      labels: [
-        `고정 지출 ${totalFixedValue.toLocaleString()}원 (${calcPercentage(totalFixedValue)}%)`,
-        `저축 ${totalSavingsValue.toLocaleString()}원(${calcPercentage(totalSavingsValue)}%)`,
-        `식비 ${categoriesData.food.toLocaleString()}원(${calcPercentage(categoriesData.food)}%)`,
-        `생필품 ${categoriesData.necessity.toLocaleString()}원(${calcPercentage(categoriesData.necessity)}%)`,
-        `문화생활 ${categoriesData.culture.toLocaleString()}원(${calcPercentage(categoriesData.culture)}%)`,
-        `교통비 ${categoriesData.transportation.toLocaleString()}원(${calcPercentage(categoriesData.transportation)}%)`,
-        `의료 및 기타 ${categoriesData.others.toLocaleString()}원(${calcPercentage(categoriesData.others)}%)`,
-        `남은 금액 ${remaining.toLocaleString()}원(${calcPercentage(remaining)}%)`,
-      ],
+      labels: items.map(
+        ({ label, value }) =>
+          `${label} ${value.toLocaleString()}원 (${calcPercentage(value)}%)`
+      ),
       datasets: [
         {
-          data: [
-            totalFixedValue,
-            totalSavingsValue,
-            categoriesData.food,
-            categoriesData.necessity,
-            categoriesData.culture,
-            categoriesData.transportation,
-            categoriesData.others,
-            remaining > 0 ? remaining : 0,
-          ],
-          backgroundColor: [
-            COLORS.fixed,
-            COLORS.savings,
-            COLORS.food,
-            COLORS.necessity,
-            COLORS.culture,
-            COLORS.transportation,
-            COLORS.others,
-            COLORS.remaining,
-          ],
+          data: items.map(({ value }) => value),
+          backgroundColor: items.map(({ color }) => color),
         },
       ],
     };
@@ -272,7 +274,7 @@ const Annual = () => {
         </HeaderContainer>
         <MonthListContainer>
           <TotalIncome>
-            총 수입 : {totalIncome().toLocaleString()}원
+            총 수입 : {totalIncomeValue.toLocaleString()}원
           </TotalIncome>
           <MonthList>
             {months.map((month) => {
