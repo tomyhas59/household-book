@@ -34,6 +34,15 @@ const ChangePasswordForm = () => {
   const changePasswordSubmit = useCallback(
     async (e: SyntheticEvent) => {
       e.preventDefault();
+      setLoading(true);
+
+      const isEmptyFieldExist = Object.values(changePasswordData).some(
+        (data) => !data
+      );
+      if (isEmptyFieldExist) {
+        alert("빈 칸을 확인하세요");
+        return;
+      }
       if (
         changePasswordData.newPassword !== changePasswordData.passwordConfirm
       ) {
@@ -65,14 +74,7 @@ const ChangePasswordForm = () => {
         setLoading(false);
       }
     },
-    [
-      changePasswordData.newPassword,
-      changePasswordData.passwordConfirm,
-      changePasswordData.prevPassword,
-      navigator,
-      user?.email,
-      setLoading,
-    ]
+    [changePasswordData, navigator, user?.email, setLoading]
   );
 
   return (
