@@ -192,9 +192,10 @@ const Button = styled.button`
   }
 
   &:nth-child(2) {
-    background-color: #ccc;
+    background-color: #e74c3c;
+
     &:hover {
-      background-color: #aaa;
+      background-color: #c0392b;
     }
   }
 

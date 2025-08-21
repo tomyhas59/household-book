@@ -165,6 +165,8 @@ const Account: React.FC<PropsType> = ({
                 onChange={onChangeBudget}
                 value={budget}
                 ref={budgetRef}
+                min={0}
+                step={1000}
               />
               <button type="submit">등록</button>
               <button type="button" onClick={handleCancel}>
@@ -183,7 +185,7 @@ const Account: React.FC<PropsType> = ({
           <RemainingBudget>
             <div>소비 예산 - 생활비</div>
             <div>
-              남은 예산:
+              남은 예산: &nbsp;
               {budget ? (Number(budget) - livingTotal).toLocaleString() : ""}
             </div>
           </RemainingBudget>
@@ -243,7 +245,7 @@ const Spending = styled.div`
 const BudgetForm = styled.form`
   display: flex;
   gap: 4px;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   input[type="number"] {
@@ -251,12 +253,12 @@ const BudgetForm = styled.form`
     font-size: 1rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 120px;
+    width: 60%;
   }
 
   button {
-    padding: 8px 16px;
-    font-size: 1rem;
+    padding: 8px;
+    font-size: 0.8rem;
     background-color: #3498db;
     color: white;
     border: none;
