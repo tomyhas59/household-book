@@ -15,7 +15,7 @@ const Saving: React.FC<PropsType> = ({
     <CommonForm
       categoryTitle={categoryTitle}
       setTotalItem={setTotalItem}
-      color="blue"
+      color="#10b981"
       year={year}
       month={month}
       user={user}

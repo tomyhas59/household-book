@@ -1,8 +1,9 @@
+// OptionButton.tsx
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import styled from "styled-components";
 import { changePasswordFormState, userState } from "../recoil/atoms";
 import { useSetRecoilState } from "recoil";
+import "../styles/OptionButton.css";
 
 const OptionButton = () => {
   const navigator = useNavigate();
@@ -38,79 +39,35 @@ const OptionButton = () => {
 
   const handleOption = () => {
     setChangePasswordForm(true);
+    setPopUpOption(false);
   };
 
   return (
-    <OptionButtonWrapper onClick={() => setPopUpOption((prev) => !prev)}>
-      OPTION
+    <div className="option-wrapper">
+      <button
+        className="option-btn"
+        onClick={() => setPopUpOption((prev) => !prev)}
+      >
+        <i className="fas fa-cog"></i>
+        <span>옵션</span>
+      </button>
       {popUpOption && (
-        <PopUpOption ref={popUpOptionRef}>
-          <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
-          <ChangePasswordText onClick={handleOption}>
+        <div className="option-menu" ref={popUpOptionRef}>
+          <button className="option-menu-item" onClick={handleOption}>
+            <i className="fas fa-key"></i>
             비밀번호 변경
-          </ChangePasswordText>
-        </PopUpOption>
+          </button>
+          <button
+            className="option-menu-item option-menu-item--logout"
+            onClick={handleLogout}
+          >
+            <i className="fas fa-sign-out-alt"></i>
+            로그아웃
+          </button>
+        </div>
       )}
-    </OptionButtonWrapper>
+    </div>
   );
 };
 
 export default OptionButton;
-
-const OptionButtonWrapper = styled.div`
-  position: relative;
-  background-color: #e74c3c;
-  color: #ffffff;
-  border-radius: 8px;
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  &:hover {
-    background-color: #c0392b;
-  }
-  cursor: pointer;
-  @media (max-width: 768px) {
-    word-break: keep-all;
-    font-size: 0.8rem;
-    padding: 8px;
-  }
-`;
-
-const LogoutButton = styled.button`
-  width: 70px;
-  text-decoration: none;
-  color: #000;
-  font-size: 10px;
-  font-weight: bold;
-  padding: 4px;
-  border: 2px solid #fff;
-  border-radius: 5px;
-  transition: all 0.3s ease;
-  border: 1px solid;
-  cursor: pointer;
-  &:hover {
-    background-color: #e74c3c;
-    color: #fff;
-  }
-  @media (max-width: 768px) {
-    font-size: 0.6rem;
-    margin: 0;
-    padding: 5px;
-  }
-`;
-
-const PopUpOption = styled.div`
-  background-color: #e74c3c;
-  padding: 5px;
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  z-index: 9999;
-`;
-
-const ChangePasswordText = styled(LogoutButton)``;

@@ -1,0 +1,267 @@
+/* TransactionForm.css */
+
+.transaction-form-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+  padding: 20px;
+}
+
+.transaction-form-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transaction-form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.transaction-form-header i {
+  font-size: 24px;
+  color: #14b8a6;
+}
+
+.transaction-form-header h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* ==================== 폼 ==================== */
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 150px;
+  gap: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group--wide {
+  grid-column: span 1;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-label i {
+  font-size: 14px;
+  color: #14b8a6;
+}
+
+.form-input {
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.form-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ==================== 카테고리 ==================== */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.category-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.category-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.category-label {
+  flex: 1;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.category-option input[type="radio"]:checked + .category-label {
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  border-color: #14b8a6;
+  color: white;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.category-option:hover .category-label {
+  border-color: #14b8a6;
+  transform: translateY(-2px);
+}
+
+/* ==================== 제출 버튼 ==================== */
+.submit-button {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.3);
+  margin-top: 8px;
+}
+
+.submit-button i {
+  font-size: 18px;
+}
+
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(20, 184, 166, 0.4);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+/* ==================== 반응형 ==================== */
+@media (max-width: 768px) {
+  .transaction-form-card {
+    padding: 24px 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  .category-label {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .transaction-form-container {
+    padding: 15px;
+  }
+
+  .transaction-form-card {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .transaction-form-header {
+    margin-bottom: 20px;
+  }
+
+  .transaction-form-header h3 {
+    font-size: 18px;
+  }
+
+  .transaction-form {
+    gap: 16px;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .submit-button {
+    padding: 12px 18px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-form-header i {
+    font-size: 20px;
+  }
+
+  .transaction-form-header h3 {
+    font-size: 17px;
+  }
+
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-label {
+    font-size: 12px;
+  }
+
+  .form-label i {
+    font-size: 13px;
+  }
+}

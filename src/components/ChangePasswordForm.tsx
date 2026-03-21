@@ -8,7 +8,7 @@ import { ChangeEvent, SyntheticEvent, useCallback, useState } from "react";
 import { useNavigate } from "react-router";
 import axios, { AxiosError } from "axios";
 import { BASE_URL } from "../config/config";
-import styled from "styled-components";
+import "../styles/ChangePasswordForm.css";
 
 const ChangePasswordForm = () => {
   const user = useRecoilValue(userState);
@@ -37,16 +37,18 @@ const ChangePasswordForm = () => {
       setLoading(true);
 
       const isEmptyFieldExist = Object.values(changePasswordData).some(
-        (data) => !data
+        (data) => !data,
       );
       if (isEmptyFieldExist) {
         alert("빈 칸을 확인하세요");
+        setLoading(false);
         return;
       }
       if (
         changePasswordData.newPassword !== changePasswordData.passwordConfirm
       ) {
         setPasswordError(true);
+        setLoading(false);
         return;
       }
       const data = {
@@ -58,145 +60,107 @@ const ChangePasswordForm = () => {
       try {
         const response = await axios.post(
           `${BASE_URL}/api/changePassword`,
-          data
+          data,
         );
 
-        alert(response.data); //성공 메시지 호출
+        alert(response.data);
+        setChangePasswordForm(false);
         navigator("/main");
       } catch (err) {
         if (axios.isAxiosError(err)) {
           const axiosError = err as AxiosError<any>;
           if (axiosError.response) {
-            alert(axiosError.response.data.message); //에러 메시지 호출
+            alert(axiosError.response.data.message);
           }
         }
       } finally {
         setLoading(false);
       }
     },
-    [changePasswordData, navigator, user?.email, setLoading]
+    [
+      changePasswordData,
+      navigator,
+      user?.email,
+      setLoading,
+      setChangePasswordForm,
+    ],
   );
 
   return (
-    <ChangePasswordFormContainer onSubmit={changePasswordSubmit}>
-      <XBox type="button" onClick={() => setChangePasswordForm(false)}>
-        x
-      </XBox>
-      <FormGroup>
-        <Label>현재 비밀번호</Label>
-        <Input
-          name="prevPassword"
-          type="password"
-          value={changePasswordData.prevPassword}
-          onChange={handleOnChange}
-          placeholder="현재 비밀번호"
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>비밀번호</Label>
-        <Input
-          name="newPassword"
-          type="password"
-          value={changePasswordData.newPassword}
-          onChange={handleOnChange}
-          placeholder="비밀번호"
-        />
-      </FormGroup>
-      <FormGroup>
-        <Label>비밀번호 확인</Label>
-        <Input
-          name="passwordConfirm"
-          type="password"
-          value={changePasswordData.passwordConfirm}
-          onChange={handleOnChange}
-          placeholder="비밀번호 확인"
-        />
-      </FormGroup>
-      <CheckMessage>
-        {passwordError ? "비밀번호가 일치하지 않습니다" : ""}
-      </CheckMessage>
-      <Button type="submit">등록</Button>
-    </ChangePasswordFormContainer>
+    <div className="password-modal-overlay">
+      <div className="password-modal">
+        <div className="password-modal__header">
+          <h3>
+            <i className="fas fa-key"></i>
+            비밀번호 변경
+          </h3>
+          <button
+            className="password-modal__close"
+            onClick={() => setChangePasswordForm(false)}
+          >
+            <i className="fas fa-times"></i>
+          </button>
+        </div>
+
+        <form className="password-form" onSubmit={changePasswordSubmit}>
+          <div className="password-field">
+            <label className="password-label">
+              <i className="fas fa-lock"></i>
+              현재 비밀번호
+            </label>
+            <input
+              className="password-input"
+              name="prevPassword"
+              type="password"
+              value={changePasswordData.prevPassword}
+              onChange={handleOnChange}
+              placeholder="현재 비밀번호를 입력하세요"
+            />
+          </div>
+
+          <div className="password-field">
+            <label className="password-label">
+              <i className="fas fa-key"></i>새 비밀번호
+            </label>
+            <input
+              className="password-input"
+              name="newPassword"
+              type="password"
+              value={changePasswordData.newPassword}
+              onChange={handleOnChange}
+              placeholder="새 비밀번호를 입력하세요"
+            />
+          </div>
+
+          <div className="password-field">
+            <label className="password-label">
+              <i className="fas fa-check-circle"></i>새 비밀번호 확인
+            </label>
+            <input
+              className="password-input"
+              name="passwordConfirm"
+              type="password"
+              value={changePasswordData.passwordConfirm}
+              onChange={handleOnChange}
+              placeholder="새 비밀번호를 다시 입력하세요"
+            />
+          </div>
+
+          {passwordError && (
+            <div className="password-error">
+              <i className="fas fa-exclamation-circle"></i>
+              비밀번호가 일치하지 않습니다
+            </div>
+          )}
+
+          <button type="submit" className="password-submit">
+            <i className="fas fa-check"></i>
+            비밀번호 변경
+          </button>
+        </form>
+      </div>
+    </div>
   );
 };
 
 export default ChangePasswordForm;
-
-export const ChangePasswordFormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  gap: 15px;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  border: 5px solid;
-  width: 100%;
-  max-width: 350px;
-`;
-
-export const XBox = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #333;
-
-  &:hover {
-    color: #e74c3c;
-  }
-`;
-
-export const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-`;
-
-export const Label = styled.label`
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-`;
-
-export const Input = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.3s ease;
-
-  &:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-  }
-`;
-
-export const CheckMessage = styled.p`
-  font-size: 14px;
-  color: #e74c3c;
-  height: 18px; /* 공간 확보 */
-`;
-
-export const Button = styled.button`
-  background: #3498db;
-  color: white;
-  border: none;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-
-  &:hover {
-    background: #2980b9;
-  }
-`;

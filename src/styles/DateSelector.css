@@ -1,0 +1,35 @@
+/* DateSelector.css */
+
+.date-selector {
+  display: flex;
+  gap: 8px;
+}
+
+.date-select {
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.date-select:focus {
+  outline: none;
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.date-select:hover {
+  border-color: #cbd5e1;
+}
+
+@media (max-width: 640px) {
+  .date-select {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}

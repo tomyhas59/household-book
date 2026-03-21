@@ -1,3 +1,4 @@
+// Income.tsx
 import CommonForm, { PropsType } from "./CommonForm";
 
 const Income: React.FC<PropsType> = ({
@@ -15,7 +16,7 @@ const Income: React.FC<PropsType> = ({
     <CommonForm
       categoryTitle={categoryTitle}
       setTotalItem={setTotalItem}
-      color="blue"
+      color="#3b82f6"
       year={year}
       month={month}
       monthData={monthData}

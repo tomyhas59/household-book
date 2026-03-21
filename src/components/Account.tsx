@@ -1,11 +1,10 @@
 import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
-import styled from "styled-components";
-import { ProgressBar, ProgressContainer } from "./CommonForm";
 import axios from "axios";
 import { MonthDataType, UserType } from "../type";
 import { BASE_URL } from "../config/config";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { livingTotalState, loadingState } from "../recoil/atoms";
+import "../styles/Account.css";
 
 type PropsType = {
   income: number;
@@ -74,6 +73,7 @@ const Account: React.FC<PropsType> = ({
     setOriginalBudget(monthData?.budget?.toString() || "");
     setIsBudget(false);
   }, [year, month, monthData]);
+
   const handleModify = () => {
     setOriginalBudget(budget);
     setIsBudget(true);
@@ -100,7 +100,6 @@ const Account: React.FC<PropsType> = ({
       const target = e.target as HTMLElement;
 
       if (budgetRef.current && !budgetRef.current.contains(target)) {
-        // 버튼이 없을 시 실행
         if (!target.closest("button")) {
           setIsBudget(false);
           setBudget(originalBudget);
@@ -114,188 +113,182 @@ const Account: React.FC<PropsType> = ({
     };
   }, [originalBudget]);
 
+  const totalSpending = livingTotal + fixed;
+  const remaining = income - totalSpending - saving;
+  const remainingBudget = budget ? Number(budget) - livingTotal : 0;
+
   return (
-    <AccountContainer>
-      <AccountSection>
-        <AccountTitle>총 수입</AccountTitle>
-        <Saving>{income.toLocaleString()}</Saving>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>총 고정 지출</AccountTitle>
-        <Spending>{fixed.toLocaleString()}</Spending>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>생활비 합계</AccountTitle>
-        <Spending>{livingTotal.toLocaleString()}</Spending>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>총 지출</AccountTitle>
-        <ProgressContainer>
-          <ProgressBar $percentage={spendingPer}>
-            <p>{spendingPer.toFixed(0)}%</p>
-          </ProgressBar>
-        </ProgressContainer>
-        <Spending>{(livingTotal + fixed).toLocaleString()}</Spending>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>총 저축</AccountTitle>
-        <ProgressContainer>
-          <ProgressBar
-            $percentage={savingPer}
-            style={{ backgroundColor: " #3498db" }}
-          >
-            <p>{savingPer.toFixed(0)}%</p>
-          </ProgressBar>
-        </ProgressContainer>
-        <Saving>{saving.toLocaleString()}</Saving>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>남은 돈</AccountTitle>
-        <Saving>
-          {(income - fixed - livingTotal - saving).toLocaleString()}
-        </Saving>
-      </AccountSection>
-      <AccountSection>
-        <AccountTitle>소비 예산</AccountTitle>
-        <Saving>
-          {isBudget ? (
-            <BudgetForm onSubmit={handleSubmit}>
-              <input
-                type="number"
-                onChange={onChangeBudget}
-                value={budget}
-                ref={budgetRef}
-                min={0}
-                step={1000}
-              />
-              <button type="submit">등록</button>
-              <button type="button" onClick={handleCancel}>
-                취소
-              </button>
-            </BudgetForm>
-          ) : (
-            <BudgetDisplay onClick={handleModify}>
-              {budget && Number(budget) > 0
-                ? Number(budget).toLocaleString()
-                : "클릭하여 등록"}
-            </BudgetDisplay>
-          )}
-        </Saving>
-        {budget && !isBudget && Number(budget) > 0 ? (
-          <RemainingBudget>
-            <div>소비 예산 - 생활비</div>
-            <div>
-              남은 예산: &nbsp;
-              {budget ? (Number(budget) - livingTotal).toLocaleString() : ""}
+    <div className="account-summary">
+      <h2 className="account-summary__title">
+        <i className="fas fa-chart-line"></i>
+        재정 요약
+      </h2>
+
+      <div className="summary-grid">
+        {/* 수입 */}
+        <div className="summary-item summary-item--income">
+          <div className="summary-item__icon">
+            <i className="fas fa-arrow-down"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">총 수입</span>
+            <span className="summary-item__value">
+              {income.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 고정 지출 */}
+        <div className="summary-item summary-item--fixed">
+          <div className="summary-item__icon">
+            <i className="fas fa-receipt"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">고정 지출</span>
+            <span className="summary-item__value">
+              {fixed.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 생활비 */}
+        <div className="summary-item summary-item--living">
+          <div className="summary-item__icon">
+            <i className="fas fa-shopping-cart"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">생활비</span>
+            <span className="summary-item__value">
+              {livingTotal.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 총 지출 (진행률 포함) */}
+        <div className="summary-item summary-item--spending">
+          <div className="summary-item__icon">
+            <i className="fas fa-arrow-up"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">총 지출</span>
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill progress-fill--expense"
+                  style={{ width: `${Math.min(spendingPer, 100)}%` }}
+                >
+                  <span>{spendingPer.toFixed(0)}%</span>
+                </div>
+              </div>
             </div>
-          </RemainingBudget>
-        ) : null}
-      </AccountSection>
-    </AccountContainer>
+            <span className="summary-item__value">
+              {totalSpending.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 저축 (진행률 포함) */}
+        <div className="summary-item summary-item--saving">
+          <div className="summary-item__icon">
+            <i className="fas fa-piggy-bank"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">총 저축</span>
+            <div className="progress-container">
+              <div className="progress-bar">
+                <div
+                  className="progress-fill progress-fill--saving"
+                  style={{ width: `${Math.min(savingPer, 100)}%` }}
+                >
+                  <span>{savingPer.toFixed(0)}%</span>
+                </div>
+              </div>
+            </div>
+            <span className="summary-item__value">
+              {saving.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 남은 돈 */}
+        <div
+          className={`summary-item summary-item--remaining ${remaining < 0 ? "summary-item--negative" : ""}`}
+        >
+          <div className="summary-item__icon">
+            <i className="fas fa-wallet"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">남은 금액</span>
+            <span className="summary-item__value">
+              {remaining.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+
+        {/* 소비 예산 */}
+        <div className="summary-item summary-item--budget">
+          <div className="summary-item__icon">
+            <i className="fas fa-bullseye"></i>
+          </div>
+          <div className="summary-item__content">
+            <span className="summary-item__label">소비 예산</span>
+            {isBudget ? (
+              <form className="budget-form" onSubmit={handleSubmit}>
+                <input
+                  className="budget-input"
+                  type="number"
+                  onChange={onChangeBudget}
+                  value={budget}
+                  ref={budgetRef}
+                  min={0}
+                  step={1000}
+                  placeholder="예산 입력"
+                />
+                <div className="budget-buttons">
+                  <button
+                    type="submit"
+                    className="budget-btn budget-btn--submit"
+                  >
+                    <i className="fas fa-check"></i>
+                  </button>
+                  <button
+                    type="button"
+                    className="budget-btn budget-btn--cancel"
+                    onClick={handleCancel}
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="budget-display" onClick={handleModify}>
+                {budget && Number(budget) > 0
+                  ? `${Number(budget).toLocaleString()}원`
+                  : "예산 설정하기"}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 남은 예산 표시 */}
+      {budget && !isBudget && Number(budget) > 0 && (
+        <div
+          className={`budget-remaining ${remainingBudget < 0 ? "budget-remaining--over" : ""}`}
+        >
+          <div className="budget-remaining__content">
+            <span className="budget-remaining__label">
+              <i className="fas fa-calculator"></i>
+              소비 예산 - 생활비
+            </span>
+            <span className="budget-remaining__value">
+              남은 예산: {remainingBudget.toLocaleString()}원
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 
 export default Account;
-
-const AccountContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
-  max-width: 800px;
-  border-radius: 8px;
-`;
-
-const AccountSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  background-color: #fff;
-  padding: 16px;
-  border-radius: 8px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-
-  @media (max-width: 768px) {
-    padding: 8px;
-  }
-`;
-
-const AccountTitle = styled.h3`
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-  }
-`;
-
-const Saving = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #3498db;
-`;
-
-const Spending = styled.div`
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #e74c3c;
-`;
-
-const BudgetForm = styled.form`
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  align-items: center;
-
-  input[type="number"] {
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 60%;
-  }
-
-  button {
-    padding: 8px;
-    font-size: 0.8rem;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #2980b9;
-    }
-    @media (max-width: 768px) {
-      padding: 4px 8px;
-      font-size: 0.9rem;
-    }
-  }
-
-  button[type="button"] {
-    background-color: #e74c3c;
-
-    &:hover {
-      background-color: #c0392b;
-    }
-  }
-`;
-
-const BudgetDisplay = styled.div`
-  font-size: 1.1rem;
-  color: #3498db;
-  cursor: pointer;
-  text-decoration: underline;
-`;
-
-const RemainingBudget = styled.div`
-  margin-top: 12px;
-  font-size: 1rem;
-  color: #2c3e50;
-
-  div {
-    margin-bottom: 8px;
-  }
-`;

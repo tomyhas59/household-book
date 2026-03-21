@@ -1,0 +1,340 @@
+/* CommonForm.css */
+
+.common-form {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ==================== 헤더 ==================== */
+.common-form__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.copy-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #64748b;
+}
+
+.copy-btn:hover {
+  background: #14b8a6;
+  color: white;
+  transform: scale(1.05);
+}
+
+.common-form__title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.delete-all-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee2e2;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ef4444;
+}
+
+.delete-all-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ==================== 리스트 ==================== */
+.common-form__list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+}
+
+.common-form__list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.common-form__list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.common-form__list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.common-form__list::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==================== 트랜잭션 아이템 ==================== */
+.transaction-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px 30px;
+  gap: 10px;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-items: center;
+}
+
+.transaction-item:hover {
+  background: #f0fdfa;
+  transform: translateX(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.transaction-item__date {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.transaction-item__desc {
+  font-size: 14px;
+  color: #0f172a;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.transaction-item__amount {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.transaction-item__spacer {
+  width: 30px;
+}
+
+.delete-item-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fee2e2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #ef4444;
+}
+
+.delete-item-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
+}
+
+/* ==================== 수정 폼 ==================== */
+.transaction-edit-form {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px 30px 30px;
+  gap: 8px;
+  padding: 10px;
+  background: #dbeafe;
+  border-radius: 10px;
+  border: 2px solid #3b82f6;
+}
+
+.edit-input {
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #0f172a;
+  transition: all 0.2s ease;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.edit-input--date {
+  text-align: center;
+}
+
+.edit-input--amount {
+  text-align: right;
+}
+
+.edit-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.edit-btn--save {
+  background: #10b981;
+  color: white;
+}
+
+.edit-btn--save:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.edit-btn--cancel {
+  background: #ef4444;
+  color: white;
+}
+
+.edit-btn--cancel:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}
+
+.edit-btn i {
+  font-size: 12px;
+}
+
+/* ==================== 푸터 ==================== */
+.common-form__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.progress-container {
+  width: 100%;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 24px;
+  background: #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.3s ease;
+}
+
+.progress-fill span {
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+}
+
+.common-form__total {
+  font-size: 18px;
+  font-weight: 800;
+  text-align: right;
+}
+
+/* ==================== 반응형 ==================== */
+@media (max-width: 640px) {
+  .common-form {
+    padding: 16px;
+  }
+
+  .common-form__title {
+    font-size: 15px;
+  }
+
+  .transaction-item {
+    grid-template-columns: 45px 1fr 90px 28px;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .transaction-item__date {
+    font-size: 12px;
+  }
+
+  .transaction-item__desc {
+    font-size: 13px;
+  }
+
+  .transaction-item__amount {
+    font-size: 13px;
+  }
+
+  .transaction-edit-form {
+    grid-template-columns: 45px 1fr 90px 28px 28px;
+    gap: 6px;
+  }
+
+  .edit-input {
+    font-size: 12px;
+    padding: 5px 6px;
+  }
+
+  .edit-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .common-form__total {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-item {
+    grid-template-columns: 40px 1fr 85px 26px;
+    padding: 8px;
+  }
+
+  .copy-btn,
+  .delete-all-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .common-form__list {
+    gap: 6px;
+  }
+}

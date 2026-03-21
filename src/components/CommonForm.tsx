@@ -1,11 +1,10 @@
 import React, { SyntheticEvent, useEffect, useRef, useState } from "react";
-
 import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType, TransactionType, UserType } from "../type";
-import styled from "styled-components";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { livingTotalState, loadingState } from "../recoil/atoms";
+import "../styles/CommonForm.css";
 
 export type PropsType = {
   categoryTitle: string;
@@ -29,7 +28,6 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   year,
   user,
   month,
-
   onTotalChange,
   isBar,
   onDrop,
@@ -90,7 +88,6 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
     setLoading(true);
 
     try {
-      // 이전 달 데이터 가져오기
       const response = await axios.get(`${BASE_URL}/api/getTransactions`, {
         params: {
           month: previousMonth,
@@ -103,7 +100,6 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
       const previousTransactions = response.data;
 
       if (previousTransactions.length > 0) {
-        // 이번 달 데이터 있으면 데이터 삭제
         if (monthData?.id) {
           await axios.delete(`${BASE_URL}/api/deleteAll`, {
             params: {
@@ -113,7 +109,6 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
             },
           });
         }
-        // 이전 달 데이터 추가하기
         const promises = previousTransactions.map(
           async (transaction: TransactionType) => {
             const newTransaction = {
@@ -133,17 +128,16 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
                   year: year,
                   month: month,
                 },
-              }
+              },
             );
             return response.data;
-          }
+          },
         );
 
-        // 모든 요청이 완료될 때까지 기다리기
         const newTransactions = await Promise.all(promises);
 
         const sortedTransactions = newTransactions.sort(
-          (a: { date: number }, b: { date: number }) => a.date - b.date
+          (a: { date: number }, b: { date: number }) => a.date - b.date,
         );
         setTransactions(sortedTransactions);
       } else {
@@ -169,7 +163,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
       });
 
       setTransactions((prevTransactions) =>
-        prevTransactions.filter((transaction) => transaction?.id !== id)
+        prevTransactions.filter((transaction) => transaction?.id !== id),
       );
     } catch (err) {
       console.error(err);
@@ -201,7 +195,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
 
   const handleModifyForm = async (id: number) => {
     const prevTransaction = transactions.find(
-      (transaction) => transaction?.id === id
+      (transaction) => transaction?.id === id,
     );
     setEditFormById(id);
     if (prevTransaction) {
@@ -233,7 +227,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
             transactionId: id,
             monthId: monthData?.id,
           },
-        }
+        },
       );
 
       const updatedTransactions = transactions.map((transaction) => {
@@ -277,372 +271,143 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   }, [transactions]);
 
   return (
-    <CommonFormContainer>
-      <TitleWrapper
+    <div className="common-form">
+      <div
+        className="common-form__header"
         onMouseEnter={() => setHoveredTitle(true)}
         onMouseLeave={() => setHoveredTitle(false)}
       >
-        <CopyButton onClick={copyPreviousMonthData}>📂</CopyButton>
-        <Title>{categoryTitle}</Title>
+        <button
+          className="copy-btn"
+          onClick={copyPreviousMonthData}
+          title="이전 달 복사"
+        >
+          <i className="fas fa-copy"></i>
+        </button>
+        <h3 className="common-form__title">{categoryTitle}</h3>
         {hoveredTitle && (
-          <AllDeleteButton onClick={deleteAllTransaction}>x</AllDeleteButton>
+          <button
+            className="delete-all-btn"
+            onClick={deleteAllTransaction}
+            title="전체 삭제"
+          >
+            <i className="fas fa-trash-alt"></i>
+          </button>
         )}
-      </TitleWrapper>
-      <TransactionList
+      </div>
+
+      <div
+        className="common-form__list"
         ref={listRef}
-        style={{ maxHeight: "70%" }}
         onDrop={(e) => onDrop(e, categoryTitle)}
         onDragOver={onDragOver}
       >
-        {transactions.map((transaction, index) => (
-          <React.Fragment key={index}>
+        {transactions.map((transaction) => (
+          <React.Fragment key={transaction?.id}>
             {editFormById === transaction?.id ? (
-              <EditForm
-                key={transaction.id}
-                onSubmit={(e: React.SyntheticEvent<Element, Event>) =>
-                  editTransaction(e, transaction.id)
-                }
+              <form
+                className="transaction-edit-form"
+                onSubmit={(e) => editTransaction(e, transaction.id)}
                 ref={listItemRef}
               >
-                <EditInput
+                <input
+                  className="edit-input edit-input--date"
                   type="number"
                   placeholder="날짜"
                   value={editDate}
-                  onChange={(e: { target: { value: any } }) => {
+                  onChange={(e) => {
                     const value = e.target.value;
                     setEditDate(
-                      Number(value) > 31 ? Number(value) % 10 : Number(value)
+                      Number(value) > 31 ? Number(value) % 10 : Number(value),
                     );
                   }}
                   min="1"
                   max="31"
                 />
-                <EditInput
+                <input
+                  className="edit-input edit-input--desc"
                   type="text"
                   placeholder="상세"
                   value={editDescription}
-                  onChange={(e: {
-                    target: { value: React.SetStateAction<string> };
-                  }) => setEditDescription(e.target.value)}
+                  onChange={(e) => setEditDescription(e.target.value)}
                 />
-                <EditInput
+                <input
+                  className="edit-input edit-input--amount"
                   type="number"
                   placeholder="비용"
                   value={editAmount}
-                  onChange={(e: { target: { value: any } }) =>
-                    setEditAmount(Number(e.target.value))
-                  }
+                  onChange={(e) => setEditAmount(Number(e.target.value))}
                 />
-                <EditButton type="submit">+</EditButton>
-                <CancelButton
+                <button type="submit" className="edit-btn edit-btn--save">
+                  <i className="fas fa-check"></i>
+                </button>
+                <button
                   type="button"
+                  className="edit-btn edit-btn--cancel"
                   onClick={() => setEditFormById(null)}
                 >
-                  x
-                </CancelButton>
-              </EditForm>
+                  <i className="fas fa-times"></i>
+                </button>
+              </form>
             ) : (
-              <ListItem
-                key={transaction?.id}
-                onMouseEnter={() => {
-                  if (transaction) {
-                    setHoveredItemId(transaction.id);
-                  }
-                }}
+              <div
+                className="transaction-item"
+                onMouseEnter={() => setHoveredItemId(transaction!.id)}
                 onMouseLeave={() => setHoveredItemId(null)}
                 draggable
                 onDragStart={(e) => onDragStart(e, transaction)}
-                onClick={() => {
-                  if (transaction) {
-                    handleModifyForm(transaction.id);
-                  }
-                }}
+                onClick={() => handleModifyForm(transaction!.id)}
               >
-                <ListItemText>
+                <span className="transaction-item__date">
                   {transaction?.date ? `${transaction?.date}일` : ""}
-                </ListItemText>
-                <ListItemText>{transaction?.description}</ListItemText>
-                <ListItemText style={{ color: color }}>
+                </span>
+                <span className="transaction-item__desc">
+                  {transaction?.description}
+                </span>
+                <span
+                  className="transaction-item__amount"
+                  style={{ color: color }}
+                >
                   {transaction?.amount?.toLocaleString()}
-                </ListItemText>
+                </span>
                 {hoveredItemId === transaction?.id ? (
-                  <DeleteTransactionButton
-                    onClick={() => deleteTransaction(transaction.id)}
+                  <button
+                    className="delete-item-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteTransaction(transaction.id);
+                    }}
                   >
-                    x
-                  </DeleteTransactionButton>
+                    <i className="fas fa-times"></i>
+                  </button>
                 ) : (
-                  <TransparentButton></TransparentButton>
+                  <span className="transaction-item__spacer"></span>
                 )}
-              </ListItem>
+              </div>
             )}
           </React.Fragment>
         ))}
-      </TransactionList>
-      <TotalContainer>
-        <Total color={color!}>
-          {isBar ? (
-            <ProgressContainer>
-              <ProgressBar $percentage={per}>
-                <p>{per.toFixed(0)}%</p>
-              </ProgressBar>
-            </ProgressContainer>
-          ) : null}
-          <p>{total?.toLocaleString()}</p>
-        </Total>
-      </TotalContainer>
-    </CommonFormContainer>
+      </div>
+
+      <div className="common-form__footer">
+        {isBar && (
+          <div className="progress-container">
+            <div className="progress-bar">
+              <div
+                className="progress-fill"
+                style={{ width: `${Math.min(per, 100)}%` }}
+              >
+                <span>{per.toFixed(0)}%</span>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="common-form__total" style={{ color: color }}>
+          {total?.toLocaleString()}원
+        </div>
+      </div>
+    </div>
   );
 };
 
 export default CommonForm;
-
-export const CommonFormContainer = styled.div`
-  position: relative;
-  border: 1px solid #e0e0e0;
-  width: 100%;
-  height: 360px;
-  display: flex;
-  justify-content: space-around;
-  flex-direction: column;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  @media (max-width: 768px) {
-    height: 280px;
-  }
-`;
-
-export const TitleWrapper = styled.h2`
-  text-align: center;
-  font-size: 1.4rem;
-  padding-top: 10px;
-  position: relative;
-  @media (max-width: 768px) {
-    font-size: 1.2rem;
-  }
-`;
-
-export const CopyButton = styled.button`
-  position: absolute;
-  top: 0;
-  left: 0;
-  border: none;
-  padding: 2px;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: transparent;
-  transition: transform 0.5s;
-  &:hover {
-    transform: scale(1.2);
-  }
-  &:hover::before {
-    content: "이전 달 데이터 복사";
-    position: absolute;
-    top: 100%;
-    left: 100%;
-    background-color: #f9e79f;
-    color: #333;
-    padding: 5px;
-    border-radius: 3px;
-    white-space: nowrap; // 텍스트 줄 바꿈 없이 표시
-    z-index: 1;
-  }
-`;
-
-export const Title = styled.div`
-  font-size: 1.3rem;
-  color: #2c3e50;
-  text-align: center;
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-export const AllDeleteButton = styled.button`
-  background-color: #d80f0f;
-  border-radius: 10px;
-  padding: 0 8px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  border: none;
-  color: #ffffff;
-  font-size: 1.2rem;
-  cursor: pointer;
-  transition: color 0.3s ease-in-out;
-
-  &:hover {
-    color: #000000;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
-`;
-
-export const TransactionList = styled.div`
-  overflow-y: auto;
-  min-height: 200px;
-  flex: 1;
-
-  &::-webkit-scrollbar {
-    width: 2px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: rgba(28, 85, 241, 0.3); /* 스크롤바 색상 */
-    border-radius: 10px; /* 둥글게 */
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent; /* 스크롤바 트랙 투명하게 */
-  }
-`;
-
-export const ListItem = styled.div`
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1.5fr 1.5fr auto;
-  gap: 6px;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 5px;
-  border-radius: 6px;
-  cursor: grab;
-  &:hover {
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    font-weight: bold;
-  }
-`;
-
-export const EditForm = styled.form`
-  display: flex;
-  align-items: center;
-  position: relative;
-  > input:first-child {
-    width: 50%;
-  }
-`;
-
-export const EditInput = styled.input`
-  padding: 5px;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-
-  &::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-  @media (max-width: 768px) {
-    width: 50%;
-  }
-`;
-
-export const ListItemText = styled.div`
-  color: #333;
-
-  word-break: keep-all;
-  @media (max-width: 768px) {
-    width: auto;
-  }
-`;
-
-export const EditButton = styled.button`
-  width: 50px;
-  padding: 5px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  color: #333;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease-in-out;
-  &:hover {
-    background-color: rgba(128, 128, 128, 0.7);
-  }
-`;
-
-export const DeleteTransactionButton = styled.button`
-  width: 20px;
-  padding: 5px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-  color: #333;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease-in-out;
-  &:hover {
-    background-color: rgba(128, 128, 128, 0.7);
-  }
-`;
-
-export const TransparentButton = styled.button`
-  background-color: transparent;
-  border: none;
-  width: 15px;
-  height: 15px;
-`;
-
-export const CancelButton = styled.button`
-  width: 50px;
-  padding: 5px;
-  cursor: pointer;
-  background-color: #ff5252;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.2s ease-in-out;
-
-  &:hover {
-    background-color: #c51162;
-  }
-`;
-
-export const TotalContainer = styled.div``;
-
-export const Total = styled.div<{ color: string }>`
-  width: 90%;
-  color: ${(props) => props.color};
-  font-size: 1.1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0 auto;
-  > p {
-    margin: 0 auto;
-    @media (max-width: 768px) {
-      font-size: 0.8rem;
-    }
-  }
-`;
-
-export const ProgressContainer = styled.div`
-  width: 100%;
-  position: relative;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-  margin-top: 3px;
-  height: 20px;
-`;
-
-interface PercentType {
-  $percentage: number;
-}
-
-export const ProgressBar = styled.div<PercentType>`
-  height: 100%;
-  width: ${(props) => props.$percentage}%;
-  background-color: crimson;
-  transition: width 0.3s ease;
-  > p {
-    color: #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translateX(-50%) translateY(-50%);
-  }
-`;

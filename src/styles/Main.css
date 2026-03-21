@@ -1,0 +1,313 @@
+/* Main.css - 가계부 메인 페이지 */
+
+/* ==================== 변수 ==================== */
+:root {
+  --primary: #14b8a6;
+  --primary-dark: #0d9488;
+  --primary-light: #5eead4;
+  --secondary: #06b6d4;
+  --accent: #f59e0b;
+
+  --bg-page: #f0fdfa;
+  --bg-card: #ffffff;
+  --bg-hover: #f8fafc;
+
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #94a3b8;
+
+  --border: #e2e8f0;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 페이지 ==================== */
+.main-page {
+  min-height: 100vh;
+  background: var(--bg-page);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Noto Sans KR", sans-serif;
+}
+
+/* ==================== 헤더 ==================== */
+.main-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  padding: 20px 30px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px var(--shadow);
+  margin-bottom: 24px;
+}
+
+.main-header__left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
+}
+
+.view-toggle i {
+  font-size: 16px;
+}
+
+.view-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.main-header__center {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-medium);
+}
+
+.nav-btn i {
+  font-size: 16px;
+}
+
+.nav-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.current-month {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 0;
+  min-width: 200px;
+  text-align: center;
+}
+
+@media (max-width: 968px) {
+  .main-header {
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .main-header__left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .main-header__center {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .view-toggle span {
+    display: none;
+  }
+
+  .current-month {
+    font-size: 20px;
+    min-width: auto;
+  }
+
+  .main-header {
+    padding: 16px;
+  }
+}
+
+/* ==================== 메인 콘텐츠 ==================== */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.summary-section,
+.income-section,
+.expense-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==================== 상세 지출 섹션 ==================== */
+.details-section {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .details-section {
+    padding: 20px 16px;
+  }
+}
+
+/* ==================== 플로팅 버튼 ==================== */
+.fab {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(20, 184, 166, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.fab i {
+  font-size: 24px;
+}
+
+.fab span {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 12px 32px rgba(20, 184, 166, 0.5);
+}
+
+.fab--active {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  transform: rotate(45deg);
+}
+
+.fab--active:hover {
+  transform: scale(1.1) rotate(45deg);
+}
+
+@media (max-width: 640px) {
+  .fab {
+    width: 60px;
+    height: 60px;
+    bottom: 30px;
+    right: 30px;
+  }
+
+  .fab i {
+    font-size: 20px;
+  }
+
+  .fab span {
+    font-size: 10px;
+  }
+}
+
+/* ==================== 트랜잭션 폼 오버레이 ==================== */
+.transaction-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==================== 반응형 최적화 ==================== */
+@media (max-width: 480px) {
+  .main-page {
+    padding: 12px;
+  }
+
+  .main-header {
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .main-content {
+    gap: 16px;
+  }
+
+  .content-grid {
+    gap: 16px;
+  }
+
+  .details-grid {
+    gap: 16px;
+  }
+}
