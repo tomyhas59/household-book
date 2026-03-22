@@ -1,245 +1,345 @@
-/* CommonForm.css */
+/* CommonForm.css - 민트 테마 + UI 안정성 */
 
+/* ==================== 변수 ==================== */
+:root {
+  --primary: #14b8a6;
+  --primary-dark: #0d9488;
+  --primary-light: #5eead4;
+  --secondary: #06b6d4;
+
+  --bg-card: #ffffff;
+  --bg-hover: #f0fdfa;
+  --bg-edit: #ccfbf1;
+
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #94a3b8;
+
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 카드 컨테이너 ==================== */
 .common-form {
-  background: white;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
   border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 400px;
+  transition:
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.common-form:hover {
+  box-shadow: 0 4px 12px var(--shadow-md);
+  border-color: var(--primary-light);
 }
 
 /* ==================== 헤더 ==================== */
 .common-form__header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.copy-btn {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f1f5f9;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #64748b;
-}
-
-.copy-btn:hover {
-  background: #14b8a6;
-  color: white;
-  transform: scale(1.05);
+  justify-content: space-between;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--bg-hover) 0%, #ffffff 100%);
+  border-bottom: 2px solid var(--border);
+  min-height: 72px; /* 고정 높이 - UI 안정성 */
+  position: relative;
 }
 
 .common-form__title {
   flex: 1;
-  font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-dark);
   margin: 0;
+  letter-spacing: -0.5px;
 }
 
+/* ==================== 헤더 버튼들 ==================== */
+.copy-btn,
 .delete-all-btn {
-  width: 32px;
-  height: 32px;
+  width: 36px; /* 고정 너비 */
+  height: 36px; /* 고정 높이 */
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fee2e2;
-  border: none;
+  background: transparent;
+  border: 2px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0; /* 크기 변하지 않음 */
+}
+
+.copy-btn {
+  color: var(--primary);
+}
+
+.copy-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.delete-all-btn {
   color: #ef4444;
+  position: absolute;
+  right: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.common-form__header:hover .delete-all-btn {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .delete-all-btn:hover {
   background: #ef4444;
+  border-color: #ef4444;
   color: white;
-  transform: scale(1.05);
 }
 
-/* ==================== 리스트 ==================== */
+.copy-btn i,
+.delete-all-btn i {
+  font-size: 14px;
+}
+
+/* ==================== 거래 목록 영역 ==================== */
 .common-form__list {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 400px;
+  min-height: 0; /* Flexbox 스크롤 활성화 */
 }
 
 .common-form__list::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .common-form__list::-webkit-scrollbar-track {
   background: #f1f5f9;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .common-form__list::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
+  background: var(--primary-light);
+  border-radius: 4px;
 }
 
 .common-form__list::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: var(--primary);
 }
 
-/* ==================== 트랜잭션 아이템 ==================== */
+/* ==================== 거래 아이템 ==================== */
 .transaction-item {
   display: grid;
-  grid-template-columns: 50px 1fr 100px 30px;
-  gap: 10px;
-  padding: 12px;
-  background: #f8fafc;
-  border-radius: 10px;
+  grid-template-columns: 45px 1fr 100px 32px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  align-items: center;
+  min-height: 54px; /* 고정 높이 - UI 안정성 */
 }
 
 .transaction-item:hover {
-  background: #f0fdfa;
-  transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background: var(--bg-hover);
+  border-color: var(--primary-light);
+  box-shadow: 0 2px 8px var(--shadow);
 }
 
 .transaction-item__date {
   font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
+  font-weight: 700;
+  color: var(--primary);
+  text-align: center;
 }
 
 .transaction-item__desc {
   font-size: 14px;
-  color: #0f172a;
-  font-weight: 500;
-  white-space: nowrap;
+  color: var(--text-dark);
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
 }
 
 .transaction-item__amount {
-  font-size: 14px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 800;
   text-align: right;
+  font-family: "Georgia", serif;
 }
 
 .transaction-item__spacer {
-  width: 30px;
+  width: 32px; /* 삭제 버튼과 동일한 너비 - UI 안정성 */
+  height: 32px;
+  flex-shrink: 0;
 }
 
 .delete-item-btn {
-  width: 24px;
-  height: 24px;
+  width: 32px; /* 고정 크기 */
+  height: 32px;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: #ef4444;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fee2e2;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
   transition: all 0.2s ease;
-  color: #ef4444;
+  flex-shrink: 0;
 }
 
 .delete-item-btn:hover {
   background: #ef4444;
+  border-color: #ef4444;
   color: white;
-  transform: scale(1.1);
+  transform: scale(1.05);
+}
+
+.delete-item-btn i {
+  font-size: 14px;
 }
 
 /* ==================== 수정 폼 ==================== */
 .transaction-edit-form {
   display: grid;
-  grid-template-columns: 50px 1fr 100px 30px 30px;
+  grid-template-columns: 60px 1fr 120px 36px 36px;
   gap: 8px;
-  padding: 10px;
-  background: #dbeafe;
-  border-radius: 10px;
-  border: 2px solid #3b82f6;
+  align-items: center;
+  padding: 12px;
+  background: var(--bg-edit);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  min-height: 54px; /* 일반 아이템과 동일한 높이 - UI 안정성 */
 }
 
 .edit-input {
-  padding: 6px 8px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #0f172a;
+  padding: 8px 12px;
+  border: 2px solid white;
+  border-radius: 8px;
+  font-size: 14px;
+  background: white;
+  color: var(--text-dark);
   transition: all 0.2s ease;
+  height: 38px; /* 고정 높이 */
 }
 
 .edit-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
 }
 
 .edit-input--date {
   text-align: center;
+  font-weight: 700;
 }
 
 .edit-input--amount {
   text-align: right;
+  font-weight: 700;
 }
 
 .edit-btn {
-  width: 30px;
-  height: 30px;
+  width: 36px; /* 고정 크기 */
+  height: 36px;
+  background: transparent;
+  border: 2px solid;
+  border-radius: 8px;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .edit-btn--save {
-  background: #10b981;
-  color: white;
+  border-color: var(--primary);
+  color: var(--primary);
 }
 
 .edit-btn--save:hover {
-  background: #059669;
-  transform: scale(1.05);
+  background: var(--primary);
+  color: white;
 }
 
 .edit-btn--cancel {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.edit-btn--cancel:hover {
   background: #ef4444;
   color: white;
 }
 
-.edit-btn--cancel:hover {
-  background: #dc2626;
-  transform: scale(1.05);
+.edit-btn i {
+  font-size: 14px;
 }
 
-.edit-btn i {
-  font-size: 12px;
+/* ==================== 추가 버튼 ==================== */
+.common-form__list > button {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  border: 2px dashed var(--primary);
+  border-radius: 12px;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 50px; /* 고정 높이 */
+}
+
+.common-form__list > button:hover {
+  background: var(--bg-hover);
+  border-color: var(--primary-dark);
+  color: var(--primary-dark);
+  border-style: solid;
+}
+
+.common-form__list > button:active {
+  transform: scale(0.98);
 }
 
 /* ==================== 푸터 ==================== */
 .common-form__footer {
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #ffffff 0%, var(--bg-hover) 100%);
+  border-top: 2px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding-top: 12px;
-  border-top: 2px solid #e2e8f0;
+  gap: 12px;
+  min-height: 80px; /* 고정 최소 높이 - UI 안정성 */
 }
 
+/* ==================== 프로그레스 바 ==================== */
 .progress-container {
   width: 100%;
 }
@@ -248,46 +348,75 @@
   width: 100%;
   height: 24px;
   background: #e2e8f0;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #14b8a6 0%, #06b6d4 100%);
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: width 0.3s ease;
+  transition: width 0.5s ease;
+  position: relative;
 }
 
 .progress-fill span {
-  font-size: 11px;
-  font-weight: 700;
   color: white;
+  font-size: 12px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* ==================== 총액 ==================== */
 .common-form__total {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 900;
   text-align: right;
+  font-family: "Georgia", serif;
+  letter-spacing: -0.5px;
+}
+
+/* ==================== 빈 상태 ==================== */
+.common-form__list:empty::before {
+  content: "거래 내역이 없습니다";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-light);
+  font-size: 14px;
 }
 
 /* ==================== 반응형 ==================== */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .common-form {
+    min-height: 350px;
+  }
+
+  .common-form__header {
     padding: 16px;
+    min-height: 64px;
   }
 
   .common-form__title {
-    font-size: 15px;
+    font-size: 16px;
+  }
+
+  .copy-btn,
+  .delete-all-btn {
+    width: 32px;
+    height: 32px;
   }
 
   .transaction-item {
-    grid-template-columns: 45px 1fr 90px 28px;
-    padding: 10px;
+    grid-template-columns: 40px 1fr 90px 28px;
     gap: 8px;
+    padding: 10px 12px;
+    min-height: 50px;
   }
 
   .transaction-item__date {
@@ -299,42 +428,177 @@
   }
 
   .transaction-item__amount {
-    font-size: 13px;
+    font-size: 14px;
   }
 
-  .transaction-edit-form {
-    grid-template-columns: 45px 1fr 90px 28px 28px;
-    gap: 6px;
-  }
-
-  .edit-input {
-    font-size: 12px;
-    padding: 5px 6px;
-  }
-
-  .edit-btn {
+  .delete-item-btn {
     width: 28px;
     height: 28px;
   }
 
+  .transaction-item__spacer {
+    width: 28px;
+    height: 28px;
+  }
+
+  .transaction-edit-form {
+    grid-template-columns: 50px 1fr 100px 32px 32px;
+    gap: 6px;
+    padding: 10px;
+    min-height: 50px;
+  }
+
+  .edit-input {
+    padding: 6px 10px;
+    font-size: 13px;
+    height: 34px;
+  }
+
+  .edit-btn {
+    width: 32px;
+    height: 32px;
+  }
+
   .common-form__total {
-    font-size: 16px;
+    font-size: 20px;
+  }
+
+  .common-form__footer {
+    padding: 12px 16px;
+    min-height: 70px;
+  }
+
+  .progress-bar {
+    height: 20px;
+  }
+
+  .progress-fill span {
+    font-size: 11px;
   }
 }
 
 @media (max-width: 480px) {
+  .common-form__header {
+    padding: 12px;
+    min-height: 56px;
+  }
+
+  .common-form__title {
+    font-size: 15px;
+  }
+
   .transaction-item {
-    grid-template-columns: 40px 1fr 85px 26px;
-    padding: 8px;
-  }
-
-  .copy-btn,
-  .delete-all-btn {
-    width: 28px;
-    height: 28px;
-  }
-
-  .common-form__list {
+    grid-template-columns: 35px 1fr 80px 24px;
     gap: 6px;
+    padding: 8px 10px;
+    min-height: 46px;
   }
+
+  .transaction-item__date {
+    font-size: 11px;
+  }
+
+  .transaction-item__desc {
+    font-size: 12px;
+  }
+
+  .transaction-item__amount {
+    font-size: 13px;
+  }
+
+  .delete-item-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .delete-item-btn i {
+    font-size: 12px;
+  }
+
+  .transaction-item__spacer {
+    width: 24px;
+    height: 24px;
+  }
+
+  .transaction-edit-form {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+    min-height: auto;
+  }
+
+  .edit-input {
+    width: 100%;
+  }
+
+  .edit-btn {
+    width: 100%;
+    height: 36px;
+  }
+
+  .common-form__list > button {
+    padding: 12px;
+    font-size: 14px;
+    min-height: 46px;
+  }
+
+  .common-form__footer {
+    padding: 12px;
+    min-height: 64px;
+  }
+
+  .common-form__total {
+    font-size: 18px;
+  }
+}
+
+/* ==================== 애니메이션 ==================== */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.transaction-item,
+.transaction-edit-form {
+  animation: slideIn 0.2s ease;
+}
+
+/* ==================== 드래그 중 ==================== */
+.transaction-item[draggable="true"] {
+  cursor: move;
+}
+
+.transaction-item:active {
+  opacity: 0.5;
+  cursor: grabbing;
+}
+
+/* ==================== 포커스 상태 ==================== */
+.edit-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+/* ==================== 로딩 상태 ==================== */
+.common-form.loading {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* ==================== Drag Over 상태 ==================== */
+.common-form__list[data-drag-over="true"] {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 184, 166, 0.05) 0%,
+    rgba(6, 182, 212, 0.05) 100%
+  );
+  border: 2px dashed var(--primary);
+  border-radius: 12px;
 }

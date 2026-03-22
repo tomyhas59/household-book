@@ -3,7 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType, TransactionType, UserType } from "../type";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { livingTotalState, loadingState } from "../recoil/atoms";
+import { categoryState, livingTotalState, loadingState } from "../recoil/atoms";
 import "../styles/CommonForm.css";
 
 export type PropsType = {
@@ -18,6 +18,7 @@ export type PropsType = {
   onDrop: (e: React.DragEvent, type: string) => void;
   onDragOver: (e: React.DragEvent) => void;
   onDragStart: (e: React.DragEvent, transaction: TransactionType) => void;
+  setTransactionForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
@@ -33,6 +34,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   onDrop,
   onDragOver,
   onDragStart,
+  setTransactionForm,
 }) => {
   const [transactions, setTransactions] = useState<TransactionType[]>([]);
   const [hoveredItemId, setHoveredItemId] = useState<number | null>(null);
@@ -48,7 +50,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
   const [per, setPer] = useState(0);
   const livingTotal = useRecoilValue(livingTotalState);
   const setLoading = useSetRecoilState(loadingState);
-
+  const setCategory = useSetRecoilState(categoryState);
   useEffect(() => {
     if (monthData && Array.isArray(monthData.transactions)) {
       const categoryData = monthData.transactions
@@ -270,6 +272,10 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
     }
   }, [transactions]);
 
+  const handleTransaction = () => {
+    setTransactionForm(true);
+    setCategory(categoryTitle);
+  };
   return (
     <div className="common-form">
       <div
@@ -387,6 +393,7 @@ const CommonForm: React.FC<PropsType & { isBar: Boolean }> = ({
             )}
           </React.Fragment>
         ))}
+        <button onClick={handleTransaction}>{categoryTitle} +</button>
       </div>
 
       <div className="common-form__footer">

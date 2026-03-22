@@ -10,6 +10,7 @@ const Fixed: React.FC<PropsType> = ({
   onDrop,
   onDragOver,
   onDragStart,
+  setTransactionForm,
 }) => {
   return (
     <CommonForm
@@ -24,6 +25,7 @@ const Fixed: React.FC<PropsType> = ({
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragStart={onDragStart}
+      setTransactionForm={setTransactionForm}
     />
   );
 };

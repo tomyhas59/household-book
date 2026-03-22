@@ -25,9 +25,9 @@ import { BASE_URL } from "../config/config";
 import Spinner from "../components/Spinner";
 import TransactionForm from "../components/TransactionForm";
 import { TransactionType } from "../type";
-import OptionButton from "../components/OptionButton";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import "../styles/Main.css";
+import Header from "../components/Header";
 
 export const DETAIL_CATEGORIES = [
   "식비",
@@ -212,35 +212,35 @@ const Main = () => {
       {loading && <Spinner />}
       {changePasswordForm && <ChangePasswordForm />}
 
-      <header className="main-header">
-        <div className="main-header__left">
-          <Link to="/annual" className="view-toggle">
-            <i className="fas fa-calendar-alt"></i>
-            <span>연도별 보기</span>
-          </Link>
-          <div className="header-controls">
+      <Header
+        leftContent={
+          <>
+            <Link to="/annual" className="view-toggle">
+              <i className="fas fa-calendar-alt"></i>
+              <span>연도별 보기</span>
+            </Link>
             <DateSelector
               year={year}
               month={month}
               setYear={setYear}
               setMonth={setMonth}
             />
-            <OptionButton />
-          </div>
-        </div>
-
-        <div className="main-header__center">
-          <button className="nav-btn" onClick={getPrevMonth}>
-            <i className="fas fa-chevron-left"></i>
-          </button>
-          <h1 className="current-month">
-            {year}년 {month}월
-          </h1>
-          <button className="nav-btn" onClick={getNextMonth}>
-            <i className="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </header>
+          </>
+        }
+        centerContent={
+          <>
+            <button className="nav-btn" onClick={getPrevMonth}>
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <h1 className="current-month">
+              {year}년 {month}월
+            </h1>
+            <button className="nav-btn" onClick={getNextMonth}>
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </>
+        }
+      />
 
       <main className="main-content">
         <div className="content-grid">
@@ -267,6 +267,7 @@ const Main = () => {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragStart={handleDragStart}
+              setTransactionForm={setTransactionForm}
             />
             <Saving
               categoryTitle="저축"
@@ -278,6 +279,7 @@ const Main = () => {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragStart={handleDragStart}
+              setTransactionForm={setTransactionForm}
             />
           </section>
 
@@ -292,6 +294,7 @@ const Main = () => {
               onDrop={handleDrop}
               onDragOver={handleDragOver}
               onDragStart={handleDragStart}
+              setTransactionForm={setTransactionForm}
             />
             <Note monthData={monthData} year={year} month={month} user={user} />
           </section>
@@ -311,6 +314,7 @@ const Main = () => {
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
                 onDragStart={handleDragStart}
+                setTransactionForm={setTransactionForm}
               />
             ))}
           </div>
@@ -344,6 +348,7 @@ const Main = () => {
             year={year}
             month={month}
             user={user}
+            setTransactionForm={setTransactionForm}
           />
         </div>
       )}

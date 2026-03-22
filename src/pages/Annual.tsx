@@ -25,6 +25,7 @@ import OptionButton from "../components/OptionButton";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import { Link } from "react-router-dom";
 import "../styles/Annual.css";
+import Header from "../components/Header";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -240,38 +241,38 @@ const Annual = () => {
       {loading && <Spinner />}
       {changePasswordForm && <ChangePasswordForm />}
 
-      <header className="annual-header">
-        <div className="annual-header__left">
-          <Link to="/main" className="view-toggle">
-            <i className="fas fa-calendar-day"></i>
-            <span>월별로 보기</span>
-          </Link>
-          <div className="header-controls">
+      <Header
+        leftContent={
+          <>
+            <Link to="/main" className="view-toggle">
+              <i className="fas fa-calendar-day"></i>
+              <span>월별로 보기</span>
+            </Link>
             <select
               className="year-selector"
               value={year}
               onChange={(e) => setYear(Number(e.target.value))}
             >
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}년
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}년
                 </option>
               ))}
             </select>
-            <OptionButton />
-          </div>
-        </div>
-
-        <div className="annual-header__center">
-          <button className="nav-btn" onClick={getPrevYear}>
-            <i className="fas fa-chevron-left"></i>
-          </button>
-          <h1 className="current-year">{year}년</h1>
-          <button className="nav-btn" onClick={getNextYear}>
-            <i className="fas fa-chevron-right"></i>
-          </button>
-        </div>
-      </header>
+          </>
+        }
+        centerContent={
+          <>
+            <button className="nav-btn" onClick={getPrevYear}>
+              <i className="fas fa-chevron-left"></i>
+            </button>
+            <h1 className="current-year">{year}년</h1>
+            <button className="nav-btn" onClick={getNextYear}>
+              <i className="fas fa-chevron-right"></i>
+            </button>
+          </>
+        }
+      />
 
       <main className="annual-content">
         <section className="total-income-section">

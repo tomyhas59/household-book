@@ -11,6 +11,7 @@ const Income: React.FC<PropsType> = ({
   onDrop,
   onDragOver,
   onDragStart,
+  setTransactionForm,
 }) => {
   return (
     <CommonForm
@@ -25,6 +26,7 @@ const Income: React.FC<PropsType> = ({
       onDrop={onDrop}
       onDragOver={onDragOver}
       onDragStart={onDragStart}
+      setTransactionForm={setTransactionForm}
     />
   );
 };

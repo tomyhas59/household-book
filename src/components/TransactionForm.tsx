@@ -9,8 +9,8 @@ import React, {
 import { BASE_URL } from "../config/config";
 import { MonthDataType, UserType } from "../type";
 import { DETAIL_CATEGORIES } from "../pages/Main";
-import { useSetRecoilState } from "recoil";
-import { loadingState } from "../recoil/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { categoryState, loadingState } from "../recoil/atoms";
 import "../styles/TransactionForm.css";
 
 export type PropsType = {
@@ -19,14 +19,25 @@ export type PropsType = {
   year: number;
   month: number;
   user: UserType;
+  setTransactionForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
-  ({ setMonthData, monthData, user, year, month }: PropsType, ref) => {
+  (
+    {
+      setMonthData,
+      monthData,
+      user,
+      year,
+      month,
+      setTransactionForm,
+    }: PropsType,
+    ref,
+  ) => {
     const [amount, setAmount] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState<number | "">("");
-    const [categoryTitle, setCategoryTitle] = useState<string>("고정 지출");
+    const [categoryTitle, setCategoryTitle] = useRecoilState(categoryState);
     const dateRef = useRef<HTMLInputElement | null>(null);
     const setLoading = useSetRecoilState(loadingState);
 
@@ -87,12 +98,16 @@ const TransactionForm = forwardRef<HTMLDivElement, PropsType>(
       "저축",
     ].sort((a, b) => a.localeCompare(b));
 
+    const handleClose = () => {
+      setTransactionForm(false);
+    };
     return (
       <div className="transaction-form-container">
         <div className="transaction-form-card" ref={ref}>
           <div className="transaction-form-header">
             <i className="fas fa-plus-circle"></i>
             <h3>새 거래 추가</h3>
+            <button onClick={handleClose}>닫기</button>
           </div>
 
           <form className="transaction-form" onSubmit={addTransaction}>

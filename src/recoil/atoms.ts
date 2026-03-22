@@ -59,3 +59,8 @@ export const changePasswordFormState = atom<boolean>({
   key: "changePasswordFormState",
   default: false,
 });
+
+export const categoryState = atom<String>({
+  key: "categoryState",
+  default: "고정 지출",
+});

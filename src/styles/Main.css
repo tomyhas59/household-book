@@ -25,129 +25,8 @@
 .main-page {
   min-height: 100vh;
   background: var(--bg-page);
-  padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Noto Sans KR", sans-serif;
-}
-
-/* ==================== 헤더 ==================== */
-.main-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg-card);
-  padding: 20px 30px;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px var(--shadow);
-  margin-bottom: 24px;
-}
-
-.main-header__left {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.view-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  color: white;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.3);
-}
-
-.view-toggle i {
-  font-size: 16px;
-}
-
-.view-toggle:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
-}
-
-.header-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.main-header__center {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.nav-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-hover);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: var(--text-medium);
-}
-
-.nav-btn i {
-  font-size: 16px;
-}
-
-.nav-btn:hover {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: white;
-}
-
-.current-month {
-  font-size: 24px;
-  font-weight: 800;
-  color: var(--text-dark);
-  margin: 0;
-  min-width: 200px;
-  text-align: center;
-}
-
-@media (max-width: 968px) {
-  .main-header {
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-  }
-
-  .main-header__left {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .main-header__center {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 640px) {
-  .view-toggle span {
-    display: none;
-  }
-
-  .current-month {
-    font-size: 20px;
-    min-width: auto;
-  }
-
-  .main-header {
-    padding: 16px;
-  }
 }
 
 /* ==================== 메인 콘텐츠 ==================== */
@@ -290,15 +169,6 @@
 
 /* ==================== 반응형 최적화 ==================== */
 @media (max-width: 480px) {
-  .main-page {
-    padding: 12px;
-  }
-
-  .main-header {
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
-
   .main-content {
     gap: 16px;
   }

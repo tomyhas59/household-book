@@ -1,0 +1,244 @@
+/* Header.css - 민트 테마 + 완벽한 반응형 */
+
+/* ==================== 변수 ==================== */
+:root {
+  --primary: #14b8a6;
+  --primary-dark: #0d9488;
+  --primary-light: #5eead4;
+  --secondary: #06b6d4;
+
+  --header-bg: #ffffff;
+  --header-border: #e2e8f0;
+  --text-dark: #0f172a;
+  --text-medium: #475569;
+  --text-light: #94a3b8;
+
+  --shadow: rgba(0, 0, 0, 0.05);
+  --shadow-md: rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== 헤더 컨테이너 ==================== */
+.common-header {
+  background: var(--header-bg);
+  border-bottom: 3px solid var(--header-border);
+  padding: 8px;
+  box-shadow: 0 2px 12px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==================== 왼쪽 영역 ==================== */
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.header-info {
+  display: flex;
+}
+
+/* ==================== 중앙 영역 ==================== */
+.header__center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex: 1;
+  max-width: 500px;
+}
+
+/* ==================== 사용자 정보 ==================== */
+.header-user {
+  padding: 10px 16px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-light) 0%,
+    var(--secondary) 100%
+  );
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+/* ==================== 연도별 보기 버튼 ==================== */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--header-bg);
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 42px; /* 고정 높이 */
+}
+
+.view-toggle:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+}
+
+.view-toggle i {
+  font-size: 16px;
+}
+
+/* ==================== 네비게이션 버튼 ==================== */
+.nav-btn {
+  width: 42px; /* 고정 크기 */
+  height: 42px;
+  background: var(--header-bg);
+  border: 2px solid var(--header-border);
+  border-radius: 10px;
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.nav-btn:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  transform: scale(1.1);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-btn i {
+  font-size: 16px;
+}
+
+/* ==================== 현재 월 표시 ==================== */
+.current-month {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text-dark);
+  margin: 0;
+  text-align: center;
+  min-width: 180px;
+  font-family: "Georgia", serif;
+  letter-spacing: -1px;
+}
+
+/* ==================== 반응형 (Small Mobile) ==================== */
+@media (max-width: 480px) {
+  .common-header {
+    flex-direction: column;
+  }
+
+  .header__left {
+    gap: 0;
+  }
+
+  .header-user {
+    padding: 5px 8px;
+    background: linear-gradient(
+      135deg,
+      var(--primary-light) 0%,
+      var(--secondary) 100%
+    );
+    color: white;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.3);
+  }
+
+  .header__center {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .nav-btn i {
+    font-size: 13px;
+  }
+
+  .current-month {
+    font-size: 16px;
+    min-width: 100px;
+  }
+
+  .view-toggle {
+    width: 32px;
+    height: 32px;
+  }
+  .view-toggle span {
+    display: none;
+  }
+
+  .view-toggle i {
+    font-size: 13px;
+  }
+
+  .header__left > div {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+}
+
+/* ==================== 스크롤 시 효과 ==================== */
+.common-header.scrolled {
+  box-shadow: 0 4px 20px var(--shadow-md);
+  border-bottom-color: var(--primary-light);
+}
+
+/* ==================== 애니메이션 ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.common-header {
+  animation: fadeIn 0.3s ease;
+}
+
+/* ==================== Hover 효과 ==================== */
+.common-header:hover {
+  border-bottom-color: var(--primary-light);
+}
+
+/* ==================== 프린트 시 숨김 ==================== */
+@media print {
+  .common-header {
+    position: static;
+    box-shadow: none;
+    border-bottom: 1px solid #000;
+  }
+
+  .view-toggle,
+  .nav-btn {
+    display: none;
+  }
+}

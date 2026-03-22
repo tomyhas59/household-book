@@ -54,7 +54,19 @@
   color: #0f172a;
   margin: 0;
 }
-
+.transaction-form-header button {
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+.transaction-form-header button:hover {
+  transform: translateY(-2px);
+}
 /* ==================== 폼 ==================== */
 .transaction-form {
   display: flex;
