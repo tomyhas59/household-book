@@ -21,7 +21,6 @@ import axios from "axios";
 import { BASE_URL } from "../config/config";
 import { MonthDataType } from "../type";
 import Spinner from "../components/Spinner";
-import OptionButton from "../components/OptionButton";
 import ChangePasswordForm from "../components/ChangePasswordForm";
 import { Link } from "react-router-dom";
 import "../styles/Annual.css";
